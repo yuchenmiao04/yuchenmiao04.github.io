@@ -1,0 +1,404 @@
+---
+---
+
+/*
+ *    Minimal Mistakes Jekyll Theme
+ *
+ *  - Michael Rose
+ *  - mademistakes.com
+ *  - https://twitter.com/mmistakes
+ *
+*/
+
+@import "vendor/breakpoint/breakpoint"; // media query mixins
+@import "variables";
+@import "mixins";
+@import "vendor/susy/susy";
+
+@import "reset";
+@import "base";
+
+@import "utilities";
+@import "animations";
+@import "tables";
+@import "buttons";
+@import "notices";
+@import "masthead";
+@import "navigation";
+@import "footer";
+@import "syntax";
+
+@import "forms";
+
+@import "page";
+@import "archive";
+@import "sidebar";
+
+@import "vendor/font-awesome/fontawesome";
+@import "vendor/font-awesome/solid";
+@import "vendor/font-awesome/brands";
+@import "vendor/magnific-popup/magnific-popup";
+@import "print";
+
+.paper-box {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 1px #efefef solid;
+    padding: 2em 0 2em 0;
+    
+
+    .paper-box-image{
+        justify-content: center;
+        display: flex;
+        width: 100%;
+        order: 2;
+        img {
+            max-width: 400px;
+            box-shadow: 3px 3px 6px #888;
+            object-fit: cover;
+        }
+    }
+    
+    .paper-box-text{
+        max-width: 100%;
+        order: 1;
+    }
+    
+    @include breakpoint($medium) {
+        .paper-box-image{
+            justify-content: left;
+            min-width: 200px;
+            max-width: 40%;
+            order: 1;
+        }
+        
+        .paper-box-text{
+            justify-content: left;
+            padding-left: 2em;
+            max-width: 60%;
+            order: 2;
+        }
+
+    }
+
+
+}
+
+$scroll_offset : 2em;
+h1:before, .anchor:before { 
+    content: ''; 
+    display: block; 
+    position: relative; 
+    width: 0; 
+    height: $scroll_offset; 
+    margin-top: -$scroll_offset;
+}
+
+.badge {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    position: absolute;
+    margin-top: .5em;
+    margin-left: -.5em;
+    color: white;
+    background-color: #00369f;
+    font-size: .8em;
+}
+
+/* Yuchen Miao — academic profile layer */
+:root {
+  --marine: #163a53;
+  --marine-deep: #0f2a3d;
+  --ink: #17232d;
+  --slate: #647482;
+  --mist: #eef3f5;
+  --paper: #fbfcfc;
+  --gold: #b08a4a;
+}
+
+body {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.masthead {
+  background: rgba(251, 252, 252, .94);
+  border-bottom: 1px solid #dce5e9;
+  backdrop-filter: blur(12px);
+}
+
+.greedy-nav, .greedy-nav .visible-links, .greedy-nav .hidden-links {
+  background: transparent;
+}
+
+.greedy-nav a, .masthead__menu-item a {
+  color: var(--marine-deep);
+}
+
+.author__avatar img {
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 18%;
+  border-radius: 14px;
+  border: 0;
+  padding: 0;
+  box-shadow: 0 14px 36px rgba(15, 42, 61, .18);
+}
+
+.author__name {
+  color: var(--marine-deep);
+  letter-spacing: -.02em;
+}
+
+.author__bio {
+  color: var(--slate);
+}
+
+.page__content h1 {
+  margin-top: 2.3em;
+  padding-bottom: .35em;
+  color: var(--marine-deep);
+  border-bottom: 1px solid #cbd8de;
+  letter-spacing: -.025em;
+}
+
+.page__content h2, .page__content h3 {
+  color: var(--marine-deep);
+}
+
+.page__content a {
+  color: var(--marine);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.intro-block {
+  margin: .25rem 0 2rem;
+  padding: 2.25rem 2.5rem;
+  background: linear-gradient(135deg, #f0f5f7 0%, #f8fafb 65%, #edf3f5 100%);
+  border-left: 5px solid var(--marine);
+  border-radius: 0 18px 18px 0;
+}
+
+.intro-block h1 {
+  max-width: 16ch;
+  margin: .18em 0 .55em;
+  padding: 0;
+  border: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.08;
+  letter-spacing: -.045em;
+}
+
+.eyebrow {
+  margin-bottom: .6rem !important;
+  color: var(--gold);
+  font-size: .77rem !important;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.intro-lead {
+  font-size: 1.08rem !important;
+  line-height: 1.7;
+}
+
+.intro-actions {
+  display: flex;
+  gap: .7rem;
+  margin-top: 1.35rem;
+}
+
+.page__content .button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: .65rem 1rem;
+  color: var(--marine-deep);
+  border: 1px solid #b9c9d1;
+  border-radius: 8px;
+  font-size: .9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.page__content .button:hover {
+  border-color: var(--marine);
+  background: #fff;
+}
+
+.page__content .button-primary {
+  color: #fff;
+  background: var(--marine);
+  border-color: var(--marine);
+}
+
+.page__content .button-primary:hover {
+  color: #fff;
+  background: var(--marine-deep);
+}
+
+.research-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  overflow: hidden;
+  margin: 2rem 0 2.5rem;
+  background: #d8e1e5;
+  border: 1px solid #d8e1e5;
+  border-radius: 12px;
+}
+
+.research-strip > div {
+  min-height: 150px;
+  padding: 1.2rem;
+  background: #fff;
+}
+
+.research-strip span {
+  display: block;
+  margin-bottom: 1.1rem;
+  color: var(--gold);
+  font: 700 .72rem/1 Monaco, Consolas, monospace;
+}
+
+.research-strip strong, .research-strip small {
+  display: block;
+}
+
+.research-strip strong {
+  margin-bottom: .5rem;
+  color: var(--marine-deep);
+  line-height: 1.25;
+}
+
+.research-strip small {
+  color: var(--slate);
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
+.publication-card {
+  position: relative;
+  margin: 0;
+  padding: 1.45rem 0 1.55rem;
+  border-bottom: 1px solid #dbe4e8;
+}
+
+.publication-card.featured {
+  margin-top: .8rem;
+  padding: 1.5rem;
+  background: #f1f5f7;
+  border: 0;
+  border-radius: 12px;
+}
+
+.publication-card h2 {
+  margin: .42rem 0 .6rem;
+  font-size: 1.22rem;
+  line-height: 1.35;
+}
+
+.publication-card p {
+  margin-bottom: .45rem;
+}
+
+.pub-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--gold);
+  font: 700 .74rem/1.4 Monaco, Consolas, monospace;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.authors {
+  color: #425561;
+  font-size: .92rem !important;
+}
+
+.pub-links {
+  margin-top: .75rem;
+  font-weight: 700;
+}
+
+.timeline {
+  margin-top: 1rem;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 125px 1fr;
+  gap: 1.3rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid #dbe4e8;
+}
+
+.timeline-date {
+  color: var(--gold);
+  font: 700 .75rem/1.5 Monaco, Consolas, monospace;
+}
+
+.timeline-item h3, .timeline-item p {
+  margin: 0 0 .35rem;
+}
+
+.site-note {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  color: var(--slate);
+  border-top: 1px solid #dbe4e8;
+  font-size: .8rem;
+  text-align: center;
+}
+
+@media (min-width: 925px) {
+  .sidebar {
+    position: sticky;
+    top: 6rem;
+  }
+
+  .author__avatar img {
+    width: 100%;
+    max-width: 190px;
+  }
+}
+
+@media (max-width: 767px) {
+  .intro-block {
+    padding: 1.6rem 1.3rem;
+  }
+
+  .research-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .research-strip > div {
+    min-height: 0;
+  }
+
+  .timeline-item {
+    grid-template-columns: 1fr;
+    gap: .35rem;
+  }
+
+  .pub-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
