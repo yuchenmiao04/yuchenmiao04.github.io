@@ -113,7 +113,7 @@ redirect_from:
 <div class="timeline">
   <div class="timeline-item"><div class="timeline-date">2025—Present</div><div><h3>Hebei Key Laboratory of Marine Perception Network and Data Processing</h3><p>Work on explainable multimodal recommendation and fake-content detection using LLM reasoning, retrieval augmentation, graph learning, flow matching, and mixture-of-experts models.</p></div></div>
   <div class="timeline-item"><div class="timeline-date">2025—Present</div><div><h3>National College Students’ Innovation and Entrepreneurship Training Program</h3><p><em>Project No. 202619145026</em></p><p>Work on explainable recommendation and fake-content detection for new-media security. The project has produced papers at <a href="https://2026.ieeeicassp.org/">ICASSP 2026</a> and <a href="https://conferences.sigappfr.org/wise2026/">WISE 2026</a>.</p></div></div>
-  <div class="timeline-item"><div class="timeline-date">2023—2027</div><div><h3>Northeastern University (985)</h3><p><em>B.Eng. in Communication Engineering · Sydney Smart Technology College</em></p><p>GPA 3.89/4.00 · Average 88.9/100 · IELTS 7.0</p></div></div>
+  <div class="timeline-item"><div class="timeline-date">2023—2027</div><div><h3>Northeastern University (985)</h3><p><em>B.Eng. in Communication Engineering · Sydney Smart Technology College</em></p><p>IELTS 7.0</p></div></div>
 </div>
 
 ## Industry Experience
