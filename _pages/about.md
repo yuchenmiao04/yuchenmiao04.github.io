@@ -40,10 +40,13 @@ redirect_from:
 
 # Selected Publications
 
-<div class="publication-card featured">
-  <a class="pub-figure" href="/images/publications/emnlp-10th-juror.png" target="_blank" rel="noopener" aria-label="View the full framework diagram for The 10th Juror"><img src="/images/publications/emnlp-10th-juror.png" alt="Framework of the open-set standpoint screening system" loading="lazy"></a>
+<div class="publication-card">
+  <div class="pub-visual">
+    <a class="pub-venue-badge" href="https://2026.emnlp.org/">EMNLP 2026 · Main</a>
+    <a class="pub-figure" href="/images/publications/emnlp-10th-juror.png" target="_blank" rel="noopener" aria-label="View the full framework diagram for The 10th Juror"><img src="/images/publications/emnlp-10th-juror.png" alt="Framework of the open-set standpoint screening system" loading="lazy"></a>
+  </div>
   <div class="pub-content">
-    <div class="pub-meta"><a href="https://2026.emnlp.org/">EMNLP 2026 · Main ↗</a><span>CORE A* · CCF-B</span></div>
+    <div class="pub-meta"><span>CORE A* · CCF-B</span></div>
     <h2>The “10th Juror”: Open-Set Standpoint Screening for Bureaucratic Bias Detection</h2>
     <p class="authors"><strong>Yuchen Miao</strong>, Zijun Wang, Chang Han, Yurui Shi, Mingtai Zhang, and Siyang Xu</p>
     <p>Introduces a standpoint-aware multi-agent framework that retrieves legal evidence, detects unseen bias targets, and verifies corrective rewrites while preserving the source meaning.</p>
@@ -51,9 +54,12 @@ redirect_from:
 </div>
 
 <div class="publication-card">
-  <a class="pub-figure" href="/images/publications/uhiflow.png" target="_blank" rel="noopener" aria-label="View the full UHIFlow framework diagram"><img src="/images/publications/uhiflow.png" alt="UHIFlow multimodal recommendation framework" loading="lazy"></a>
+  <div class="pub-visual">
+    <a class="pub-venue-badge" href="https://conferences.sigappfr.org/wise2026/">WISE 2026</a>
+    <a class="pub-figure" href="/images/publications/uhiflow.png" target="_blank" rel="noopener" aria-label="View the full UHIFlow framework diagram"><img src="/images/publications/uhiflow.png" alt="UHIFlow multimodal recommendation framework" loading="lazy"></a>
+  </div>
   <div class="pub-content">
-    <div class="pub-meta"><a href="https://conferences.sigappfr.org/wise2026/">WISE 2026 ↗</a><span>CORE B · CCF-B</span></div>
+    <div class="pub-meta"><span>CORE B · CCF-B</span></div>
     <h2>Anatomy of a Decision: Uncertainty-aware Hierarchical Intent Learning via Flow Matching for Multimodal Recommendation</h2>
     <p class="authors"><strong>Yuchen Miao</strong>, Zijun Wang, Ke Liu, and Siyang Xu</p>
     <p>Uses conditional flow matching to quantify visual and textual uncertainty and adapt the granularity of each user’s intent hierarchy.</p>
@@ -61,9 +67,12 @@ redirect_from:
 </div>
 
 <div class="publication-card">
-  <a class="pub-figure" href="/images/publications/imex-fnd.png" target="_blank" rel="noopener" aria-label="View the full IMEX-FND framework diagram"><img src="/images/publications/imex-fnd.png" alt="IMEX-FND mixture-of-experts framework" loading="lazy"></a>
+  <div class="pub-visual">
+    <a class="pub-venue-badge" href="https://conferences.sigappfr.org/wise2026/">WISE 2026</a>
+    <a class="pub-figure" href="/images/publications/imex-fnd.png" target="_blank" rel="noopener" aria-label="View the full IMEX-FND framework diagram"><img src="/images/publications/imex-fnd.png" alt="IMEX-FND mixture-of-experts framework" loading="lazy"></a>
+  </div>
   <div class="pub-content">
-    <div class="pub-meta"><a href="https://conferences.sigappfr.org/wise2026/">WISE 2026 ↗</a><span>CORE B · CCF-B</span></div>
+    <div class="pub-meta"><span>CORE B · CCF-B</span></div>
     <h2>IMEX-FND: A Traceable Interaction-Aware Mixture-of-Experts Framework for Multimodal Fake News Detection</h2>
     <p class="authors"><strong>Yuchen Miao</strong>, Zijun Wang, Ke Liu, Peixuan Wang, and Chang Han</p>
     <p>Routes multimodal evidence through adaptive experts and decomposes text–image interactions into uniqueness, redundancy, and synergy for traceable decisions.</p>
@@ -71,9 +80,12 @@ redirect_from:
 </div>
 
 <div class="publication-card">
-  <a class="pub-figure" href="/images/publications/r3-rec.png" target="_blank" rel="noopener" aria-label="View the full R3-REC framework diagram"><img src="/images/publications/r3-rec.png" alt="R3-REC retrieval-augmented recommendation framework" loading="lazy"></a>
+  <div class="pub-visual">
+    <a class="pub-venue-badge" href="https://2026.ieeeicassp.org/">ICASSP 2026</a>
+    <a class="pub-figure" href="/images/publications/r3-rec.png" target="_blank" rel="noopener" aria-label="View the full R3-REC framework diagram"><img src="/images/publications/r3-rec.png" alt="R3-REC retrieval-augmented recommendation framework" loading="lazy"></a>
+  </div>
   <div class="pub-content">
-    <div class="pub-meta"><a href="https://2026.ieeeicassp.org/">ICASSP 2026 ↗</a><span>CORE B · CCF-B</span></div>
+    <div class="pub-meta"><span>CORE B · CCF-B</span></div>
     <h2>R3-REC: Reasoning-Driven Recommendation via Retrieval-Augmented LLMs over Multi-Granular Interest Signals</h2>
     <p class="authors"><strong>Yuchen Miao</strong>, Mingxuan Cui, Yitong Zhu, Yu Wang, and Siyang Xu</p>
     <p>Combines long- and short-term interest mining, similar-user retrieval, and prompt-guided reasoning to make recommendation paths more transparent.</p>
@@ -82,9 +94,12 @@ redirect_from:
 </div>
 
 <div class="publication-card">
-  <a class="pub-figure" href="/images/publications/motif.png" target="_blank" rel="noopener" aria-label="View the full MOTIF framework diagram"><img src="/images/publications/motif.png" alt="MOTIF cold-start recommendation framework" loading="lazy"></a>
+  <div class="pub-visual">
+    <a class="pub-venue-badge" href="https://conferences.sigappfr.org/wise2026/">WISE 2026</a>
+    <a class="pub-figure" href="/images/publications/motif.png" target="_blank" rel="noopener" aria-label="View the full MOTIF framework diagram"><img src="/images/publications/motif.png" alt="MOTIF cold-start recommendation framework" loading="lazy"></a>
+  </div>
   <div class="pub-content">
-    <div class="pub-meta"><a href="https://conferences.sigappfr.org/wise2026/">WISE 2026 ↗</a><span>CORE B · CCF-B</span></div>
+    <div class="pub-meta"><span>CORE B · CCF-B</span></div>
     <h2>MOTIF: Motivation-guided Topology Inference for Cold-start Multimodal Recommendation</h2>
     <p class="authors">Yurui Shi*, <strong>Yuchen Miao*</strong>, Ximing Hu, Zijun Wang, and Chang Han <small>(* equal contribution)</small></p>
     <p>Uses offline LLM reasoning to infer latent motivations and reconstruct cold-start graph topology without requiring online LLM inference.</p>

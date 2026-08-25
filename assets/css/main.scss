@@ -284,21 +284,19 @@ body {
 
 .publication-card {
   display: grid;
-  grid-template-columns: minmax(230px, .95fr) minmax(0, 1.25fr);
+  grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
   align-items: center;
-  gap: 1.35rem;
+  gap: 2rem;
   position: relative;
   margin: 0;
-  padding: 1.45rem 0 1.55rem;
+  padding: 1.65rem 0;
   border-bottom: 1px solid #dbe4e8;
 }
 
-.publication-card.featured {
-  margin-top: .8rem;
-  padding: 1.5rem;
-  background: #f1f5f7;
-  border: 0;
-  border-radius: 12px;
+.pub-visual {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
 }
 
 .publication-card h2 {
@@ -315,13 +313,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 170px;
   overflow: hidden;
-  padding: .5rem;
+  padding: .3rem;
   background: #fff;
-  border: 1px solid #d7e1e6;
-  border-radius: 10px;
-  box-shadow: 0 8px 22px rgba(15, 42, 61, .08);
+  border: 1px solid #e0e6e9;
+  border-radius: 4px;
+  box-shadow: 3px 4px 10px rgba(15, 42, 61, .16);
   text-decoration: none !important;
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
@@ -330,7 +327,7 @@ body {
 .pub-figure:focus-visible {
   transform: translateY(-2px);
   border-color: #aabfc9;
-  box-shadow: 0 12px 28px rgba(15, 42, 61, .14);
+  box-shadow: 4px 7px 16px rgba(15, 42, 61, .2);
 }
 
 .pub-figure:focus-visible {
@@ -342,9 +339,36 @@ body {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 230px;
+  max-height: 205px;
   object-fit: contain;
   box-shadow: none !important;
+}
+
+.pub-venue-badge {
+  position: absolute;
+  z-index: 2;
+  top: .55rem;
+  left: -.45rem;
+  min-width: 118px;
+  padding: .38rem .9rem;
+  color: #fff !important;
+  background: var(--marine);
+  box-shadow: 2px 3px 7px rgba(15, 42, 61, .2);
+  font: 700 .72rem/1.1 Monaco, Consolas, monospace;
+  letter-spacing: .02em;
+  text-align: center;
+  text-decoration: none !important;
+  text-transform: uppercase;
+}
+
+.pub-venue-badge:hover,
+.pub-venue-badge:focus-visible {
+  background: var(--marine-deep);
+}
+
+.pub-venue-badge:focus-visible {
+  outline: 3px solid rgba(22, 58, 83, .24);
+  outline-offset: 2px;
 }
 
 .pub-content {
@@ -353,22 +377,12 @@ body {
 
 .pub-meta {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
   color: var(--gold);
   font: 700 .74rem/1.4 Monaco, Consolas, monospace;
   letter-spacing: .03em;
   text-transform: uppercase;
-}
-
-.pub-meta a {
-  color: var(--gold);
-  text-decoration: none;
-}
-
-.pub-meta a:hover {
-  color: #80612f;
-  text-decoration: underline;
 }
 
 .authors {
@@ -446,8 +460,8 @@ body {
     gap: 1rem;
   }
 
-  .pub-figure {
-    min-height: 0;
+  .pub-visual {
+    max-width: 340px;
   }
 
   .pub-figure img {
