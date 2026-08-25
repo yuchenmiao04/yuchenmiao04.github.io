@@ -20,12 +20,16 @@ redirect_from:
 
 <span class="anchor" id="news"></span>
 
-# News
+# 🔥 News
 
-- **Aug. 2026** — Our paper on open-set standpoint screening was accepted to the [**EMNLP 2026 Main Conference**](https://2026.emnlp.org/).
-- **Aug. 2026** — Three papers on uncertainty-aware recommendation, multimodal fake-news detection, and cold-start recommendation were accepted to [**WISE 2026**](https://conferences.sigappfr.org/wise2026/).
-- **May 2026** — Received the **Finalist Award (Top 1%)** in the [COMAP Mathematical Contest in Modeling](https://www.comap.org/contests/mcm-icm).
-- **May 2026** — *R3-REC* appeared at [**ICASSP 2026**](https://2026.ieeeicassp.org/) in Barcelona.
+- 🎉 **Aug. 2026** — Our paper on open-set standpoint screening was accepted to the [**EMNLP 2026 Main Conference**](https://2026.emnlp.org/).
+- 🎉 **Aug. 2026** — Three papers on uncertainty-aware recommendation, multimodal fake-news detection, and cold-start recommendation were accepted to [**WISE 2026**](https://conferences.sigappfr.org/wise2026/).
+- 🏆 **May 2026** — Received the **Finalist Award (Top 1%)** in the [COMAP Mathematical Contest in Modeling](https://www.comap.org/contests/mcm-icm).
+- 🎉 **May 2026** — *R3-REC* appeared at [**ICASSP 2026**](https://2026.ieeeicassp.org/) in Barcelona.
+- 🏆 **2023–2026** — Received the **University Third-Class Scholarship** five times.
+- 🏆 **2025** — Received the **National Third Prize** in the [18th Advanced Robot and Simulation Technology Competition](https://urc.ilur.org/news/385).
+- 🏆 **2025** — Received the **Provincial Second Prize** in the [National College Students Market Research and Analysis Competition](https://www.china-cssc.org/show-289-1700-1.html).
+- 🏆 **2025** — Received the **Provincial Second Prize** in the [Hebei Provincial College Students “Research Hebei” Social Survey Program](https://tuanwei.hbu.cn/contents/541/11879.html).
 
 <span class="anchor" id="publications"></span>
 
