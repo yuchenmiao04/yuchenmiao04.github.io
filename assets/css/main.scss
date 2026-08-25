@@ -176,34 +176,15 @@ body {
 }
 
 .intro-block {
-  margin: .25rem 0 2rem;
-  padding: 2.25rem 2.5rem;
-  background: linear-gradient(135deg, #f0f5f7 0%, #f8fafb 65%, #edf3f5 100%);
-  border-left: 5px solid var(--marine);
-  border-radius: 0 18px 18px 0;
+  margin: .25rem 0 2.5rem;
+  padding: .4rem 0 1.5rem;
+  border-bottom: 1px solid #dbe4e8;
 }
 
-.intro-block h1 {
-  max-width: 16ch;
-  margin: .18em 0 .55em;
-  padding: 0;
-  border: 0;
-  font-size: clamp(2rem, 4vw, 3.15rem);
-  line-height: 1.08;
-  letter-spacing: -.045em;
-}
-
-.eyebrow {
-  margin-bottom: .6rem !important;
-  color: var(--gold);
-  font-size: .77rem !important;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-}
-
-.intro-lead {
-  font-size: 1.08rem !important;
+.intro-summary {
+  max-width: 56rem;
+  margin: 0;
+  font-size: 1.03rem !important;
   line-height: 1.7;
 }
 
@@ -240,46 +221,6 @@ body {
 .page__content .button-primary:hover {
   color: #fff;
   background: var(--marine-deep);
-}
-
-.research-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  overflow: hidden;
-  margin: 2rem 0 2.5rem;
-  background: #d8e1e5;
-  border: 1px solid #d8e1e5;
-  border-radius: 12px;
-}
-
-.research-strip > div {
-  min-height: 150px;
-  padding: 1.2rem;
-  background: #fff;
-}
-
-.research-strip span {
-  display: block;
-  margin-bottom: 1.1rem;
-  color: var(--gold);
-  font: 700 .72rem/1 Monaco, Consolas, monospace;
-}
-
-.research-strip strong, .research-strip small {
-  display: block;
-}
-
-.research-strip strong {
-  margin-bottom: .5rem;
-  color: var(--marine-deep);
-  line-height: 1.25;
-}
-
-.research-strip small {
-  color: var(--slate);
-  font-size: .82rem;
-  line-height: 1.5;
 }
 
 .publication-card {
@@ -438,18 +379,6 @@ body {
 }
 
 @media (max-width: 767px) {
-  .intro-block {
-    padding: 1.6rem 1.3rem;
-  }
-
-  .research-strip {
-    grid-template-columns: 1fr;
-  }
-
-  .research-strip > div {
-    min-height: 0;
-  }
-
   .timeline-item {
     grid-template-columns: 1fr;
     gap: .35rem;

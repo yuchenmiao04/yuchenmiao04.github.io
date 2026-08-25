@@ -11,20 +11,11 @@ redirect_from:
 <span class="anchor" id="about-me"></span>
 
 <div class="intro-block">
-  <p class="eyebrow">Communication Engineering · Multimodal AI</p>
-  <h1>Building AI systems whose decisions can be inspected, traced, and trusted.</h1>
-  <p class="intro-lead">I am an undergraduate researcher at <strong>Northeastern University</strong>, working with the Hebei Key Laboratory of Marine Perception Network and Data Processing. My research lies at the intersection of explainable recommendation, multimodal learning, and evidence-grounded content analysis.</p>
-  <p>I develop methods that make complex model behavior more transparent—from retrieval-augmented reasoning over user interests to traceable text–image interaction modeling for misinformation detection. I am seeking PhD opportunities for <strong>Fall 2027</strong>.</p>
+  <p class="intro-summary">I am an undergraduate student at <strong>Northeastern University</strong>, interested in multimodal learning, recommender systems, and trustworthy AI.</p>
   <div class="intro-actions">
     <a class="button button-primary" href="/files/Yuchen_Miao_CV.pdf">View CV</a>
     <a class="button" href="mailto:miaoyc@mails.neu.edu.cn">Email me</a>
   </div>
-</div>
-
-<div class="research-strip" aria-label="Research focus">
-  <div><span>01</span><strong>Explainable Recommendation</strong><small>Retrieval, graph structure, and uncertainty-aware intent modeling</small></div>
-  <div><span>02</span><strong>Multimodal Content Integrity</strong><small>Traceable evidence fusion for fake-content and bias detection</small></div>
-  <div><span>03</span><strong>LLM Reasoning Systems</strong><small>Grounded, auditable reasoning with tools and external evidence</small></div>
 </div>
 
 <span class="anchor" id="news"></span>
@@ -116,8 +107,8 @@ redirect_from:
 # Research & Experience
 
 <div class="timeline">
-  <div class="timeline-item"><div class="timeline-date">2025—Present</div><div><h3>Hebei Key Laboratory of Marine Perception Network and Data Processing</h3><p><em>Undergraduate Researcher</em></p><p>Research on explainable multimodal recommendation and fake-content detection using LLM reasoning, retrieval augmentation, graph learning, flow matching, and mixture-of-experts models.</p></div></div>
-  <div class="timeline-item"><div class="timeline-date">2025—Present</div><div><h3>National College Students’ Innovation and Entrepreneurship Training Program</h3><p><em>Project No. 202619145026</em></p><p>Lead research on explainable recommendation and fake-content detection for new-media security. The project has produced papers at <a href="https://2026.ieeeicassp.org/">ICASSP 2026</a> and <a href="https://conferences.sigappfr.org/wise2026/">WISE 2026</a>.</p></div></div>
+  <div class="timeline-item"><div class="timeline-date">2025—Present</div><div><h3>Hebei Key Laboratory of Marine Perception Network and Data Processing</h3><p>Work on explainable multimodal recommendation and fake-content detection using LLM reasoning, retrieval augmentation, graph learning, flow matching, and mixture-of-experts models.</p></div></div>
+  <div class="timeline-item"><div class="timeline-date">2025—Present</div><div><h3>National College Students’ Innovation and Entrepreneurship Training Program</h3><p><em>Project No. 202619145026</em></p><p>Work on explainable recommendation and fake-content detection for new-media security. The project has produced papers at <a href="https://2026.ieeeicassp.org/">ICASSP 2026</a> and <a href="https://conferences.sigappfr.org/wise2026/">WISE 2026</a>.</p></div></div>
   <div class="timeline-item"><div class="timeline-date">2023—2027</div><div><h3>Northeastern University (985)</h3><p><em>B.Eng. in Communication Engineering · Sydney Smart Technology College</em></p><p>GPA 3.89/4.00 · Average 88.9/100 · IELTS 7.0</p></div></div>
 </div>
 

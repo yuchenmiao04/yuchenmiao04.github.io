@@ -7,7 +7,7 @@
 
 # Site Settings
 title                    : "Yuchen Miao"
-description              : "Undergraduate researcher working on explainable multimodal AI, recommender systems, and trustworthy content analysis."
+description              : "Interested in multimodal learning, recommender systems, and trustworthy AI."
 repository               : "PNemo04/PNemo04.github.io"
 url                      : "https://pnemo04.github.io"
 google_scholar_stats_use_cdn : false
@@ -24,7 +24,7 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 author:
   name             : "Yuchen Miao"
   avatar           : "/images/yuchen-miao.jpg"
-  bio              : "Undergraduate Researcher · Multimodal AI"
+  bio              : "Communication Engineering · Multimodal AI"
   location         : "China"
   employer         : "Northeastern University"
   pubmed           : 
