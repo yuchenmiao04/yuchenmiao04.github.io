@@ -23,7 +23,7 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 # Site Author
 author:
   name             : "Yuchen Miao (苗煜晨)"
-  avatar           : "/images/yuchen-miao.jpg"
+  avatar           : "/images/yuchen-miao-profile.jpg"
   bio              : "Communication Engineering · Multimodal AI"
   location         : "China"
   employer         : "Northeastern University"
