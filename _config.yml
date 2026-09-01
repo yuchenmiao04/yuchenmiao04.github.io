@@ -8,8 +8,8 @@
 # Site Settings
 title                    : "Yuchen Miao"
 description              : "Undergraduate Researcher"
-repository               : "PNemo04/PNemo04.github.io"
-url                      : "https://pnemo04.github.io"
+repository               : "yuchenmiao04/yuchenmiao04.github.io"
+url                      : "https://yuchenmiao04.github.io"
 google_scholar_stats_use_cdn : false
 
 # google analytics
@@ -22,7 +22,7 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 
 # Site Author
 author:
-  name             : "Yuchen Miao"
+  name             : "Yuchen Miao (苗煜晨)"
   avatar           : "/images/yuchen-miao.jpg"
   bio              : "Communication Engineering · Multimodal AI"
   location         : "China"
@@ -38,7 +38,7 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : "PNemo04"
+  github           : "yuchenmiao04"
   google_plus      :
   keybase          :
   instagram        :
