@@ -10,7 +10,7 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-I am an undergraduate student in Communication Engineering at **Northeastern University**. My research interests include **multimodal learning**, **recommender systems**, and **trustworthy AI**.
+I am an undergraduate student in Communication Engineering at **Northeastern University**. My research interests include **LLM agents and retrieval-augmented reasoning**, **trustworthy multimodal AI**, and **recommender systems**. I am currently seeking **PhD opportunities for Fall 2027**.
 
 # 🔥 News
 
