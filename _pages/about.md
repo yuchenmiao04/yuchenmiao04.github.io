@@ -97,9 +97,9 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 - *2024.07–2024.09*, **Big Data Center Intern**, Huajin Coking Coal Co., Ltd.
 - *2024.07–2024.10*, **Embedded Systems Development Intern**, Beijing Kedinoyi Technology Co., Ltd. (Outstanding Intern)
 
-## Patent
+## 专利
 
-**Explainable Multi-Domain Mixture-of-Experts Method for Multimodal Fake-Content Detection.** Yuchen Miao, Yu Wang, Gang Wang, Xin Feng, and Siyang Xu. Chinese Invention Patent Application No. 202511816918.8; in substantive examination.
+**面向多模态虚假内容检测的多域混合专家解释性方法。** 发明人：**苗煜晨**、王雨、王刚、冯鑫、徐思洋。中国发明专利申请，申请号：202511816918.8，申请日：2025年12月4日，已受理。
 
 <span class='anchor' id='education'></span>
 
