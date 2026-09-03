@@ -32,7 +32,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Zijun Wang, Chang Han, Yurui Shi, Mingtai Zhang, and Siyang Xu
 
-[Conference](https://2026.emnlp.org/)
+[PDF](/files/emnlp-10th-juror.pdf) · [Conference](https://2026.emnlp.org/)
 </div>
 </div>
 
@@ -54,7 +54,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Zijun Wang, Ke Liu, Peixuan Wang, and Chang Han
 
-[Conference](https://conferences.sigappfr.org/wise2026/)
+[PDF](/files/imex-fnd.pdf) · [Conference](https://conferences.sigappfr.org/wise2026/)
 </div>
 </div>
 
@@ -65,7 +65,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Mingxuan Cui, Yitong Zhu, Yu Wang, and Siyang Xu
 
-[arXiv](https://arxiv.org/abs/2603.13730) · [Conference](https://2026.ieeeicassp.org/)
+[IEEE Xplore](https://ieeexplore.ieee.org/document/11460809/) · [Conference](https://2026.ieeeicassp.org/)
 </div>
 </div>
 
@@ -78,7 +78,7 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 ($\dagger$ means equal contribution)
 
-[Conference](https://conferences.sigappfr.org/wise2026/)
+[PDF](/files/motif.pdf) · [arXiv](https://arxiv.org/abs/2608.25381) · [Conference](https://conferences.sigappfr.org/wise2026/)
 </div>
 </div>
 
