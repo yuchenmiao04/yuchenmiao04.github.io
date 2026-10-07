@@ -32,7 +32,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Zijun Wang, Chang Han, Yurui Shi, Mingtai Zhang, and Siyang Xu
 
-[PDF](/files/emnlp-10th-juror.pdf) · [Conference](https://2026.emnlp.org/)
+[PDF](/files/emnlp-10th-juror.pdf) · [Poster](/files/emnlp-10th-juror-poster.pdf) · [Video (Bilibili)](https://www.bilibili.com/video/BV1QHHC6YEsH/) · [Conference](https://2026.emnlp.org/)
 </div>
 </div>
 
@@ -65,7 +65,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Mingxuan Cui, Yitong Zhu, Yu Wang, and Siyang Xu
 
-[IEEE Xplore](https://ieeexplore.ieee.org/document/11460809/) · [Conference](https://2026.ieeeicassp.org/)
+[IEEE Xplore](https://ieeexplore.ieee.org/document/11460809/) · [Poster](/files/r3-rec-icassp-2026-poster.pdf) · [Conference](https://2026.ieeeicassp.org/)
 </div>
 </div>
 
@@ -112,12 +112,12 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 # 🎖 Honors and Awards
 
-- *2026.05*, **Finalist Award (Top 1%)**, [COMAP Mathematical Contest in Modeling](https://www.comap.org/contests/mcm-icm).
-- *2025*, **National Third Prize**, [18th Advanced Robot and Simulation Technology Competition](https://urc.ilur.org/news/385).
+- *2026.05*, **Finalist Award (Top 1%)**, [COMAP Mathematical Contest in Modeling](https://www.comap.org/contests/mcm-icm). [Certificate](/files/certificates/mcm-2026-finalist.pdf)
+- *2025*, **National Third Prize**, [18th Advanced Robot and Simulation Technology Competition](https://urc.ilur.org/news/385). [Certificate](/files/certificates/robot-simulation-2025-national-third-prize.pdf)
 - *2023–2026*, **University Third-Class Scholarship**, awarded five times.
-- *2025*, **Provincial Second Prize**, [National College Students Market Research and Analysis Competition](https://www.china-cssc.org/show-289-1700-1.html).
+- *2025*, **Provincial Second Prize**, [National College Students Market Research and Analysis Competition](https://www.china-cssc.org/show-289-1700-1.html). [Certificate](/files/certificates/market-research-2025-hebei-second-prize.pdf)
 - *2025*, **Provincial Second Prize**, [Hebei Provincial College Students “Research Hebei” Social Survey Program](https://tuanwei.hbu.cn/contents/541/11879.html).
 
 ---
 
-Last updated: September 2026.
+Last updated: October 2026.
