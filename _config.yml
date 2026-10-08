@@ -7,7 +7,7 @@
 
 # Site Settings
 title                    : "Yuchen Miao (苗煜晨)"
-description              : "Undergraduate Researcher"
+description              : "Undergraduate Student"
 repository               : "yuchenmiao04/yuchenmiao04.github.io"
 url                      : "https://yuchenmiao04.github.io"
 google_scholar_stats_use_cdn : false
@@ -24,7 +24,7 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 author:
   name             : "Yuchen Miao (苗煜晨)"
   avatar           : "/images/yuchen-miao-profile.jpg"
-  bio              : "Communication Engineering · Multimodal AI"
+  bio              :
   location         : "China"
   employer         : "Northeastern University"
   pubmed           : 
