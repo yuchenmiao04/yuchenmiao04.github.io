@@ -32,7 +32,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Zijun Wang, Chang Han, Yurui Shi, Mingtai Zhang, and Siyang Xu
 
-[PDF](/files/emnlp-10th-juror.pdf) · [Poster](/files/emnlp-10th-juror-poster.pdf) · [Video (Bilibili)](https://www.bilibili.com/video/BV1QHHC6YEsH/) · [Conference](https://2026.emnlp.org/)
+[PDF](/files/emnlp-10th-juror.pdf) · [Poster](/files/emnlp-10th-juror-poster.pdf) · [Video](https://www.bilibili.com/video/BV1QHHC6YEsH/) · [Conference](https://2026.emnlp.org/)
 </div>
 </div>
 
@@ -43,7 +43,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Zijun Wang, Ke Liu, and Siyang Xu
 
-[PDF](/files/uhiflow.pdf) · [Video (Bilibili)](https://www.bilibili.com/video/BV1sLpt6jEbX/) · [Conference](https://conferences.sigappfr.org/wise2026/)
+[PDF](/files/uhiflow.pdf) · [Video](https://www.bilibili.com/video/BV1sLpt6jEbX/) · [Conference](https://conferences.sigappfr.org/wise2026/)
 </div>
 </div>
 
@@ -54,7 +54,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Zijun Wang, Ke Liu, Peixuan Wang, and Chang Han
 
-[PDF](/files/imex-fnd.pdf) · [Video (Bilibili)](https://www.bilibili.com/video/BV16Hpx6YENu/) · [Conference](https://conferences.sigappfr.org/wise2026/)
+[PDF](/files/imex-fnd.pdf) · [Video](https://www.bilibili.com/video/BV16Hpx6YENu/) · [Conference](https://conferences.sigappfr.org/wise2026/)
 </div>
 </div>
 
