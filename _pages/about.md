@@ -87,20 +87,6 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 - **Universal Refinement without Interaction: Order-Optimal 1-Bit Mean Estimation.** **Yuchen Miao.** 2026. [arXiv](https://arxiv.org/abs/2607.24358)
 - **Sharp Root Anti-Concentration via Projective Incidence and Ordered Root Laws.** Zijun Wang, **Yuchen Miao**, Yifan Hu, and Huanmin Liu. 2026. [arXiv](https://arxiv.org/abs/2608.01670)
 
-<span class='anchor' id='blog'></span>
-
-# Blog
-
-<div class="blog-list" lang="zh-CN">
-{% for entry in site.data.blog %}
-  <article class="blog-list__entry">
-    <h2><a href="{{ '/blog/' | append: entry.slug | append: '/' | relative_url }}">{{ entry.title | escape }}</a></h2>
-    <p>{{ entry.description | escape }}</p>
-    <a class="blog-list__pdf" href="{{ '/files/blog/' | append: entry.slug | append: '.pdf' | relative_url }}">PDF</a>
-  </article>
-{% endfor %}
-</div>
-
 <span class='anchor' id='experience'></span>
 
 # 💻 Research & Experience
