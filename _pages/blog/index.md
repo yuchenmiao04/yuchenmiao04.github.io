@@ -12,7 +12,6 @@ author_profile: true
   <article class="blog-list__entry">
     <h2><a href="{{ '/blog/' | append: entry.slug | append: '/' | relative_url }}">{{ entry.title | escape }}</a></h2>
     <p>{{ entry.description | escape }}</p>
-    <a class="blog-list__pdf" href="{{ '/files/blog/' | append: entry.slug | append: '.pdf' | relative_url }}">PDF</a>
   </article>
 {% endfor %}
 </div>

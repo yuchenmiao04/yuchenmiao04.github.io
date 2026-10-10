@@ -7,3 +7,6 @@
 - slug: long-horizon-agents
   title: "Long-Horizon Agents：如何持续推进，直到任务真正完成"
   description: "从长程能力评测出发，梳理行动反馈、会话交接、目标控制、经验记忆与技能积累的机制。"
+- slug: agent-engineering
+  title: "Agent Engineering：重试、状态与执行控制"
+  description: "从 Codex、OpenCode、Pi 与 Claude 的公开实现出发，梳理重试、工具执行、会话状态、上下文管理与任务验收中的工程细节。"
