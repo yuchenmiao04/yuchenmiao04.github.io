@@ -1,0 +1,9 @@
+- slug: harness-engineering
+  title: "Harness Engineering：让 Agent 的执行形成闭环"
+  description: "解释 Harness 如何组织上下文、工具、状态、验收与恢复，让多步任务依据实际结果持续推进。"
+- slug: skill-progressive-disclosure
+  title: "Skill 渐进式披露：Pi 与 DeepSeek Harness 如何按需加载"
+  description: "通过 Pi 与 DeepSeek Harness 的实现，说明技能目录、正文与引用资料如何分层进入模型上下文。"
+- slug: long-horizon-agents
+  title: "Long-Horizon Agents：如何持续推进，直到任务真正完成"
+  description: "从长程能力评测出发，梳理行动反馈、会话交接、目标控制、经验记忆与技能积累的机制。"

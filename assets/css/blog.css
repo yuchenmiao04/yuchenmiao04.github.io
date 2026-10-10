@@ -1,0 +1,83 @@
+/* Blog additions inherit the academic homepage's typography and colors. */
+.blog-list__entry {
+  padding: 1.1em 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+.blog-list__entry:first-child { padding-top: 0; }
+.blog-list__entry:last-child { border-bottom: 0; }
+.page__content .blog-list__entry h2 {
+  margin: 0 0 .4em;
+  padding: 0;
+  border: 0;
+  font-size: 1.1em;
+  line-height: 1.55;
+}
+.page__content .blog-list__entry p {
+  margin: 0 0 .35em;
+  color: #555;
+  line-height: 1.8;
+}
+.blog-list__pdf { font-size: .88em; }
+.blog-article {
+  max-width: 48rem;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.blog-article__header {
+  margin-bottom: 2.2em;
+  padding-bottom: 1.4em;
+  border-bottom: 1px solid #e8e8e8;
+}
+.blog-article__back, .blog-article__pdf { font-size: .9em; }
+.page__content .blog-article__header h1 {
+  margin: .65em 0 .5em;
+  padding: 0;
+  border: 0;
+  font-size: 1.85em;
+  line-height: 1.45;
+}
+.page__content .blog-article h2 {
+  margin-top: 2em;
+  padding-bottom: .35em;
+  font-size: 1.35em;
+  line-height: 1.5;
+}
+.page__content .blog-article h3 { line-height: 1.6; }
+.page__content .blog-article p,
+.page__content .blog-article ul,
+.page__content .blog-article ol { margin-bottom: 1.2em; }
+.blog-article img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.6em auto;
+}
+.blog-article pre {
+  max-width: 100%;
+  overflow-x: auto;
+  line-height: 1.55;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+.blog-article pre code { white-space: pre; }
+.blog-article table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  font-size: .9em;
+  line-height: 1.65;
+}
+.blog-article blockquote { font-size: 1em; }
+.blog-article__footer {
+  margin-top: 3em;
+  padding-top: 1.25em;
+  border-top: 1px solid #e8e8e8;
+}
+.blog-list a:focus-visible, .blog-article a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+@media (max-width: 600px) {
+  .page__content .blog-article__header h1 { font-size: 1.5em; }
+  .page__content .blog-article h2 { font-size: 1.22em; }
+}
