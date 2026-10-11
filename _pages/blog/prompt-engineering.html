@@ -1,0 +1,504 @@
+---
+layout: null
+title: Prompt Engineering：把任务写清楚，把结果验明
+permalink: /blog/prompt-engineering/
+description: 从任务要求、上下文与 Few-shot 示例出发，讨论 CoT、ReAct、任务分解、结构化输出和评测，结合经典案例说明提示词技巧的用途与边界。
+---
+
+{% raw %}
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>Prompt Engineering：把任务写清楚，把结果验明 - Yuchen Miao</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper: #ffffff;
+  --ink: #202027;
+  --muted: #74717d;
+  --line: #e7e3ec;
+  --purple: #69528c;
+  --lavender: #f3eff9;
+  --code: #f7f6f9;
+  --body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --display: "Avenir Next", "Helvetica Neue", var(--body);
+  --mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); -webkit-font-smoothing: antialiased; }
+a { color: var(--purple); text-decoration-thickness: 1px; text-underline-offset: .21em; }
+a:hover { color: #3f285f; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: 2px; }
+.layout { width: min(1180px, calc(100% - 80px)); margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); column-gap: 66px; row-gap: 42px; align-items: start; }
+.intro { grid-column: 1 / -1; min-width: 0; padding: 64px 0 0; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.intro > :not(figure) { max-width: 760px; margin-left: auto; margin-right: auto; }
+.intro .overview-figure { max-width: 1000px; margin: 30px auto 0; }
+.toc-shell { position: sticky; top: 28px; margin: 0 0 32px; max-height: calc(100vh - 56px); max-height: calc(100svh - 56px); overflow-y: auto; scrollbar-width: thin; padding: 0 14px 20px 0; }
+.toc-shell summary { display: none; }
+.toc-label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .08em; margin: 0 0 17px 13px; }
+.toc-list { list-style: none; padding: 0; margin: 0; }
+.toc-list li { margin: 0; }
+.toc-list a { display: block; padding: 7px 11px; border-left: 2px solid transparent; font-size: 13px; line-height: 1.65; color: #6b6773; text-decoration: none; border-radius: 0 5px 5px 0; }
+.toc-list .level-2 > a { font-weight: 600; margin-top: 7px; color: #39353f; }
+.toc-list .level-3 > a { padding-left: 23px; font-size: 12px; }
+.toc-list a:hover { background: #f8f6fb; }
+.toc-list a[aria-current="location"] { border-left-color: var(--purple); background: var(--lavender); color: #4f386f; }
+article { min-width: 0; padding: 0 0 90px; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.article-header { margin: 0 0 34px; }
+h1 { font-family: var(--display); font-size: clamp(34px, 4vw, 46px); line-height: 1.18; letter-spacing: -.035em; font-weight: 650; margin: 0; color: #17151d; }
+.subtitle { font-size: 17px; line-height: 1.7; color: #726a7c; margin: 13px 0 0; letter-spacing: .01em; }
+p { margin: 0 0 19px; }
+h2 { margin: 56px 0 23px; padding-top: 25px; border-top: 1px solid var(--line); font-size: 23px; line-height: 1.55; font-weight: 650; letter-spacing: -.015em; }
+article > h2:first-child { margin-top: 0; }
+h3 { font-size: 18px; line-height: 1.65; font-weight: 650; margin: 32px 0 16px; }
+h2[id], h3[id] { scroll-margin-top: 26px; }
+strong { font-weight: 650; }
+article ul, article ol { padding-left: 1.6em; margin: 0 0 22px; }
+article li { padding-left: .15em; margin-bottom: .45em; }
+code { font-family: var(--mono); font-size: .84em; overflow-wrap: anywhere; background: var(--lavender); color: #55416c; border-radius: 4px; padding: .14em .35em; }
+pre { margin: 23px 0 25px; background: var(--code); border: 1px solid #e9e4ef; border-radius: 9px; padding: 20px 22px; line-height: 1.72; overflow: auto; tab-size: 4; max-width: 100%; }
+pre code { display: block; padding: 0; color: #34303b; border: 0; background: transparent; font-size: 12.5px; overflow-wrap: normal; white-space: pre; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin: 24px 0 28px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.8; }
+th, td { text-align: left; vertical-align: top; padding: 12px 15px; border-bottom: 1px solid var(--line); }
+th { background: #f7f4fb; color: #41374f; font-weight: 600; }
+th:first-child, td:first-child { width: 37%; }
+td code { font-size: .86em; }
+figure { margin: 30px 0 33px; }
+figure img { width: 100%; height: auto; display: block; background: white; }
+figcaption { max-width: 680px; margin: 11px auto 0; color: var(--muted); font-size: 12px; line-height: 1.75; text-align: center; }
+blockquote { margin: 24px 0; border-left: 3px solid #c9bcdd; padding: 3px 0 3px 20px; color: #5d5667; }
+blockquote p:last-child { margin-bottom: 0; }
+@media (max-width: 1040px) {
+  .layout { width: min(960px, calc(100% - 52px)); grid-template-columns: 220px minmax(0, 1fr); column-gap: 36px; }
+  .toc-list a { font-size: 12px; }
+  .toc-list .level-3 > a { font-size: 11.5px; }
+  article, .intro { font-size: 15.5px; }
+}
+@media (max-width: 840px) {
+  html { scroll-padding-top: 20px; }
+  .layout { display: flex; flex-direction: column; gap: 0; width: min(760px, calc(100% - 40px)); }
+  .intro { order: 0; width: 100%; padding: 37px 0 0; font-size: 16px; }
+  .intro .overview-figure { margin-top: 27px; }
+  .toc-shell { position: static; order: 1; top: auto; width: 100%; max-height: none; margin: 28px 0 0; padding: 0; background: #faf9fc; border: 1px solid var(--line); border-radius: 8px; }
+  .toc-shell summary { display: list-item; cursor: pointer; font-size: 14px; font-weight: 600; padding: 12px 17px; color: #50445e; }
+  .toc-content { padding: 0 12px 16px; max-height: 64vh; max-height: 64svh; overflow-y: auto; }
+  .toc-label { display: none; }
+  .toc-list a { font-size: 13px; }
+  .toc-list .level-3 > a { font-size: 12px; }
+  article { order: 2; padding: 34px 0 60px; width: 100%; font-size: 16px; }
+  .article-header { margin-bottom: 29px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 22px; margin-top: 43px; padding-top: 23px; }
+  h3 { font-size: 18px; }
+  .subtitle { font-size: 16px; }
+  pre { padding: 17px 16px; margin-inline: 0; }
+  pre code { font-size: 11.5px; }
+  th, td { padding: 10px 11px; }
+  table { font-size: 13px; }
+}
+@media (max-width: 420px) {
+  .layout { width: calc(100% - 32px); }
+  article, .intro { font-size: 15.5px; line-height: 1.95; }
+  h1 { font-size: 33px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  .layout { display: block; width: 100%; }
+  .toc-shell { display: none; }
+  article, .intro { padding: 0; font-size: 11pt; }
+  .intro { margin-bottom: 28px; }
+  pre { white-space: pre-wrap; overflow: visible; }
+  pre code { white-space: pre-wrap; }
+  figure, pre, tr { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+}
+</style>
+<link href="https://yuchenmiao04.github.io/blog/prompt-engineering/" rel="canonical"/><meta content="从任务要求、上下文与 Few-shot 示例出发，讨论 CoT、ReAct、任务分解、结构化输出和评测，结合经典案例说明提示词技巧的用途与边界。" name="description"/><meta content="Prompt Engineering：把任务写清楚，把结果验明" property="og:title"/><meta content="从任务要求、上下文与 Few-shot 示例出发，讨论 CoT、ReAct、任务分解、结构化输出和评测，结合经典案例说明提示词技巧的用途与边界。" property="og:description"/><meta content="https://yuchenmiao04.github.io/blog/prompt-engineering/" property="og:url"/><meta content="article" property="og:type"/><meta content="https://yuchenmiao04.github.io/images/blog/prompt-engineering/00-prompt-overview.png" property="og:image"/><style id="site-navigation-style">
+.article-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 28px; font-size: 13px; line-height: 1.6; }
+.article-nav a { color: var(--muted); text-decoration: none; }
+.article-nav a:hover { color: var(--purple); }
+.article-footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 22px; font-size: 14px; }
+</style></head>
+<body>
+<div class="layout">
+<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="文章导航" class="article-nav"><a href="/blog/">← Blog</a><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Prompt Engineering</h1><p class="subtitle">把任务写清楚，把结果验明</p></header>
+<p>“帮我总结这份报告”通常能得到一段流畅的文字。准备开会的负责人、刚接手项目的同事和需要录入数据的程序，对这份总结的要求并不一样。负责人需要决策依据，同事需要背景与未决事项，程序需要字段、类型和缺失值的约定。同一份材料可以对应不同的交付物。</p>
+<p>提示词工程处理的正是这些差异：明确要完成什么，提供完成任务所需的信息，展示容易误解的判断边界，并让结果能够被检查。语气更强硬、角色头衔更显赫、指令更长，都不能代替这些工作。</p>
+<p>早期提示词研究已经积累了示例学习、任务分解、思维链和多次采样等方法。随着模型的训练方式和接口变化，同一种写法的收益也会变化。<a href="https://arxiv.org/html/2406.06608v6">The Prompt Report</a> 提供了较完整的方法分类；实际使用时，更有价值的问题是：当前失败由什么造成，哪项修改能够减少它，需要付出多少成本。</p>
+<p>一份可长期使用的提示词，应当让目标、依据和验收之间的关系足够清楚。下面按这些关系展开，具体写法可以按需要组合，不必每次装进同一个长模板。</p>
+<figure class="overview-figure"><img alt="提示词的工作从任务、材料与示例开始，最终需要通过结果检查和具体反馈形成改进。" decoding="async" fetchpriority="high" height="356" loading="eager" src="/images/blog/prompt-engineering/00-prompt-overview.png" width="1078"/><figcaption>提示词的工作从任务、材料与示例开始，最终需要通过结果检查和具体反馈形成改进。</figcaption></figure>
+</section>
+<details class="toc-shell" open="">
+<summary>目录</summary>
+<nav aria-label="文章目录" class="toc-content">
+<p class="toc-label">目录</p>
+<ol class="toc-list"><li class="level-2"><a href="#requirements">一、把任务写成可判断的要求</a></li>
+<li class="level-3"><a href="#deliverable">先说明交付物将被怎样使用</a></li>
+<li class="level-3"><a href="#constraints">将品质词改成动作、边界与优先级</a></li>
+<li class="level-3"><a href="#missing">预先约定缺项与澄清的处理</a></li>
+<li class="level-2"><a href="#context">二、组织材料，保留来源与边界</a></li>
+<li class="level-3"><a href="#structure">将规则、当前请求与待处理材料分开</a></li>
+<li class="level-3"><a href="#longcontext">长材料要有导航，也要测试位置影响</a></li>
+<li class="level-3"><a href="#selectcontext">选择相关材料，并允许找不到答案</a></li>
+<li class="level-2"><a href="#examples">三、Few-shot：用示例展示判断边界</a></li>
+<li class="level-3"><a href="#shotformats">Zero-shot 与 Few-shot：同一任务的两种输入</a></li>
+<li class="level-3"><a href="#selectexamples">示例应当补充规则没有说清的部分</a></li>
+<li class="level-3"><a href="#examplebias">防止示例带入偶然规律</a></li>
+<li class="level-3"><a href="#fewshotbudget">从 Zero-shot 基线起步，按错误增加示例</a></li>
+<li class="level-2"><a href="#reasoning">四、按任务选择推理与分解</a></li>
+<li class="level-3"><a href="#cot">思维链（CoT）：示范怎样得到答案</a></li>
+<li class="level-3"><a href="#decompose">Least-to-Most：让后一步复用前一步</a></li>
+<li class="level-3"><a href="#sampling">Self-Consistency：多次采样怎样选择答案</a></li>
+<li class="level-3"><a href="#react">ReAct：让工具观察决定下一步</a></li>
+<li class="level-2"><a href="#validation">五、让输出可以检查和继续使用</a></li>
+<li class="level-3"><a href="#schema">Structured Outputs：约定格式与未完成状态</a></li>
+<li class="level-3"><a href="#evidencecheck">引用存在、引用支持结论，要分别判断</a></li>
+<li class="level-3"><a href="#repair">修复应当接收具体反馈，并设置停止条件</a></li>
+<li class="level-2"><a href="#iteration">六、根据错误改提示词</a></li>
+<li class="level-3"><a href="#finalrequest">调试实际请求，而不只看模板</a></li>
+<li class="level-3"><a href="#ablation">每次修改都带一个可验证的假设</a></li>
+<li class="level-3"><a href="#evaluation">同时观察正确、完整与合理的不作答</a></li>
+<li class="level-3"><a href="#optimization">自动优化依赖一份值得优化的目标</a></li>
+<li class="level-2"><a href="#boundaries">七、判断何时该停止改措辞</a></li>
+<li class="level-3"><a href="#tools">缺知识、计算和权限时，调整对应系统</a></li>
+<li class="level-3"><a href="#migration">将提示词与模型、设置一起验证</a></li>
+<li class="level-2"><a href="#lookup">按现象查阅</a></li></ol>
+</nav>
+</details>
+<article aria-label="Prompt Engineering"><h2 id="requirements">一、把任务写成可判断的要求</h2>
+<h3 id="deliverable">先说明交付物将被怎样使用</h3>
+<p>“清晰、专业、准确”表达了愿望，却没有消除多少歧义。明确受众和用途，才容易确定哪些内容应当保留、哪些内容可以省略。Ethan Mollick 在 <a href="https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough">Good enough prompting</a> 中强调真实的任务背景、受众和迭代反馈。这些信息往往比复杂的角色设定更直接。</p>
+<p>例如，一份项目总结可以这样约定：</p>
+<pre><code class="language-text">根据提供的会议记录，为接手项目的工程师写一份交接摘要。
+保留：已确定的决策、尚未解决的问题、下一步动作及负责人。
+每项决策附会议记录中的段落编号。
+不补写材料未提供的时间、负责人或承诺。
+负责人缺失时标为“未指定”，不要根据发言人推断。
+输出四个小节；每项只写一个决策或动作。
+</code></pre>
+<p>其中真正影响结果的是“接手项目”“决策”“未决问题”“负责人缺失时怎么办”。四个小节是展示要求，可以按界面调整。把这两类要求分开，能够避免为了满足格式而牺牲任务本身。</p>
+<p>用途还决定信息的取舍。供负责人决策的总结可以突出影响和待选方案；交接摘要必须保留未解决的问题；面向程序的抽取则需要稳定字段。同一个提示词若试图同时满足全部用途，通常会让每一类读者承担额外的筛选工作。</p>
+<h3 id="constraints">将品质词改成动作、边界与优先级</h3>
+<p>“简洁”可以改成“只保留影响下一步决定的信息”；“不要遗漏”可以改成“逐项覆盖输入中的全部问题，并保留未能回答的项”；“有依据”可以改成“每个事实判断带来源编号，推测单独标记”。具体要求仍可能被违反，但至少能够定位失败。</p>
+<p>禁止项旁边最好写清替代行为。“不要编造”没有说明缺数据时怎样交付；“为字段定义未知状态，例如允许缺失值写为 <code>null</code>，并说明缺项影响哪个判断”给出了可继续处理的结果。否定约束可以保留，只要不把停止行为交给模型自行猜测。</p>
+<p>约束冲突也应有优先级。例如“每个结论附依据”与“全文不超过 100 字”可能无法同时满足。重要信息必须保留时，可以允许超出建议长度，或者要求返回无法满足的原因。否则模型可能悄悄删掉证据，以满足最容易观察的字数条件。</p>
+<p>Anthropic 的<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview">提示词工程概览</a> 将成功标准和测试方法列为优化前提。一个实用做法，是先用一两条真实输入写出“什么结果可以接受”，再修改提示词。只要验收仍然是“看着不错”，提示词就很容易朝更长、更像专业文章的方向漂移。</p>
+<h3 id="missing">预先约定缺项与澄清的处理</h3>
+<p>要求“信息不足就追问”仍然过于宽泛。模型可能为不影响结果的细节不断打断，也可能对关键缺项自行假设。应当区分必须澄清、可以采用默认值和允许保留未知的内容。</p>
+<pre><code class="language-text">如果缺项会改变任务范围或主要结论，先询问关键缺项。
+若只是排版和语气未指定，采用适合技术读者的默认写法。
+如果材料没有某个事实，但其余部分仍可完成，保留该项未知。
+使用默认值时简短说明；不要将默认值写成材料中的事实。
+</code></pre>
+<p>角色提示（Role prompting）也应有具体用途。“以代码审查者的视角，重点检查异常处理和资源释放”说明了关注点；“面向有 Python 基础、刚接触分布式系统的读者”则指定了受众，有助于调整解释深度。“你是世界顶尖专家”不能补充缺失资料，也不能赋予工具权限。角色与受众设定可以帮助选择视角、语言和关注点，专业判断仍要依赖材料和检查。</p>
+<h2 id="context">二、组织材料，保留来源与边界</h2>
+<h3 id="structure">将规则、当前请求与待处理材料分开</h3>
+<p>一段长输入常混有应用规则、用户问题、历史对话和检索结果。模型需要辨认哪些内容定义任务，哪些内容只是任务对象。清晰分区可以减少歧义，也便于调试最终输入。</p>
+<pre><code class="language-text">应用规则：回答范围、缺项处理、证据与输出要求。
+
+本次资料：
+&lt;document id="D1" title="项目会议记录" version="v3"&gt;
+  &lt;paragraph id="P1"&gt;……&lt;/paragraph&gt;
+  &lt;paragraph id="P2"&gt;……&lt;/paragraph&gt;
+&lt;/document&gt;
+
+当前请求：提取已经确定的决策及尚未确定的事项。
+引用使用 D1:P1 这样的定位方式。
+</code></pre>
+<p>API 支持原生消息层级时，应保留它们的结构。以 OpenAI 接口为例，应用规则与用户请求具有不同优先级，详见其<a href="https://developers.openai.com/api/docs/guides/prompt-engineering">提示词指南</a>。具体角色语义依提供商而定，不能把某家接口的约定直接套到所有模型模板中。</p>
+<p>Markdown 标题、XML 标签和三引号都属于可以帮助阅读的分隔标记（Delimiters）。没有证据表明某一种分隔符在所有模型、语言和任务中最好。优先选择方便检查、转义和自动构造的格式，再用实际任务验证；不要为了排版技巧反复重写整个提示。</p>
+<h3 id="longcontext">长材料要有导航，也要测试位置影响</h3>
+<p>长上下文解决了“能否装下”，没有自动解决“能否充分使用”。<a href="https://aclanthology.org/2024.tacl-1.9/">Lost in the Middle</a> 在其测试的多文档问答和键值检索中发现，相关信息的位置会影响结果。这一观察提示了测试方向，但不能推断所有新模型都具有相同的位置曲线。</p>
+<p>文档编号、标题、版本和段落定位，让材料具有可引用的结构。发生冲突时，模型至少能够指出是哪些来源不一致。只有“资料 A”“资料 B”而没有版本，往往无法解释两个看似矛盾的数字是否本来就属于不同时间。</p>
+<p>对大块材料，<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#long-context-prompting">Claude 长上下文指南</a> 建议先放资料，再在末尾给出具体问题。这与将稳定规则放在应用指令层并不冲突：前者安排本次长输入，后者定义长期行为。它适合作为起点，最终仍应按模型和任务检验。</p>
+<p>可以保持答案不变，分别把关键依据放在材料前部、中部和后部，再插入几段主题相近但无关的文本。若答案随位置或干扰内容明显变化，就需要改善检索、缩小输入或增加定位步骤。单纯扩大窗口，不一定减少这类失败。</p>
+<h3 id="selectcontext">选择相关材料，并允许找不到答案</h3>
+<p>只把最相似的一段送给模型，可能遗漏例外；把整个知识库塞进去，又可能让无关条款竞争注意力。材料选择需要保留支持判断的上下文，例如定义、适用范围、例外和版本说明。</p>
+<p>让回答依托可核对的材料，通常称为 grounding。对证据密集的任务，可以要求先定位相关片段，再形成答案。定位结果只需包含文档编号、原文片段及其支持的事项，无须输出冗长的内部推理。没有找到依据时，应允许返回“材料未覆盖”，而不是强制把所有问题填满。</p>
+<p>“未找到支持”与“存在反对证据”也要分开。材料没有提到某项功能，不能直接推出该功能不存在；两份文档分别适用于不同版本，也未必构成事实冲突。提示词可以要求区分这些状态，检查时再核对来源是否足以支持判断。</p>
+<p>外部材料仍可能包含试图改变任务的文字。Simon Willison 的<a href="https://simonwillison.net/2023/May/11/delimiters-wont-save-you/">分隔符与提示词注入分析</a> 展示了分隔符不足以提供安全隔离。标记“以下内容是资料”有助于表达意图；涉及工具、敏感数据和外部动作时，还需要由程序限制权限与数据出口。</p>
+<h2 id="examples">三、Few-shot：用示例展示判断边界</h2>
+<h3 id="shotformats">Zero-shot 与 Few-shot：同一任务的两种输入</h3>
+<p>Zero-shot prompting 不提供已完成的任务示例，直接给出指令与本次输入；One-shot 提供一个示例；Few-shot 提供少量示例，再让模型处理新输入。这里计数的是输入中的演示，不是对话轮数，也不涉及在推理时更新模型权重。</p>
+<p>GPT-3 论文中的一个经典案例，是给新词的定义，再让模型造句。原文先提供一条人工示例，后续生成的句子继续留在上下文中。下面将其<a href="https://arxiv.org/html/2005.14165v4#S3.SS9.SSS5">新词案例</a>改写为两种中文提示，句子作了压缩和改编。</p>
+<p>Zero-shot 可以直接写成：</p>
+<pre><code class="language-text">定义：yalubalu 是一种形似大南瓜的蔬菜。
+请用 yalubalu 造一个自然的中文句子，含义应符合定义。
+</code></pre>
+<p>Few-shot 则先展示“定义怎样进入句子”：</p>
+<pre><code class="language-text">定义：whatpu 是坦桑尼亚原产的毛茸茸小动物。
+造句：游历非洲时，我们看到了几只可爱的 whatpu。
+
+定义：farduddle 表示快速上下跳。
+造句：玩追逐游戏时，妹妹兴奋地 farduddle 起来。
+
+定义：yalubalu 是一种形似大南瓜的蔬菜。
+造句：
+</code></pre>
+<p>合格的续写可以是“晚餐时，我们把 yalubalu 切块烤熟”。示例展示了任务形式和使用方式，答案并不唯一。这个定性案例也没有证明每次增加示例都会改善结果；对已经理解任务的模型，第一种输入可能就够用。</p>
+<p>示例数量与示例内容是两个维度。Few-shot 可以只展示最终标签，也可以展示简短解题步骤或工具操作轨迹。因此 Few-shot、CoT 和 ReAct 可以组合，不能把它们理解为只能三选一的提示词模式。</p>
+<h3 id="selectexamples">示例应当补充规则没有说清的部分</h3>
+<p>示例能同时展示格式、语气、输入分布和分类边界。<a href="https://arxiv.org/abs/2202.12837">Rethinking the Role of Demonstrations</a> 在所研究的分类与多项选择设置中，分析了这些因素的作用。该论文涉及的部分随机标签现象有特定模型与任务范围，不能据此认为错误示例无害。</p>
+<p>实践中，正确的例子仍是基本要求。更值得投入的是选择：一个普通样例说明通常怎样处理，一个相近但标签不同的样例说明区别在哪里，一个缺信息的样例说明何时应当停止判断。</p>
+<p>例如，工单可以约定：已有能力在明确条件下偏离预期，归为 <code>bug</code>；希望增加尚未提供的能力，归为 <code>feature</code>；信息不足以确定前两类，归为 <code>needs_info</code>。以下样例比三个明显的故障更有信息量：</p>
+<pre><code class="language-text">“导出 CSV 后，原有中文字段变成乱码。” =&gt; bug
+“现在只能导出 CSV，希望增加 Excel 导出。” =&gt; feature
+“导出不对。” =&gt; needs_info
+此时需补充：导出格式、实际结果、预期结果。
+</code></pre>
+<p>这里的价值在于“导出不对”不会被强行归入故障。若实际业务允许先归类再补信息，就应修改规则和示例，使两者一致。例子经常比抽象规则更容易被模仿，规则与示例冲突时，增加强调语气很难稳定解决问题。</p>
+<figure><img alt="示例选择应覆盖常见情况、容易混淆的相邻类别和信息不足时的处理。" decoding="async" height="299" loading="lazy" src="/images/blog/prompt-engineering/01-example-boundaries.png" width="1078"/><figcaption>示例选择应覆盖常见情况、容易混淆的相邻类别和信息不足时的处理。</figcaption></figure>
+<h3 id="examplebias">防止示例带入偶然规律</h3>
+<p>假如所有故障样例都提到“导出”，所有功能请求都提到“新增”，模型可能依赖词语而非业务定义。需要增加表述变化，也要加入关键词相似、结论不同的例子。示例不能只证明提示词能处理已经展示过的写法。</p>
+<p><a href="https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/">Lilian Weng 的提示词综述</a> 梳理了示例选择、标签分布和排列顺序的研究。迁移到具体任务时，可以固定例子内容、交换顺序，或者移除某个例子，观察哪类错误随之变化。这比不断加入更多例子更容易解释结果。</p>
+<p>还要控制示例与测试数据的关系。已展示的案例以及它的近似改写，不能再作为独立测试来证明泛化。来自同一模板、同一文档或同一事件的样本，通常应按组划分，避免改几个词就进入另一侧的数据集。</p>
+<h3 id="fewshotbudget">从 Zero-shot 基线起步，按错误增加示例</h3>
+<p>不存在适用于所有任务的最佳示例数量。<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices">Claude 提示词指南</a> 给出了少量、多样示例的经验建议；<a href="https://developers.openai.com/api/docs/guides/reasoning-best-practices">OpenAI 推理模型指南</a> 则建议先尝试零样例，再按需增加。这些建议针对的模型和使用场景不同。</p>
+<p>可以先只写清楚规则，检查真实错误。模型若已经理解任务，再加例子可能只增加输入成本；若持续混淆某类边界，就加入能够解释该边界的例子。每个例子最好回答一个问题：删除它以后，哪类失败会重新出现？</p>
+<p>示例还会影响答案长度与形式。若所有示例都写了长篇解释，即使正文要求简短，输出仍可能偏长。需要短输出时，示例也应短；需要保留未知状态时，示例中就应出现合理的未知，而不是每一道都有完整答案。</p>
+<h2 id="reasoning">四、按任务选择推理与分解</h2>
+<h3 id="cot">思维链（CoT）：示范怎样得到答案</h3>
+<p><a href="https://arxiv.org/abs/2201.11903">Chain-of-Thought Prompting</a> 展示了带中间解题过程的示例，在部分大语言模型和推理任务上的收益。原始方法不等同于在任意任务末尾附加一句“请逐步思考”，其效果也不是跨任务保证。</p>
+<p>原论文图 1 用网球和苹果说明这个区别。以下是提示结构的中文压缩转述：</p>
+<pre><code class="language-text">已完成示例
+问：Roger 原有 5 个网球，又买了 2 罐，每罐 3 个，现在多少个？
+答：新增 2 × 3 = 6 个；总共 5 + 6 = 11 个。
+
+新任务
+问：食堂原有 23 个苹果，午餐用了 20 个，又买了 6 个，还剩多少？
+答：
+</code></pre>
+<p>示例展示了数量关系和运算，而不只是答案 <code>11</code>。新题对应 <code>23 − 20 + 6 = 9</code>。图中只展示一条示例来解释方法，主体实验使用了更完整的示例集；单个成功案例不能替代总体评测。</p>
+<p>不给解题示例、附加“Let’s think step by step”的写法，属于另一项研究中的 <a href="https://arxiv.org/abs/2205.11916">Zero-shot CoT</a>。其原始流程先生成解答，再抽取最终答案。它与带解题示例的 CoT 有不同的输入结构，不能混为同一句口诀。</p>
+<p>对已经训练了内部推理能力的模型，额外强制输出很长的思考过程未必有帮助。OpenAI 面向推理模型的<a href="https://developers.openai.com/api/docs/guides/reasoning-best-practices">指南</a>更强调直接说明目标和约束。模型版本变化后，旧提示中的反复检查、强制分步和过长角色设定都值得重新评估。</p>
+<p>仍然可以要求有用的解释：关键假设、计算公式、证据引用、简短决策理由，或者面向学习者的解题步骤。这些应是服务于读者的交付物。解释写得连贯，只能说明它易读；不能单凭这段文字证明答案正确，也不能据此推断模型真实的内部过程。</p>
+<h3 id="decompose">Least-to-Most：让后一步复用前一步</h3>
+<p>“先分析，再思考，再回答”几乎没有定义中间工作。更具体的分解会说明每一步接收什么、产生什么、怎样继续。<a href="https://arxiv.org/abs/2205.10625">Least-to-Most Prompting</a> 将问题分解为子问题，再利用已有子答案顺序求解；其思想适合启发流程设计，开放任务中的分解质量仍需要单独判断。</p>
+<p>论文中的末字母拼接任务，直观地展示了这种依赖。下面压缩转述原文的演示：</p>
+<pre><code class="language-text">任务：依次取 think、machine、learning 的末字母并拼接。
+基本结果：think、machine 的末字母为 k、e，得到 ke。
+继续求解：已有 ke；learning 的末字母为 g。
+最终结果：ke + g = keg。
+</code></pre>
+<p>后一步使用了前一步的产物，而无需从头重新处理整份列表。这个例子适合解释递推与依赖；实际应用里，末字母操作可以直接用程序完成，不必为了使用提示词方法而调用模型。</p>
+<p>比较两份技术方案时，可以拆成以下产物：</p>
+<pre><code class="language-text">1. 从需求中提取必须满足的条件，保留原始条目编号。
+2. 分别从方案 A、B 提取对应证据；没有证据的项标为未知。
+3. 对齐条件与证据，区分满足、不满足、无法判断。
+4. 根据用户给定的优先级形成建议，列出影响建议的未知项。
+检查：全部必须条件均出现在对照表中。
+</code></pre>
+<p>这些步骤可以在一次调用里完成，也可以拆成多次调用。将调用串联、让后一调用消费前一步产物，是 Prompt chaining；<a href="https://www.anthropic.com/engineering/building-effective-agents#workflow-prompt-chaining">Anthropic 的工作流指南</a>也强调可以在调用之间加入程序检查。需要独立检查、复用、并行处理或更换工具时，多次调用才有明确收益。任务本来很短，却先生成一份复杂计划，往往只增加延迟和新的出错位置。</p>
+<p>分解还会引入信息丢失。若第一步漏掉一条需求，后续对照表可能整齐地沿用错误。需要保留原始条目编号，并在最后检查覆盖情况。凡是下游只看到摘要、看不到原文的地方，都应考虑摘要是否丢掉了否定、例外和适用条件。</p>
+<h3 id="sampling">Self-Consistency：多次采样怎样选择答案</h3>
+<p><a href="https://arxiv.org/abs/2203.11171">Self-Consistency</a> 通过采样多条推理路径，再对最终答案进行聚合，在其测试任务中改善了结果。它依赖可比较的最终答案；开放式报告并不存在天然的多数票。</p>
+<p>用于数值或选择题时，应先规范化答案：单位是否一致，百分数与小数是否等价，同义标签是否需要合并。若多条样本共同误读题意，投票也会稳定地产生错误。样本之间可能共享系统性偏差，票数不能直接解释成正确概率。</p>
+<pre><code class="language-text">records = []
+for candidate in sample(task, budget=n):
+    records.append({
+        answer: normalize(candidate.final_answer),
+        checks: check_with_available_rules(candidate)
+    })
+return select_or_report_disagreement(records)
+</code></pre>
+<p>选择策略可以是可验证测试、人工比较，或适合该任务的聚合规则。能够运行测试的代码，通常应先看测试结果；能用精确计算复核的数字，应先复核计算。比较方法时还应使用相近的总预算，避免把多调用带来的收益全部归因于某一句提示。</p>
+<h3 id="react">ReAct：让工具观察决定下一步</h3>
+<p>有些问题需要先找到一个事实，才能确定接下来查什么。<a href="https://arxiv.org/html/2210.03629v3#A3.SS1">ReAct</a> 将推理、动作与环境观察交替组织。它的 HotpotQA 提示中有一个经典示例：先确定造山运动延伸到哪个地区，再查该地区的海拔，并处理同名歧义。查询轨迹可以压缩转述为：</p>
+<pre><code class="language-text">问题：科罗拉多造山运动东部延伸地区的海拔范围是多少？
+查询 Colorado orogeny：当前摘要未说明东部延伸地区。
+在条目中查找 eastern sector：得到地区名 High Plains。
+查询 High Plains：返回同名地区的消歧信息。
+改查 High Plains (United States)：得到海拔范围。
+示例答案：1,800–7,000 英尺。
+</code></pre>
+<p>后续查询随观察调整：摘要没有所需信息，就查条目；遇到歧义，就补充实体限定。若一开始就把全部查询列完、后续不再读取反馈，就容易遗漏这类中间变化。</p>
+<p>原始 ReAct 提示示范了推理、动作和观察的轨迹。当前接口可以使用原生工具调用，让模型提出函数与参数，由应用执行并送回结果，具体分工可见 <a href="https://ai.google.dev/gemini-api/docs/function-calling#how-function-calling-works">Gemini function calling 指南</a>。需要保留的是基于实际结果继续决策的循环，不必要求当前推理模型公开逐字内部思考。</p>
+<p>工具观察必须来自真实执行。让模型在一次回答中续写“搜索结果”，不会产生搜索能力；重复查询、错误检索和误读材料也仍会失败。因此循环需要调用预算、无结果时的退出行为，以及宿主程序负责的权限和参数检查。</p>
+<h2 id="validation">五、让输出可以检查和继续使用</h2>
+<h3 id="schema">Structured Outputs：约定格式与未完成状态</h3>
+<p>给人阅读时，简洁的标题和表格通常已经够用。下游需要程序处理时，可以使用接口支持的结构化输出，避免只靠“请只输出 JSON”维持格式。<a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI Structured Outputs</a> 和 <a href="https://ai.google.dev/gemini-api/docs/structured-output">Gemini Structured Output</a> 都区分了结构约束与内容正确性。</p>
+<p>输出设计尤其要给未知留下位置。若要求每个字段都有一个看似正常的值，模型面对不相容的输入时就可能被迫补写。必要字段可以表示状态，事实字段可以为空，缺项应有明确含义。</p>
+<pre><code class="language-json">{
+  "status": "needs_info",
+  "category": null,
+  "missing_fields": ["expected_result"],
+  "evidence_ids": ["ticket:P2"]
+}
+</code></pre>
+<p>这个例子表达了本次分类尚不能完成；具体字段组合仍需要程序检查。API 拒绝、输出截断和内容无法判断也是不同情况，不能都当成一个合法 JSON 对象继续处理。</p>
+<p>Schema 适合检查类型、必需字段和枚举。日期先后关系、单位换算、来源对应关系和业务状态，需要额外校验。字段叫 <code>verified</code> 并且值为 <code>true</code>，只说明模型生成了这个值；它不能代替实际执行的验证。</p>
+<h3 id="evidencecheck">引用存在、引用支持结论，要分别判断</h3>
+<p>一条引用至少有三个不同问题：原文是否出现过，引用是否支持这句话，来源是否适用于当前问题。它们不能用同一个“有引用”指标概括。Jason Liu 的<a href="https://python.useinstructor.com/blog/2023/11/18/validate-citations/">引用验证文章</a>展示了原文匹配与语义一致性检查；实际应用还应检查来源的版本和适用范围。</p>
+<p>例如，原文“该接口目前只在测试环境开放”，不能支持“该接口已向所有用户开放”。引用完全匹配，结论仍然错误。另一个常见问题是范围扩大：材料只覆盖一组样本，答案却写成普遍规律；材料只有相关关系，答案却改成因果关系。</p>
+<p>可以先用程序检查来源 ID、版本和原文片段，再对关键结论进行语义核验。语义检查应允许“证据不足”，并保留需要专家判断的部分。使用另一个模型审核时，还要观察它对真实错误的识别能力，不能把审核模型当成默认正确的裁判。</p>
+<p>对高密度材料，可以将每条关键判断与证据绑定成记录，再生成面向人的正文。这样修订结论时能定位所依赖的来源，最终文字也不必充满冗长的检验过程。</p>
+<h3 id="repair">修复应当接收具体反馈，并设置停止条件</h3>
+<p>“再仔细检查三遍”没有说明检查依据。<a href="https://arxiv.org/abs/2310.01798">Large Language Models Cannot Self-Correct Reasoning Yet</a> 在所测试模型与任务中发现，缺少外部反馈的自我修正不可靠，甚至可能把正确答案改错。这个结果不能概括所有新模型，也不否定测试、检索和专家反馈支持的修复。</p>
+<p>有用的反馈应指出哪条要求失败、错误位于哪里、已知正确的信息是什么。例如“第 3 项引用不在 D2 中”“应返回 8 个条目，目前只有 7 个”“日期早于允许范围”。只反馈“质量不够高”，模型很可能只是改写语气。</p>
+<figure><img alt="候选结果经过规则与语义检查；失败时将具体问题送回限次修复，无法解决则保留待处理状态。" decoding="async" height="299" loading="lazy" src="/images/blog/prompt-engineering/02-evidence-repair.png" width="1078"/><figcaption>候选结果经过规则与语义检查；失败时将具体问题送回限次修复，无法解决则保留待处理状态。</figcaption></figure>
+<pre><code class="language-text">candidate = generate(task, materials, requirements, output_spec)
+for attempt in range(max_repairs + 1):
+    checks = validate(candidate, materials, requirements, output_spec)
+    if checks.accepted:
+        return candidate
+    if attempt == max_repairs or checks.requires_new_information:
+        return needs_review(candidate, checks)
+    candidate = repair(
+        candidate, task, materials,
+        requirements, output_spec, checks.details
+    )
+</code></pre>
+<p>修复后应重新运行相关检查，避免改好一处、破坏另一处。来源本身缺失时，应补资料或返回待核查；不能要求模型不断重写，直到生成一个恰好满足表面约束的答案。停止条件决定了这套流程是否会把“不知道”磨成“看起来知道”。</p>
+<h2 id="iteration">六、根据错误改提示词</h2>
+<h3 id="finalrequest">调试实际请求，而不只看模板</h3>
+<p>应用真正发送给模型的内容，可能包含模板没有展示的历史消息、工具定义、检索片段、Schema 和重试反馈。Hamel Husain 在<a href="https://hamel.dev/blog/posts/prompt/">关于查看实际提示的文章</a>中强调了这一点：只检查手写字符串，很容易调错对象。</p>
+<p>“模型忽略了规则”可能是资料被截断、历史中残留旧要求、框架自动加入了冲突说明，或者模板插值把段落层级打乱。先还原那次运行的实际请求和响应，再决定改哪一层。包含敏感资料的记录，应按原有数据权限保存和展示。</p>
+<p>一个可复现记录至少包含提示模板版本、实际输入、模型版本、生成设置和返回状态。涉及多次调用时，还要保留调用顺序与每步产物。最终得到的答案相同，并不意味着执行成本和中间行为相同。</p>
+<h3 id="ablation">每次修改都带一个可验证的假设</h3>
+<p>看到坏答案就追加一条“绝对不要”，很快会得到相互重叠、甚至冲突的长提示。更有效的做法是先归因：目标不清、依据不足、例子偏置、格式不稳、推理错误，还是校验逻辑有问题。</p>
+<p>Hamel Husain 的<a href="https://hamel.dev/blog/posts/field-guide/">错误分析方法</a>强调从真实交互中观察、归类并形成测试。Simon Willison 对<a href="https://simonwillison.net/2023/Feb/21/in-defense-of-prompt-engineering/">提示词工程的讨论</a>也将沟通和实验作为核心。可以把这两点落实为一张修改记录：</p>
+<pre><code class="language-text">现象：信息不足的工单被强行分类。
+假设：规则只定义了 bug 和 feature，没有可返回的未知状态。
+改动：增加 needs_info，并添加一个缺项样例。
+观察：此类误判是否减少；明确工单的完成率是否下降。
+回归：原先可正确区分的相邻类别是否仍然正确。
+</code></pre>
+<p>尽量让一次实验回答一个问题。要确认示例有用，就保持其他条件不变；要比较示例顺序，就不同时换模型和标签定义。复杂改动可以整体比较，但结论只能是整组改动的效果，不能单独归功于其中某句话。</p>
+<p>删除也是重要的实验。去掉复杂角色、重复规则或某个例子，结果没有变差，就可以考虑精简。保留下来的内容应有明确用途，而不只是曾经与一次成功同时出现。</p>
+<h3 id="evaluation">同时观察正确、完整与合理的不作答</h3>
+<p>评测应覆盖常见输入、容易混淆的边界、信息不足和资料冲突。开发样本用于诊断与修改，留出样本用于检查修改能否迁移。反复根据同一批留出结果调整提示，它们就逐渐成为了开发数据，需要新的独立检验。</p>
+<figure><img alt="开发样本参与提示词迭代；候选版本冻结后再用未参与修改的样本检查迁移效果。" decoding="async" height="313" loading="lazy" src="/images/blog/prompt-engineering/03-prompt-iteration.png" width="1078"/><figcaption>开发样本参与提示词迭代；候选版本冻结后再用未参与修改的样本检查迁移效果。</figcaption></figure>
+<p><a href="https://arxiv.org/abs/2311.07911">IFEval</a> 区分单项指令遵循与整条请求的全部指令遵循。实际应用也需要这种区分：一个答案可能格式正确、长度合规，却漏掉必答问题。单项平均分高，不一定代表最终交付物可用。</p>
+<p>只观察已回答部分的正确率，也可能鼓励模型大量返回未知。应同时记录哪些问题被回答、哪些被拒答或交回澄清，以及这些决定是否合理。对资料本来齐全的任务，不必要的弃答是一种失败；对关键依据缺失的任务，强行回答同样是失败。</p>
+<p>可以先采用少量、明确的检查项，分别观察关键子类，不必立即合成一个总分。语义评分器需要用专家判断校准，尤其要看它是否奖励了更长的答案。对有随机波动的任务，在合理预算内重复运行，同时记录完成率、全部尝试的总成本，以及获得可接受结果所需的端到端延迟；失败调用和修复也计入。<a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI 评测指南</a>提供了相关实践建议。</p>
+<h3 id="optimization">自动优化依赖一份值得优化的目标</h3>
+<p>自动方法可以搜索指令、挑选示例，甚至优化多步程序。<a href="https://arxiv.org/abs/2310.03714">DSPy</a> 将语言模型程序与数据、评价指标结合；其<a href="https://dspy.ai/3.1.0/learn/optimization/optimizers/">优化器文档</a>说明了候选指令与示例的搜索方式。这有助于减少手工尝试，但评价目标仍由任务决定。</p>
+<p>如果指标只检查格式，优化器可以得到格式稳定、内容空泛的答案；如果奖励每项都有值，就可能压低合理的未知比例。自动优化会放大目标中的偏好，因此指标和错误样本应先经过实际审视。</p>
+<p>Hamel Husain 与 Shreya Shankar 在<a href="https://hamel.dev/blog/posts/evals-faq/should-i-stop-writing-prompts-manually-in-favor-of-automated-tools.html">关于手工提示与自动工具的讨论</a>中强调，手工处理真实案例有助于暴露假设、建立评价标准。更合理的顺序是先理解错误，再用自动方法扩大候选搜索，并继续检查指标没有覆盖的新失败。</p>
+<h2 id="boundaries">七、判断何时该停止改措辞</h2>
+<h3 id="tools">缺知识、计算和权限时，调整对应系统</h3>
+<p>模型没有获得最新资料，要求“务必最新”不会补上信息；没有计算工具，要求“绝对精确”也不会形成精确计算；没有访问接口，写“请联网核实”不能让核实真正发生。提示词可以规定何时检索、计算和报告缺项，系统需要提供这些能力并保存实际结果。</p>
+<p>有些要求更适合直接由程序执行。固定排序、精确计数、字段去重和可明确表达的关系检查，通常无需依靠模型每次重新理解。内容生成交给模型，确定性规则交给程序，可以减少提示词中不断累积的细节。</p>
+<p>模型生成的自评也要审慎使用。“置信度 95%”不是天然校准过的概率；“已检查”不是实际工具回执。需要这些信号时，应通过任务数据验证它们与错误的关系，或直接使用可核对的来源、测试结果和执行记录。</p>
+<h3 id="migration">将提示词与模型、设置一起验证</h3>
+<p>提示词的表现依赖模型。新版本可能更擅长遵循短指令，也可能对旧示例和强制推理写法产生不同反应。<a href="https://arxiv.org/html/2501.12948v1">DeepSeek-R1 的技术报告</a>在其设置中讨论了零样例与少样例的差异；这说明需要重建基线，不能推断所有推理模型都应移除示例。</p>
+<p>采样参数同样没有通用答案。降低温度会改变采样行为，但不保证事实更正确，也不承诺完全确定的重现。<a href="https://ai.google.dev/gemini-api/docs/prompting-strategies">Gemini 提示词指南</a>中的模型专属建议也显示，沿用旧参数口诀可能不合适。</p>
+<p>迁移时应同时测试现有提示和一个精简基线，比较任务正确性、边界行为、成本与延迟。提示模板、示例集、模型版本、生成设置和评测样本应作为一组记录。只记一句最终提示，通常不足以解释以后为什么表现变了。</p>
+<h2 id="lookup">按现象查阅</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>遇到的现象</th>
+<th>优先检查与调整</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>想先弄清 Zero-shot、One-shot 与 Few-shot 的区别</td>
+<td><a href="#shotformats">输入结构对照</a>：区分任务输入与已完成的演示，看新词造句案例</td>
+</tr>
+<tr>
+<td>答案流畅，却不适合实际用途</td>
+<td><a href="#deliverable">交付物与受众</a>：说明谁要用、用来做什么，再确定内容取舍</td>
+</tr>
+<tr>
+<td>输出满足格式，却漏掉重要内容</td>
+<td><a href="#constraints">约束与优先级</a>、<a href="#evaluation">整体验收</a>：分别检查完整性与单项规则</td>
+</tr>
+<tr>
+<td>信息不足仍给出确定结论</td>
+<td><a href="#missing">缺项处理</a>、<a href="#schema">输出状态</a>：提供未知、澄清和无法完成的表达</td>
+</tr>
+<tr>
+<td>长资料里的关键依据被漏用</td>
+<td><a href="#longcontext">长上下文</a>：保留定位信息，移动证据位置并加入干扰内容测试</td>
+</tr>
+<tr>
+<td>分类总在相邻类别之间混淆</td>
+<td><a href="#selectexamples">Few-shot 示例边界</a>：增加相似输入、不同结论的正确样例</td>
+</tr>
+<tr>
+<td>换几个示例或顺序，结果明显变化</td>
+<td><a href="#examplebias">示例偏置</a>：检查偶然关键词、标签分布、顺序与测试泄漏</td>
+</tr>
+<tr>
+<td>推理越来越长，正确性没有提高</td>
+<td><a href="#cot">CoT</a>、<a href="#decompose">Least-to-Most 与调用分解</a>：保留必要解释，减少无依据的强制步骤</td>
+</tr>
+<tr>
+<td>多个答案一致，但共同犯错</td>
+<td><a href="#sampling">Self-Consistency</a>：检查共同假设，用外部规则验证后再聚合</td>
+</tr>
+<tr>
+<td>下一步检索依赖刚刚查到的信息</td>
+<td><a href="#react">ReAct</a>：真实执行工具，再根据观察调整查询；保留预算和退出条件</td>
+</tr>
+<tr>
+<td>有引用，但引用与结论不相符</td>
+<td><a href="#evidencecheck">证据检查</a>：区分原文存在、语义支持与适用范围</td>
+</tr>
+<tr>
+<td>反复自检，只得到不同措辞</td>
+<td><a href="#repair">限次修复</a>：回传具体错误，缺资料时停止重写</td>
+</tr>
+<tr>
+<td>模板看起来正确，应用里却不稳定</td>
+<td><a href="#finalrequest">实际请求</a>：查看消息、检索、工具定义、截断与重试内容</td>
+</tr>
+<tr>
+<td>提示越来越长，新问题仍不断出现</td>
+<td><a href="#ablation">修改假设</a>、<a href="#tools">职责边界</a>：做删除实验，判断是否需要改数据或程序</td>
+</tr>
+<tr>
+<td>换模型后，原来的技巧反而拖累效果</td>
+<td><a href="#migration">版本验证</a>：重新比较精简基线与现有提示</td>
+</tr>
+</tbody>
+</table></div>
+<p>提示词值得保留的细节，应能说明它消除了什么歧义、减少了哪类错误，以及怎样检查。这样积累下来的规则、示例和测试，才方便在任务变化或模型升级后继续修订。</p><footer class="article-footer"><a href="/blog/">← 返回 Blog</a></footer></article>
+</div>
+<script>
+const shell = document.querySelector('.toc-shell');
+const mobile = window.matchMedia('(max-width: 840px)');
+function setMode() { shell.open = !mobile.matches; }
+setMode();
+mobile.addEventListener('change', setMode);
+const links = [...document.querySelectorAll('.toc-list a')];
+links.forEach(link => link.addEventListener('click', () => {
+  if (mobile.matches) shell.open = false;
+}));
+const headings = links.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+function mark(id) {
+  links.forEach(link => {
+    if (decodeURIComponent(link.hash.slice(1)) === id) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+}
+let scheduled = false;
+function updateCurrent() {
+  const threshold = Math.min(window.innerHeight * .25, 160);
+  let current = headings[0];
+  for (const heading of headings) {
+    if (heading.getBoundingClientRect().top <= threshold) current = heading;
+    else break;
+  }
+  if (current) mark(current.id);
+  scheduled = false;
+}
+window.addEventListener('scroll', () => {
+  if (!scheduled) { scheduled = true; requestAnimationFrame(updateCurrent); }
+}, {passive: true});
+updateCurrent();
+</script>
+</body>
+</html>
+
+{% endraw %}
