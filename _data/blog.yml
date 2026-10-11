@@ -10,3 +10,6 @@
 - slug: agent-engineering
   title: "Agent Engineering：重试、状态与执行控制"
   description: "从 Codex、OpenCode、Pi 与 Claude 的公开实现出发，梳理重试、工具执行、会话状态、上下文管理与任务验收中的工程细节。"
+- slug: harness-anything
+  title: Harness Anything：面向垂直领域的 Agent 系统设计
+  description: 从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。

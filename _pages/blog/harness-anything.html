@@ -1,0 +1,500 @@
+---
+layout: null
+title: Harness Anything：面向垂直领域的 Agent 系统设计
+permalink: /blog/harness-anything/
+description: 从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。
+---
+
+{% raw %}
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>Harness Anything：面向垂直领域的 Agent 系统设计 - Yuchen Miao</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper: #ffffff;
+  --ink: #202027;
+  --muted: #74717d;
+  --line: #e7e3ec;
+  --purple: #69528c;
+  --lavender: #f3eff9;
+  --code: #f7f6f9;
+  --body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --display: "Avenir Next", "Helvetica Neue", var(--body);
+  --mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); -webkit-font-smoothing: antialiased; }
+a { color: var(--purple); text-decoration-thickness: 1px; text-underline-offset: .21em; }
+a:hover { color: #3f285f; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: 2px; }
+.layout { width: min(1180px, calc(100% - 80px)); margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); column-gap: 66px; row-gap: 42px; align-items: start; }
+.intro { grid-column: 1 / -1; min-width: 0; padding: 64px 0 0; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.intro > :not(figure) { max-width: 760px; margin-left: auto; margin-right: auto; }
+.intro .overview-figure { max-width: 1000px; margin: 30px auto 0; }
+.toc-shell { position: sticky; top: 28px; margin: 0 0 32px; max-height: calc(100vh - 56px); max-height: calc(100svh - 56px); overflow-y: auto; scrollbar-width: thin; padding: 0 14px 20px 0; }
+.toc-shell summary { display: none; }
+.toc-label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .08em; margin: 0 0 17px 13px; }
+.toc-list { list-style: none; padding: 0; margin: 0; }
+.toc-list li { margin: 0; }
+.toc-list a { display: block; padding: 7px 11px; border-left: 2px solid transparent; font-size: 13px; line-height: 1.65; color: #6b6773; text-decoration: none; border-radius: 0 5px 5px 0; }
+.toc-list .level-2 > a { font-weight: 600; margin-top: 7px; color: #39353f; }
+.toc-list .level-3 > a { padding-left: 23px; font-size: 12px; }
+.toc-list a:hover { background: #f8f6fb; }
+.toc-list a[aria-current="location"] { border-left-color: var(--purple); background: var(--lavender); color: #4f386f; }
+article { min-width: 0; padding: 0 0 90px; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.article-header { margin: 0 0 34px; }
+h1 { font-family: var(--display); font-size: clamp(34px, 4vw, 46px); line-height: 1.18; letter-spacing: -.035em; font-weight: 650; margin: 0; color: #17151d; }
+.subtitle { font-size: 17px; line-height: 1.7; color: #726a7c; margin: 13px 0 0; letter-spacing: .01em; }
+p { margin: 0 0 19px; }
+h2 { margin: 56px 0 23px; padding-top: 25px; border-top: 1px solid var(--line); font-size: 23px; line-height: 1.55; font-weight: 650; letter-spacing: -.015em; }
+article > h2:first-child { margin-top: 0; }
+h3 { font-size: 18px; line-height: 1.65; font-weight: 650; margin: 32px 0 16px; }
+h2[id], h3[id] { scroll-margin-top: 26px; }
+strong { font-weight: 650; }
+article ul, article ol { padding-left: 1.6em; margin: 0 0 22px; }
+article li { padding-left: .15em; margin-bottom: .45em; }
+code { font-family: var(--mono); font-size: .84em; overflow-wrap: anywhere; background: var(--lavender); color: #55416c; border-radius: 4px; padding: .14em .35em; }
+pre { margin: 23px 0 25px; background: var(--code); border: 1px solid #e9e4ef; border-radius: 9px; padding: 20px 22px; line-height: 1.72; overflow: auto; tab-size: 4; max-width: 100%; }
+pre code { display: block; padding: 0; color: #34303b; border: 0; background: transparent; font-size: 12.5px; overflow-wrap: normal; white-space: pre; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin: 24px 0 28px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.8; }
+th, td { text-align: left; vertical-align: top; padding: 12px 15px; border-bottom: 1px solid var(--line); }
+th { background: #f7f4fb; color: #41374f; font-weight: 600; }
+th:first-child, td:first-child { width: 37%; }
+td code { font-size: .86em; }
+figure { margin: 30px 0 33px; }
+figure img { width: 100%; height: auto; display: block; background: white; }
+figcaption { max-width: 680px; margin: 11px auto 0; color: var(--muted); font-size: 12px; line-height: 1.75; text-align: center; }
+blockquote { margin: 24px 0; border-left: 3px solid #c9bcdd; padding: 3px 0 3px 20px; color: #5d5667; }
+blockquote p:last-child { margin-bottom: 0; }
+.implementation-note { color: #6f6878; font-size: 13px; line-height: 1.9; }
+@media (max-width: 1040px) {
+  .layout { width: min(960px, calc(100% - 52px)); grid-template-columns: 220px minmax(0, 1fr); column-gap: 36px; }
+  .toc-list a { font-size: 12px; }
+  .toc-list .level-3 > a { font-size: 11.5px; }
+  article, .intro { font-size: 15.5px; }
+}
+@media (max-width: 840px) {
+  html { scroll-padding-top: 20px; }
+  .layout { display: flex; flex-direction: column; gap: 0; width: min(760px, calc(100% - 40px)); }
+  .intro { order: 0; width: 100%; padding: 37px 0 0; font-size: 16px; }
+  .intro .overview-figure { margin-top: 27px; }
+  .toc-shell { position: static; order: 1; top: auto; width: 100%; max-height: none; margin: 28px 0 0; padding: 0; background: #faf9fc; border: 1px solid var(--line); border-radius: 8px; }
+  .toc-shell summary { display: list-item; cursor: pointer; font-size: 14px; font-weight: 600; padding: 12px 17px; color: #50445e; }
+  .toc-content { padding: 0 12px 16px; max-height: 64vh; max-height: 64svh; overflow-y: auto; }
+  .toc-label { display: none; }
+  .toc-list a { font-size: 13px; }
+  .toc-list .level-3 > a { font-size: 12px; }
+  article { order: 2; padding: 34px 0 60px; width: 100%; font-size: 16px; }
+  .article-header { margin-bottom: 29px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 22px; margin-top: 43px; padding-top: 23px; }
+  h3 { font-size: 18px; }
+  .subtitle { font-size: 16px; }
+  pre { padding: 17px 16px; margin-inline: 0; }
+  pre code { font-size: 11.5px; }
+  th, td { padding: 10px 11px; }
+  table { font-size: 13px; }
+}
+@media (max-width: 420px) {
+  .layout { width: calc(100% - 32px); }
+  article, .intro { font-size: 15.5px; line-height: 1.95; }
+  h1 { font-size: 33px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  .layout { display: block; width: 100%; }
+  .toc-shell { display: none; }
+  article, .intro { padding: 0; font-size: 11pt; }
+  .intro { margin-bottom: 28px; }
+  pre { white-space: pre-wrap; overflow: visible; }
+  pre code { white-space: pre-wrap; }
+  figure, pre, tr { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+}
+
+.article-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 28px; font-size: 13px; line-height: 1.6; }
+.article-nav a { color: var(--muted); text-decoration: none; }
+.article-nav a:hover { color: var(--purple); }
+.article-footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 22px; font-size: 14px; }
+</style>
+<link href="https://yuchenmiao04.github.io/blog/harness-anything/" rel="canonical"/><meta content="从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。" name="description"/><meta content="Harness Anything：面向垂直领域的 Agent 系统设计" property="og:title"/><meta content="从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。" property="og:description"/><meta content="https://yuchenmiao04.github.io/blog/harness-anything/" property="og:url"/><meta content="article" property="og:type"/><meta content="https://yuchenmiao04.github.io/images/blog/harness-anything/00-harness-overview.png" property="og:image"/></head>
+<body>
+<div class="layout">
+<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="文章导航" class="article-nav"><a href="/blog/">← Blog</a><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Harness Anything</h1><p class="subtitle">面向垂直领域的 Agent 系统设计</p></header>
+<p>把模型接入财务数据库，再补上检索、计算和报告工具，已经可以得到一份像样的分析。困难通常出现在报告写完之后：其中两个数字是否属于同一合并口径，某条政策在分析时点是否已经生效，缺失的数据是否被当成了零，以及这份结论能否用于下一步操作。</p>
+<p>在客服系统里，同样的问题表现为退款资格、收款对象和重复提交；在合同审查里，表现为条款适用范围、修改冲突和文档版本；在科研流程里，表现为数据划分、实验环境和结果能否复现。模型可以理解这些要求，但系统还需要确定：哪些要求必须成立，怎样检查，检查不出来时怎样继续。</p>
+<p>垂直领域 Harness 的工作，是把这些要求落实到运行过程。这里的 Harness 指模型周围负责上下文、工具、状态、执行控制和验收的系统。它需要连接领域知识，也需要承接领域工作的责任：一个判断凭什么成立，一个动作凭什么被允许，一次失败之后还有什么必须处理。</p>
+<p><strong>“Anything”适用于设计方法，具体的业务契约仍要逐个领域建立。</strong> 金融口径不能由通用提示词代替，合同修订不能沿用代码合并的全部假设，业务系统也不会因为调用者变成 Agent 就自动获得事务性。能够复用的是任务描述、证据记录、执行边界和评测方法；其中的规则、接口和失败终局，需要由领域决定。</p>
+<figure class="overview-figure"><img alt="从通用能力到领域工作：通过任务契约、领域证据、执行边界和验证恢复，将领域要求落实到 Agent 的运行过程。" decoding="async" fetchpriority="high" height="887" loading="eager" src="/images/blog/harness-anything/00-harness-overview.png" width="1774"/><figcaption>从通用能力到领域工作：通过任务契约、领域证据、执行边界和验证恢复，将领域要求落实到 Agent 的运行过程。</figcaption></figure>
+</section>
+<details class="toc-shell" open="">
+<summary>目录</summary>
+<nav aria-label="文章目录" class="toc-content">
+<p class="toc-label">目录</p>
+<ol class="toc-list"><li class="level-2"><a href="#contract">一、先把领域任务写成执行契约</a></li>
+<li class="level-3"><a href="#deliverable">交付物决定系统需要保存什么</a></li>
+<li class="level-3"><a href="#domainchecks">把专业要求拆成不同类型的检查</a></li>
+<li class="level-2"><a href="#modelrole">二、确定模型负责哪些决定</a></li>
+<li class="level-3"><a href="#skeleton">固定业务步骤，开放局部探索</a></li>
+<li class="level-3"><a href="#agentboundary">按上下文、权限和冲突边界拆分 Agent</a></li>
+<li class="level-2"><a href="#evidence">三、让领域知识成为可核对的证据</a></li>
+<li class="level-3"><a href="#retrievalscope">先确定检索空间，再优化召回</a></li>
+<li class="level-3"><a href="#temporality">数据属于哪个期间，何时才被知道</a></li>
+<li class="level-3"><a href="#claimchecks">引用存在与结论成立分开检查</a></li>
+<li class="level-3"><a href="#withdrawal">无效结论需要从所有消费路径撤下</a></li>
+<li class="level-2"><a href="#tools">四、用工具接口表达业务语义</a></li>
+<li class="level-3"><a href="#semantictools">工具返回值应包含继续执行所需的事实</a></li>
+<li class="level-3"><a href="#preparecommit">将分析、提案和提交分别建模</a></li>
+<li class="level-2"><a href="#authority">五、让授权、审批和提交经过同一条控制路径</a></li>
+<li class="level-3"><a href="#boundapproval">审批绑定具体提案及其有效期</a></li>
+<li class="level-3"><a href="#conditionalcommit">执行时重新核对现实条件</a></li>
+<li class="level-3"><a href="#databoundary">数据传播也是权限问题</a></li>
+<li class="level-2"><a href="#recovery">六、长任务要同时保存运行依据与业务结果</a></li>
+<li class="level-3"><a href="#stateplanes">检查点与业务操作记录分别回答什么</a></li>
+<li class="level-3"><a href="#reentry">恢复可能重入，重入可能再次调用工具</a></li>
+<li class="level-3"><a href="#unknown">未知结果需要对账，不能直接改写成失败</a></li>
+<li class="level-2"><a href="#evaluation">七、用领域失败定义评测与放行策略</a></li>
+<li class="level-3"><a href="#erroranalysis">先让专家说明错误，再选择评测器</a></li>
+<li class="level-3"><a href="#evalboundaries">最终结果、执行过程与策略遵守分别评测</a></li>
+<li class="level-3"><a href="#coverage">同时观察自动放行比例与放行后的错误</a></li>
+<li class="level-2"><a href="#evolution">八、从受限工作流逐步演进</a></li>
+<li class="level-3"><a href="#rollout">按动作风险逐步开放执行权</a></li>
+<li class="level-3"><a href="#operationcost">计算每个可接受结果的总成本</a></li>
+<li class="level-3"><a href="#versioning">把变更作为一组可追溯版本发布</a></li>
+<li class="level-2"><a href="#checklist">设计时需要留下的证据</a></li></ol>
+</nav>
+</details>
+<article aria-label="Harness Anything"><h2 id="contract">一、先把领域任务写成执行契约</h2>
+<h3 id="deliverable">交付物决定系统需要保存什么</h3>
+<p>“分析这家公司”很难成为可执行的产品规格。“生成一份截至指定时点、覆盖指定主体、所有关键数字可回溯到原始材料的经营分析”，已经包含了可以检查的要求。</p>
+<p>任务规格至少需要说明交付物、适用范围、数据时点、允许的动作，以及完成条件。缺少其中任何一项，Agent 都可能在执行过程中自行补出一个看似合理的解释。输出格式往往容易统一，真正费工夫的是统一格式背后的含义。</p>
+<pre><code class="language-text">JobSpec:
+    deliverable: report | proposed_change | committed_operation
+    scope: entities, account_or_document, jurisdiction
+    time: effective_at, knowledge_cutoff
+    constraints: metric_basis, policy_version, allowed_actions
+    acceptance: required_evidence, checks, reviewer
+    limits: cost, elapsed_time, tool_calls
+    escalation: missing_inputs, conflict, uncertain_outcome
+</code></pre>
+<p>这份规格不必一次让用户填完。系统可以从已有身份、业务对象和应用配置中获得一部分；真正影响结论的歧义再交给用户确认。例如“收入”指总额还是净额，需要澄清；字号没有指定，通常可以采用产品默认值。</p>
+<p>必需证据和可选证据也应分开。关键主体无法确认时，不能继续生成主体确定的结论；缺少一项辅助材料时，可以缩小交付范围、注明未覆盖部分。降级应改变任务承诺，并让使用者知道变化，不能只在内部把失败标成可忽略。</p>
+<p>任务契约也会改变存储设计。若交付物只是供人阅读的草稿，保存正文和来源可能已经足够；若交付物是已提交的业务操作，还需要保存批准对象、操作标识、远端回执和最终结果。不能用同一个“完成”字段概括这些不同承诺。</p>
+<h3 id="domainchecks">把专业要求拆成不同类型的检查</h3>
+<p>领域专家常用一句话描述要求：“这两个口径不能混用。”实现时需要继续追问：口径由哪些字段表示，缺少字段算什么，同一币种是否还需要检查单位和统计期间，例外由谁裁决。</p>
+<p>可以明确计算的要求，应该成为程序检查。例如退款金额不得超过可退余额、计算输入币种必须一致、合同修改必须基于指定文档版本。依赖语义判断的要求，可以由模型或专家评审，例如证据是否足以支持因果解释。两类检查都需要保留“不足以判断”的状态。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>检查结果</th>
+<th>含义与后续处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>passed</code></td>
+<td>已执行规定检查，且在所声明范围内通过</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>已发现明确违反的条件，阻止相关交付或动作</td>
+</tr>
+<tr>
+<td><code>not_checked</code></td>
+<td>必要数据、能力或执行记录缺失，不能据此放行</td>
+</tr>
+<tr>
+<td><code>needs_review</code></td>
+<td>存在冲突、例外或超出自动判断范围的情况</td>
+</tr>
+</tbody>
+</table></div>
+<p>JSON Schema 能保证字段存在、类型和枚举合法，不能证明公司主体选对了，也不能证明一个数值的业务含义正确。规则引擎同样只覆盖已经写出的规则。验收记录应包含检查项、输入版本和结果，才能区分“检查通过”与“没有报错”。</p>
+<p>领域知识也需要按用途放置。稳定的概念进入数据类型和工具接口；能够明确判定的约束进入规则；经常更新、需要解释的材料保留为有版本的证据；必须执行的步骤进入控制流；专家发现的错误进入评测案例。全部塞进一个长提示词，会丢掉这些知识各自的更新、权限和校验方式。</p>
+<h2 id="modelrole">二、确定模型负责哪些决定</h2>
+<h3 id="skeleton">固定业务步骤，开放局部探索</h3>
+<p>业务流程中常有一些步骤，每次都必须执行：核对身份、加载当前政策、检查数据口径、执行提交前验证。让模型自行决定是否经过这些步骤，会把确定的业务要求变成概率事件。</p>
+<p>更合适的分工，是由程序保证步骤和顺序，让模型处理尚不能预先展开的局部工作：查找哪份材料、如何解释一个异常、下一次搜索什么、怎样修正一个失败的草稿。步骤及转移条件已知时，用工作流固定；下一步依赖运行中获得的信息时，再开放 Agent 循环。增加自主性时，也要同时承担额外的延迟、成本和错误传播。<a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a></p>
+<p>Stripe 的 Minions 将必做检查放进确定性节点，将探索和修复交给 Agent 节点。其开发环境受到隔离和权限限制，执行结构可以借鉴，生产业务写入仍需要单独的授权边界。<a href="https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents-part-2">Stripe Minions：工作流设计</a></p>
+<figure><img alt="领域契约约束固定步骤和局部探索；模型完成候选结果后，仍需经过明确的验收门。" decoding="async" height="308" loading="lazy" src="/images/blog/harness-anything/01-domain-contract.png" width="887"/><figcaption>领域契约约束固定步骤和局部探索；模型完成候选结果后，仍需经过明确的验收门。</figcaption></figure>
+<pre><code class="language-text">spec = resolve_job_spec(request, trusted_context)
+require(check_scope_and_permission(spec))
+evidence = gather_within_scope(spec)
+candidate = agent.solve(spec, evidence, read_and_prepare_tools)
+checks = validate(candidate, spec, evidence.versions)
+return deliver_or_escalate(candidate, checks)
+</code></pre>
+<p>固定骨架不意味着所有任务都要使用同一条长流水线。低风险的资料整理可以只有少量检查；涉及外部写入时，再增加提案、审批和提交。一个机制是否值得保留，应看它减少了哪类真实失败，以及为每个任务增加了多少负担。</p>
+<h3 id="agentboundary">按上下文、权限和冲突边界拆分 Agent</h3>
+<p>把“分析师、研究员、审核员”写进不同角色提示词，可能有助于组织任务，但角色名称本身不会形成独立的检查能力。几个 Agent 使用同一批材料、同一种错误口径，也可能一致得出错误结论。</p>
+<p>拆分应有具体收益：一个子任务只需要较小的领域上下文；一个执行者只应持有受限权限；多个任务可以独立计算；或某个局部结果具有清晰的验收方式。小而聚焦的 Agent 便于控制上下文和评测，但没有适用于所有任务的固定步数上限。<a href="https://github.com/humanlayer/12-factor-agents/blob/main/content/factor-10-small-focused-agents.md">12-Factor Agents：focused agents</a></p>
+<p>拆分之后还要设计合并。Harvey 的合同审查系统让不同规则的 worker 在版本化文档分支上生成修改，对修改标记规则归属，并将冲突交回协调层处理。这个设计的关键在于分支、归属和冲突协议；多个 worker 同时修改同一份文本，并不会自然形成正确结果。<a href="https://www.harvey.ai/blog/rebuilding-playbook-review-as-a-multi-agent-system">Harvey：重建合同审查工作流</a></p>
+<p>对于通用的垂直系统，可以让 worker 返回候选修改、依据、基准版本和影响范围。协调层先检查是否互相覆盖，再决定合并、重算或人工处理。文本位置没有冲突，也不代表业务含义兼容：两处修改可能分别改变定义和例外条件。合并后的产物仍需重跑跨规则的一致性检查。多个 Agent 带来的并行收益，必须与额外的模型调用、重复检索和协调成本一起衡量。</p>
+<h2 id="evidence">三、让领域知识成为可核对的证据</h2>
+<h3 id="retrievalscope">先确定检索空间，再优化召回</h3>
+<p>领域知识通常分散在文档、表结构、历史操作、政策和人员经验中。把这些内容全部切块放进向量库，未必能保留真正重要的关系：某个术语属于哪个业务线，某张表统计的是订单还是履约，某条规则针对哪种司法辖区。</p>
+<p>先将表结构和查询示例组织到领域工作区，再进行意图路由和相关表选择，可以缩小语义相近但业务不同的候选空间。Uber QueryGPT 采用了这种设计，避免面对大量数据表时直接依赖全库匹配。<a href="https://www.uber.com/gb/en/blog/query-gpt/">Uber：QueryGPT</a></p>
+<p>这种做法可以迁移到垂直 Harness：先识别主体、任务类别和适用规则，再决定查哪些库、哪些索引和哪些工具。路由结果也应可纠正；一开始选错领域，再好的局部检索也无法找回被排除的材料。</p>
+<p>知识组织需要保留领域结构。合同的条款层级、产品和故障码的映射、财务指标的计算依赖，有时更适合关系查询、目录导航或图结构。向量检索可以补充语义匹配，是否增加重写、混合召回和重排，应由任务效果与延迟决定。<a href="https://martinfowler.com/articles/gen-ai-patterns/">Patterns for building GenAI applications</a></p>
+<p>权限过滤应进入检索路径，而不只放在最终答案审查中。材料一旦进入模型上下文，就已经被处理。缓存也需要区分租户、身份或授权范围；共享缓存的命中条件不能只有相同问题文本。</p>
+<p>检索返回值还应支持下一步行动：已应用的过滤条件、来源与版本、截断标记，以及补取完整上下文的入口。结果很多时，有权限的元数据分布可以帮助缩小范围；不能改变后续决策的元数据，则可能只是上下文负担。<a href="https://jxnl.co/writing/2025/08/27/facets-context-engineering/">Jason Liu：Beyond Chunks</a></p>
+<h3 id="temporality">数据属于哪个期间，何时才被知道</h3>
+<p>一份财报可能描述去年第四季度，今年二月发布，三月修订，系统在四月才收录。这里至少有四种时间：事实对应的期间、公开时间、修订版本、系统记录时间。用一个 <code>timestamp</code> 字段会让这些含义混在一起。</p>
+<p>Martin Fowler 对双时态历史的讨论区分了事实的有效时间和系统获知它的记录时间。这个区分适合处理追溯修订；公开时间还应单独记录，因为系统收录较晚不等于外界此前无法获知。<a href="https://martinfowler.com/articles/bitemporal-history.html">Bitemporal History</a></p>
+<pre><code class="language-text">Fact:
+    entity_id, metric, value, unit, currency, basis
+    period_start, period_end
+    published_at, recorded_at, revision_id
+    source_id, source_version, locator
+</code></pre>
+<p>如果任务是复盘某个历史时点的决策，应只使用当时可获得的信息；如果任务是重建现在认为正确的历史，则可以使用后续修订。两者都合理，但回答的是不同问题。评测时混用这两个视角，会把事后信息泄漏到历史任务里。</p>
+<p>并非每个系统都需要实现完整的双时态数据库。固定输入快照、保存决策时使用的版本，有时已经足够。只有需要大量查询“当时知道什么”，或追踪追溯修订的影响时，才值得承担更复杂的存储和查询成本。</p>
+<h3 id="claimchecks">引用存在与结论成立分开检查</h3>
+<p>给一句话附上来源，至少包含三个不同问题：引用片段是否真的存在；片段是否适用于当前主体、时间和问题；结论是否由该片段支持。字符串匹配可以处理第一个问题，不能替代后两个问题。</p>
+<p>这也是结构化抽取容易被高估的地方。提取出来的字段即使完全符合 Schema，来源也可能只描述某个子公司；一段出现“增长”的文字，也不一定支持“利润增长”这条结论。CitationMixin 的文档明确区分引用片段验证与抽取事实的准确性，使用者需要继续检查证据与主张的关系。<a href="https://python.useinstructor.com/concepts/citation/">Instructor：CitationMixin</a></p>
+<p>一条重要结论最好能沿着依赖关系追溯：来源版本、规范化事实、计算过程、最终主张。对于数字，交给计算工具处理单位换算、期间聚合和公式；对于解释，保存关键前提及其支持材料。这样才能在某个前提变化时，找到需要重做的部分。</p>
+<figure><img alt="证据依赖从来源延伸到产物。上游版本变化时，相关下游结论需要重新检查。" decoding="async" height="270" loading="lazy" src="/images/blog/harness-anything/02-evidence-dependencies.png" width="887"/><figcaption>证据依赖从来源延伸到产物。上游版本变化时，相关下游结论需要重新检查。</figcaption></figure>
+<p>证据冲突也应成为显式结果。两个来源数值不同，先核对主体、期间、币种、统计范围和修订版本；仍无法解释时，保留冲突并说明影响。让模型选一个听起来更合理的数字，会丢失本来应当进入人工判断的信息。</p>
+<h3 id="withdrawal">无效结论需要从所有消费路径撤下</h3>
+<p>财务审计可以将币种、期间和来源作为数值主张的一部分，再检查计算输入的业务口径。FinRobot 将这些信息写入数值主张，并在估值相关审计中检查币种混用。这样，验收就能从数值范围继续深入到输入的含义。<a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/models/numeric_claim.py#L70-L87">数值主张的数据结构</a>、<a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/compute/operators/audit/currency_caliber.py#L81-L110">币种口径检查</a></p>
+<p>同一实现也显示了检查覆盖的边界：期间审计缺少日期时返回空 findings，而状态汇总会将空 findings 归为通过。这里不能由“没有问题记录”推出期间完整性已经得到验证。更严格的交付协议应额外记录哪些检查真正执行过。<a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/compute/operators/audit/ttm_period.py#L58-L73">期间审计的空输入路径</a>、<a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/models/numeric_claim.py#L56-L67">状态汇总</a></p>
+<p>更容易忽略的是撤销传播。如果一个结论已经进入摘要、图表、缓存和后续报告，仅在原始字段上标注无效还不够。FinRobot 对被撤下的目标价扫描多个备用展示槽位，防止另一条读路径重新显示旧值。撤销需要覆盖派生结果和消费路径。<a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/artifact/contract.py#L425-L459">备用字段检查</a>、<a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/artifact/contract.py#L495-L519">同步清除展示字段</a></p>
+<pre><code class="language-text">on_input_revision_changed(input_id, new_version):
+    affected = dependency_index.descendants(input_id)
+    mark(affected, status=NEEDS_REVALIDATION)
+    prevent_new_delivery(affected)
+    invalidate_dependent_caches(affected)
+    enqueue_required_checks(affected, new_version)
+</code></pre>
+<p>依赖索引和失效通知负责定位与重算，还需要在交付边界核对产物引用的版本是否仍符合任务契约。否则异步通知尚未到达时，并发任务仍可能发布旧结论。若交付依据的是冻结的历史快照，则检查对应快照；若承诺使用当前有效信息，则需要在受控的发布边界检查当前依赖。</p>
+<p>这是一种建议的依赖管理方式，不意味着整个知识库都要建成复杂图数据库。早期可以在产物中保存依赖 ID 和版本，按任务批次失效；只有重算成本和共享依赖足够大时，再引入更细的索引。已经发出的报告还需要留下更正记录，删除当前页面不能抹去过去的交付。</p>
+<p>验收还要针对最终组装物再执行一次。正文、摘要、表格和模板各自正确，拼起来仍可能使用不同版本的结论。交付前应检查关键值和状态是否一致，并阻止尚未复核的依赖进入新产物。只检查某个生成步骤，覆盖不到后续组装和 fallback 路径。</p>
+<h2 id="tools">四、用工具接口表达业务语义</h2>
+<h3 id="semantictools">工具返回值应包含继续执行所需的事实</h3>
+<p>通用 SQL、Shell 和 HTTP 工具的表达能力很强，也会把表之间的关系、合法参数组合和业务前提推给模型。垂直工具可以缩小这些选择，例如提供“获取某主体指定口径的收入序列”，而不是要求模型每次重新拼接数据提供方的原始响应。</p>
+<p>接口需要同时返回结果和边界：主体的规范 ID、数据版本、单位、覆盖期间、缺失情况和可用的来源定位。错误返回也应让系统能采取下一步，例如区分 <code>MISSING_PERIOD</code>、<code>CURRENCY_MISMATCH</code> 和暂时不可用。一个笼统的“工具失败”，无法判断是重试、补材料还是更换方案。</p>
+<p>科研工具也遵循同样要求。一个实验结果至少需要关联数据划分、代码与配置版本、环境和运行标识；若结论依赖随机试验，还需要保存相应随机性设置和统计方式。只返回一个性能数字，会让后续分析无法判断它是否与基线可比。</p>
+<p>垂直工具并非越窄越好。把所有可能查询都写成单独函数，会造成接口数量膨胀，业务变化也要频繁改代码。可以把高频、口径复杂或高影响的操作做成稳定接口，把开放探索保留在只读、受限的查询环境中。工具设计的目标是把容易出错的语义固定下来，而非消除模型的全部选择。</p>
+<h3 id="preparecommit">将分析、提案和提交分别建模</h3>
+<p>“建议退款”与“退款已经发生”需要不同的对象。模型可以负责生成候选方案；业务服务负责检查资格、冻结提案，并在满足执行条件后提交。准备阶段如果会锁库存、占额度或发送通知，也必须明确记为效果，不能因为函数名叫 <code>prepare</code> 就默认无副作用。</p>
+<pre><code class="language-text">proposal = prepare_refund(
+    order_id=canonical_order_id,
+    amount=Money(value, currency),
+    reason=allowed_reason,
+    expected_order_version=observed_version
+)
+# 本例约定 prepare 只读取、验证和保存提案
+decision = obtain_required_approval(proposal)
+receipt = commit_refund(proposal.id, decision.id)
+</code></pre>
+<p>准备检查可以提前发现明显错误，并让审批者看到具体对象和影响；提交检查需要针对当前状态再执行一次。两次检查的用途不同：前者减少无效提案，后者处理从提案到执行之间发生的变化。</p>
+<p>工具适配器还应声明失败契约：是否可重试、怎样查询结果、如何识别同一次业务意图、是否可能部分完成、谁负责对账。接入一个不支持结果查询也不支持可靠去重的遗留写接口时，限制为生成草案或人工提交，可能比增加模型自检更有效。</p>
+<h2 id="authority">五、让授权、审批和提交经过同一条控制路径</h2>
+<h3 id="boundapproval">审批绑定具体提案及其有效期</h3>
+<p>“允许调用退款工具”没有说明退哪一单、金额多少、退给谁，也没有说明这次允许可以持续多久。审批对象应是一份不可变提案，至少绑定租户、发起身份、目标对象、规范化参数、业务版本、规则版本和期限。参数发生实质变化，需要形成新提案。</p>
+<p>OpenAI Agents SDK 的工具审批使用具体调用身份，并核对待审批运行状态。其服务端示例将完整 RunState 留在服务器，只向客户端提供展示详情和不透明的决定 ID。调用匹配解决的是“这个决定对应哪次调用”，用户认证和业务权限仍由应用负责。<a href="https://github.com/openai/openai-agents-python/blob/125efa029b4bfd84238bd2c4fd69c3406f802663/src/agents/run_state.py#L1130-L1204">审批匹配实现</a>、<a href="https://github.com/openai/openai-agents-python/blob/125efa029b4bfd84238bd2c4fd69c3406f802663/examples/agent_patterns/human_in_the_loop_server.py#L58-L103">服务端审批示例</a></p>
+<p>提案 hash 可以帮助检查内容是否变化，不能证明批准者是谁。批准记录需要来自经过认证和授权的服务端控制路径；生产环境还需要原子地消费待审批决定，避免两个请求同时批准并重复派发。</p>
+<pre><code class="language-text">with local_db.transaction():
+    pending = lock_pending_decision(decision_id)
+    proposal = load_frozen_proposal(pending.proposal_id)
+    require(can_review(authenticated_user, pending))
+    require(pending.is_pending and not pending.expired)
+    require(pending.proposal_hash == proposal.hash)
+    pending.status = APPROVED
+    record_approval(pending, authenticated_user)
+    outbox.insert_unique(pending.operation_id, proposal)
+</code></pre>
+<p>这个本地事务只保证批准记录与待投递任务一起落盘。远端业务 API 不在事务内，outbox 的消费者也可能重复投递。后面的业务提交仍需要自己的幂等和并发控制。</p>
+<h3 id="conditionalcommit">执行时重新核对现实条件</h3>
+<p>审批等待期间，订单可能已经被取消，余额可能被另一次操作使用，发起者的权限也可能被撤销。恢复同一个运行状态，不能恢复当时的业务世界。</p>
+<p>执行前应重新核对当前身份权限、审批有效性和适用规则。对于会被并发修改的对象，还需要业务服务在提交边界检查 <code>expected_version</code> 或其他等价条件。应用先读一次版本、再发出普通写请求，仍然留有两次请求之间的竞争窗口。</p>
+<figure><img alt="冻结提案、审批与提交各有检查对象。最终业务条件需要在实际提交边界成立。" decoding="async" height="302" loading="lazy" src="/images/blog/harness-anything/03-approval-commit.png" width="887"/><figcaption>冻结提案、审批与提交各有检查对象。最终业务条件需要在实际提交边界成立。</figcaption></figure>
+<p><strong>审批决定是否允许执行；幂等处理重复到达；条件提交判断现在执行是否仍成立。</strong> 三者分别解决不同问题。同一个批准可以对应一次尚未完成的操作重试，但不能被用来掩盖参数变更；同一个幂等键也不能阻止第一次请求依据过期业务状态执行。</p>
+<p>正常执行、人工审批恢复、子 Agent 委派和自动重试，都应经过同一个提交适配器。否则主路径的检查再完整，也可能被某条恢复路径绕过。若下游不支持所需的条件写，系统必须明确更弱的保证，并选择串行化、额外业务锁或人工提交等有实际约束力的办法。</p>
+<h3 id="databoundary">数据传播也是权限问题</h3>
+<p>外部文档、网页、邮件和检索片段可能包含针对 Agent 的指令。它们可以作为分析材料，不能因为进入上下文就获得修改系统规则、调用敏感工具或外传数据的权限。</p>
+<p>Simon Willison 讨论的风险组合很具体：系统同时能读取私密数据、接触不可信内容，并向外通信时，注入内容可能诱导数据外传。限制数据、能力和出口的组合，比单独要求模型“忽略恶意指令”更能形成可检查的边界。<a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">Prompt injection 与工具组合的攻击面</a></p>
+<p>只把工具标成“读”或“写”也不够。外部搜索通常是读操作，但查询文本可能携带内部资料。Harvey 的 MCP 策略引擎正面处理了这一问题：逐次检查调用、核对批准过的工具元数据，并将历史轨迹纳入判断。其仍在开发的细粒度变更能力，不能当作已有完整保证。<a href="https://www.harvey.ai/blog/building-harveys-mcp-policy-engine">Harvey：MCP policy engine</a></p>
+<p>在应用层，可以按目标系统、数据敏感度、允许字段和出站渠道限制调用；执行凭证留在适配器，不交给模型自行拼接。模型判别器可以补充识别异常内容，最终是否允许传出某类数据，仍应由可执行的策略约束。权限收紧、出口控制和隔离也有维护成本，需要覆盖所有实际工具路径。</p>
+<p>输出审查的时机同样重要。Agents SDK 的 function tool 在真实调用后才执行输出 guardrail；拦截返回文本不能撤销已经发生的远端操作。能够作为动作前提的检查，要放在效果发生之前。<a href="https://github.com/openai/openai-agents-python/blob/125efa029b4bfd84238bd2c4fd69c3406f802663/src/agents/run_internal/tool_execution.py#L2083-L2142">工具执行与后置检查</a></p>
+<h2 id="recovery">六、长任务要同时保存运行依据与业务结果</h2>
+<h3 id="stateplanes">检查点与业务操作记录分别回答什么</h3>
+<p>运行检查点回答“执行到哪里，下一步需要什么”；业务操作记录回答“向哪个系统提出了什么意图，它实际生效了吗”。两者可以放在同一个数据库，但不能只保留其中一种含义。</p>
+<p>长时间等待审批，不必占着一个 HTTP 请求或内存协程。将提案、决定和唤醒条件持久化，可以让任务生命周期跨过进程重启。Temporal 的 durable execution 将这种控制流与进程生命周期分离；外部系统的效果仍需要 Activity 接口自己的契约。<a href="https://temporal.io/blog/what-is-durable-execution">Durable Execution</a>、<a href="https://temporal.io/blog/idempotency-and-durable-execution">Idempotency and durable execution</a></p>
+<pre><code class="language-text">WorkflowState: job_spec, step, artifact_refs, pending_decision
+Operation: operation_id, proposal_id, target, frozen_args
+           expected_version, provider_key, outcome, receipt
+Evidence: source_versions, derived_artifacts, validation_records
+</code></pre>
+<p>同一个 <code>operation_id</code> 应贯穿审批、投递、远端去重和对账。框架的尝试次数与业务意图分开记录：两次尝试可能属于同一次退款，两笔金额完全相同的退款也可能是不同业务。单纯用参数 hash 合并，会误伤合法的重复业务。</p>
+<figure><img alt="运行检查点负责继续执行，业务操作记录负责查明效果。UNKNOWN 需要沿同一操作标识对账。" decoding="async" height="317" loading="lazy" src="/images/blog/harness-anything/04-workflow-effects.png" width="887"/><figcaption>运行检查点负责继续执行，业务操作记录负责查明效果。UNKNOWN 需要沿同一操作标识对账。</figcaption></figure>
+<h3 id="reentry">恢复可能重入，重入可能再次调用工具</h3>
+<p>LangGraph 的 <code>interrupt</code> 恢复会从节点开头重新执行，再在对应的中断位置取得恢复值。这意味着审批前的一段 Python 代码可能重复运行。若那里包含外部写入，仅仅加入 checkpointer 不能使其自动变成一次执行。<a href="https://github.com/langchain-ai/langgraph/blob/b4991f1ba36a2449ab59c38ab71828ee865bff84/libs/langgraph/langgraph/types.py#L912-L925">interrupt 的恢复语义</a></p>
+<p>可以把提案生成、审批和提交拆开，让审批节点反复读取同一份冻结提案；提交统一走业务适配器。这个拆分缩小了重入范围，但工具成功之后、结果落盘之前仍可能故障。接收端去重与结果查询依然不可缺少。</p>
+<p>还要区分三种“重放”：读取已有对话和结果、重新调用模型生成一个答案、重新执行外部操作。第一种适合恢复展示，第二种会引入新候选结果，第三种涉及真实效果。调试界面的“重新运行”应明确选择范围，不能默认把整条轨迹中的业务动作再做一遍。</p>
+<p>上下文压缩时，也应保留来源地址与版本、未决冲突、批准对象和操作状态。把“已批准提案 P17，尚未确认远端结果”压成“退款完成”，会直接破坏恢复语义。对重要字段使用结构化状态，摘要只承担阅读和检索作用。</p>
+<h3 id="unknown">未知结果需要对账，不能直接改写成失败</h3>
+<p>网络超时只说明客户端没有得到确定结果。远端可能尚未执行，也可能已经成功，或者仍在执行。若把这些情况都标成 <code>FAILED</code>，Agent 很容易换一组参数、换一个操作标识再次尝试。</p>
+<p>Stripe API 的错误文档明确将部分服务器错误视为不确定结果；在其 API v1 契约中，同键还可能持续返回缓存的错误。这说明“再请求一次”与“查清业务结果”是两件事。<a href="https://docs.stripe.com/error-low-level">Stripe：Advanced error handling</a></p>
+<pre><code class="language-text">if operation.outcome == UNKNOWN:
+    result = reconcile(operation, provider_contract)
+    if result.proves_success:
+        record(SUCCEEDED, result.receipt)
+    elif result.proves_no_effect_and_no_attempt_in_flight:
+        continue_under_same_operation_contract()
+    else:
+        suspend_further_submission()
+        escalate_with_operation_record()
+</code></pre>
+<p>一次查询未找到对象，并不总能证明没有生效：可能存在读延迟、权限差异，或者旧请求仍在飞行。每个写工具都需要定义什么证据足以确认结果、等待多久、由谁继续对账。缺少这些能力时，自动执行范围应相应缩小。</p>
+<p>跨系统流程还可能只完成一部分。补偿应按业务规则定义，并保留自己的状态与失败处理。对于支持条件补偿的步骤，可以在正向调用前登记补偿责任，避免调用已生效但超时后漏记；补偿仍要处理原效果没有发生的情况。<a href="https://temporal.io/blog/compensating-actions-part-of-a-complete-breakfast-with-sagas">Temporal：补偿动作的设计</a></p>
+<p>补偿不是恢复数据库快照。已经发出的通知、已经被他人使用的资源、已经成交的交易，都可能无法恢复到“从未发生”。任务验收需要列明允许的中间状态、补救终局和接管责任。</p>
+<h2 id="evaluation">七、用领域失败定义评测与放行策略</h2>
+<h3 id="erroranalysis">先让专家说明错误，再选择评测器</h3>
+<p>“答案质量不够好”无法指导修改。需要知道是选错主体、引用不支持结论、遗漏例外条款、计算口径混用，还是动作本身正确但未经允许执行。这些错误发生在不同位置，需要不同的检查和修复。</p>
+<p>领域专家应参与查看完整任务轨迹和交付物，记录为什么这个结果不能使用。先开放地归纳真实错误，再逐步形成稳定的失败分类和判定量规，比一开始列出很多抽象维度更容易定位问题。还应标记首次偏离要求的位置，避免把同一个上游错误的多个下游后果重复计数。<a href="https://hamel.dev/blog/posts/evals-faq/why-is-error-analysis-so-important-in-llm-evals-and-how-is-it-performed.html">Hamel Husain、Shreya Shankar：Error analysis</a></p>
+<p>如果专家每次都必须从头阅读大段自由文本，产品也可以改造交付物：以已知模板为基准展示差异，分开列出事实、推断和待确认项，提供可核对的字段与来源。Hamel Husain 将难以评测与产品设计联系起来，这个观察也适用于垂直系统：复核路径是否清楚，会直接影响实际节省的工作量。<a href="https://hamel.dev/blog/posts/eval-smell/">“It’s Hard to Eval” Is a Product Smell</a></p>
+<pre><code class="language-text">for trace in representative_traces:
+    review = domain_expert.review(trace, trace.delivered_artifact)
+    record(review.verdict, review.reason, review.evidence)
+    if review.failure is None: continue
+    if review.failure.can_be_checked_reliably:
+        add_versioned_check_and_regression_case(review.failure)
+    else:
+        define_review_or_escalation_rule(review.failure)
+</code></pre>
+<p>回归集用于防止已知问题回来，还需要独立、稳定的留出集和持续采样的新任务。反复针对同一小批例子修改提示词，会让回归表现与真实效果逐渐脱节。</p>
+<p>模型评审也要在未泄漏的专家标注集上验证，分别观察错放行与错拦截。通过样本占绝大多数时，一个总一致率可能掩盖对少数严重错误的漏检。模型、领域规则或量规发生变化后，需要重新校准；不同标准下的分数不能直接比较。<a href="https://hamel.dev/blog/posts/llm-judge/index.html">Using LLM-as-a-Judge For Evaluation</a></p>
+<h3 id="evalboundaries">最终结果、执行过程与策略遵守分别评测</h3>
+<p>一个退款任务最终把订单改成了正确状态，仍可能绕过了确认步骤。最终数据库相同，不能证明过程满足政策；轨迹中出现了某个正确动作，也不能证明它之前没有发生不允许的动作。</p>
+<p>τ-bench 系列的零售政策要求数据库更新前取得确认，而取消订单工具本身并不接收确认凭据。这样的间隙用于测试 Agent 是否遵守政策，不能直接作为生产工具边界。<a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/data/tau2/domains/retail/policy.md#L10-L24">零售政策</a>、<a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/domains/retail/tools.py#L158-L205">取消订单工具</a></p>
+<p>同一固定实现中，环境评分通过回放比较最终数据库状态；动作评分查找期望调用是否出现，不能据此证明严格顺序或没有额外动作。最终奖励只组合任务指定的分量，报告评分时也需要保留检查覆盖范围。<a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/evaluator/evaluator_env.py#L85-L129">环境评分</a>、<a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/evaluator/evaluator_action.py#L16-L59">动作评分</a>、<a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/evaluator/evaluator.py#L222-L256">奖励组合</a></p>
+<p>生产验收可以将条件分开：产物是否正确，操作前提是否满足，动作顺序是否允许，是否泄露数据，以及最终业务状态是否一致。对于能够在执行时阻止的违规，优先前置约束；离线评分用来发现遗漏，不能修复已经发生的效果。</p>
+<p>分组件评测则帮助定位错误。QueryGPT 将意图、表选择和 SQL 分开测试，并为下游组件提供正确的上游输入。这能判断一个失败来自哪个环节；完整端到端任务仍需要保留，才能测出组件连接后的问题。<a href="https://www.uber.com/gb/en/blog/query-gpt/">QueryGPT：评测设计</a></p>
+<p>组件通过不等于用户任务通过。正确检索到条款后仍可能解释错误，SQL 能运行也不等于查询口径正确。评测报告应保留检查范围，避免把局部代理指标提升成整体业务结论。</p>
+<h3 id="coverage">同时观察自动放行比例与放行后的错误</h3>
+<p>一个系统可以通过大量转人工降低自动输出错误，也可以通过放宽检查提高自动完成率。只报告其中一个指标，难以判断系统是否进步。</p>
+<p>选择性预测研究中的风险与覆盖率视角，可以借来组织这类运营指标；这是一种评估思路，不能直接给 Agent 提供统计保证。<a href="https://proceedings.mlr.press/v97/geifman19a.html">SelectiveNet</a></p>
+<pre><code class="language-text">automatic_coverage = automatically_released / eligible_tasks
+released_error_rate = incorrect_releases / automatically_released
+cost_per_accepted_task = total_operating_cost / accepted_tasks
+</code></pre>
+<p>例如，一批预先定义范围的 1,000 个任务，600 个自动放行，其中经审核发现 30 个错误，则覆盖率为 60%，放行后错误率为 5%。这里只是说明计算方式。实际运行中如果只抽检一部分，需要报告采样方式、估计误差和任务分布；不能把模型自报置信度当成真实错误率。</p>
+<p>不同错误的后果也不同。少引用一条背景资料、把错误金额提交到业务系统，不应只按两个“失败任务”相加。可以按任务类别与影响分别观察，给高影响动作设更严格的放行条件，同时记录转人工数量、排队时间和审核质量。</p>
+<p>适用任务的分母应在评测前固定。不能在出错后把困难任务移出范围，再宣称成功率提高。范围可以调整，但要把范围变化和系统能力变化分开报告。</p>
+<h2 id="evolution">八、从受限工作流逐步演进</h2>
+<h3 id="rollout">按动作风险逐步开放执行权</h3>
+<p>最初可以选择一个频率高、输入边界清楚、结果可检查的任务。先离线复现真实样本，再影子运行，随后提供人工可审查的草稿或提案；只有证据足够时，再允许满足条件的动作自动提交。</p>
+<p>影子运行可以测检索、分析和提案质量，但无法充分验证真实提交中的并发、超时和部分完成。提交链路还需要在受控环境中验证，并小范围上线观察。只读模式也需要权限、隐私和成本约束。</p>
+<p>自主程度最好按动作配置。同一系统可以自动搜集材料、自动计算、由人批准修改、由业务服务执行提交。没有必要用一个全局开关决定整个 Agent 是“自动”还是“人工”。</p>
+<p>人工接管也要有交付格式：当前任务、已完成部分、证据与冲突、冻结提案、已发生和仍不确定的动作，以及建议的下一步。只弹出一句“需要人工帮助”，会把整个上下文重建成本交给操作者。</p>
+<p>移交时还要明确谁拥有继续操作的权利。人工开始处理同一对象后，Agent 应停止对应自动动作；重新交回自动流程时，再更新权限与业务版本。交接既是信息传递，也是控制权转移，否则人和 Agent 可能依据同一旧状态分别写入。</p>
+<h3 id="operationcost">计算每个可接受结果的总成本</h3>
+<p>模型调用费用只是运行成本的一部分。重复检索、无效修复、工具延迟、人工审核和错误补救，都会影响一个任务是否值得自动化。增加检查可能减少事故，也可能让所有任务变慢；增加 Agent 可能缩短局部步骤，也可能扩大协调负担。</p>
+<p>Stripe Minions 在局部修改后使用较快的检查，再进入更昂贵的完整验证，并限制修复轮数。这种安排适合迁移为检查顺序：先做便宜、明确、能够阻断后续浪费的检查，再进行语义评审或全量验证。<a href="https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents-part-2">Stripe Minions：验证与修复</a></p>
+<p>运行预算也应区分正在产生进展与重复尝试。连续得到相同缺失数据、重复遇到同一口径冲突时，再增加搜索轮数未必有用。系统可以记录新证据、已解决问题和剩余阻塞，触发补问、换工具或接管；停止条件不应只剩一个很大的最大步数。</p>
+<h3 id="versioning">把变更作为一组可追溯版本发布</h3>
+<p>垂直系统的行为同时受模型、提示词、工具 Schema、检索索引、数据快照和业务规则影响。评测量规与 Judge 也需要版本化。只记录模型版本，无法解释为什么同一个任务今天被允许、昨天被拒绝。</p>
+<p>可以为一次运行保存版本清单，并将发布与评测结果关联。等待中的提案还需要兼容策略：旧执行代码是否仍可恢复，工具参数语义是否变化，旧规则下的批准是否仍能使用。代码兼容与业务有效性分别检查；能反序列化旧状态，不代表应该继续提交旧动作。</p>
+<p>日志保留应服务于复现和定位，同时遵守数据范围、脱敏和保留期限。对于敏感任务，保存受控的来源引用、版本和必要证据，可能比无限复制完整材料更合适。观察能力本身也需要权限设计。</p>
+<p>新增机制之后，持续核对它是否减少了预期错误。如果一个复杂规划器没有提高可接受任务比例，一个额外评审 Agent 只重复已有检查，就需要考虑简化。工程积累也包括知道哪些机制已经不值得维护。</p>
+<h2 id="checklist">设计时需要留下的证据</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>需要回答的问题</th>
+<th>系统中对应的对象或约束</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>这次任务承诺交付什么？</td>
+<td>任务规格、适用范围、完成条件</td>
+</tr>
+<tr>
+<td>结论依据什么口径和时点？</td>
+<td>结构化事实、数据版本、来源定位</td>
+</tr>
+<tr>
+<td>一个前提失效后影响哪里？</td>
+<td>依赖记录、失效状态、缓存与更正路径</td>
+</tr>
+<tr>
+<td>哪些步骤每次都必须执行？</td>
+<td>确定性控制流、前置检查、验收门</td>
+</tr>
+<tr>
+<td>模型可以读取和提出什么？</td>
+<td>检索范围、工具能力、上下文权限</td>
+</tr>
+<tr>
+<td>谁批准了哪个具体动作？</td>
+<td>冻结提案、可信批准记录、有效期</td>
+</tr>
+<tr>
+<td>现在执行是否仍然成立？</td>
+<td>当前权限、业务规则、条件提交</td>
+</tr>
+<tr>
+<td>超时之后怎样确认实际结果？</td>
+<td>稳定操作标识、结果查询、对账责任</td>
+</tr>
+<tr>
+<td>恢复会重复什么？</td>
+<td>持久边界、重入语义、去重契约</td>
+</tr>
+<tr>
+<td>自动化是否值得扩大？</td>
+<td>领域错误集、放行指标、人工成本与发布证据</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些对象不必一开始全部做成独立服务。一个受限工作流、一个数据库和清晰的业务适配器，往往已经能承载第一版。随着任务范围扩大，再根据实际失败增加机制。系统可以逐步复杂起来，任务的含义、批准的对象和结果的状态则应从一开始就明确。</p><footer class="article-footer"><a href="/blog/">← 返回 Blog</a></footer></article>
+</div>
+<script>
+const shell = document.querySelector('.toc-shell');
+const mobile = window.matchMedia('(max-width: 840px)');
+function setMode() { shell.open = !mobile.matches; }
+setMode();
+mobile.addEventListener('change', setMode);
+const links = [...document.querySelectorAll('.toc-list a')];
+links.forEach(link => link.addEventListener('click', () => {
+  if (mobile.matches) shell.open = false;
+}));
+const headings = links.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+function mark(id) {
+  links.forEach(link => {
+    if (decodeURIComponent(link.hash.slice(1)) === id) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+}
+let scheduled = false;
+function updateCurrent() {
+  const threshold = Math.min(window.innerHeight * .25, 160);
+  let current = headings[0];
+  for (const heading of headings) {
+    if (heading.getBoundingClientRect().top <= threshold) current = heading;
+    else break;
+  }
+  if (current) mark(current.id);
+  scheduled = false;
+}
+window.addEventListener('scroll', () => {
+  if (!scheduled) { scheduled = true; requestAnimationFrame(updateCurrent); }
+}, {passive: true});
+updateCurrent();
+</script>
+</body>
+</html>
+
+{% endraw %}
