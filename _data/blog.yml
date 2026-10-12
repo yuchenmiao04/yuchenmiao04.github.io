@@ -1,3 +1,6 @@
+- slug: interesting-prompts
+  title: 记录一组有趣的提示词
+  description: 一组用于讨论决策的提示词：先反驳，再支持，最后中立比较关键证据。
 - slug: harness-anything
   title: Harness Anything：面向垂直领域的 Agent 系统设计
   description: 从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。
@@ -13,9 +16,6 @@
 - slug: skill-progressive-disclosure
   title: Skill 渐进式披露：Pi 与 DeepSeek Harness 如何按需加载
   description: 通过 Pi 与 DeepSeek Harness 的实现，说明技能目录、正文与引用资料如何分层进入模型上下文。
-- slug: interesting-prompts
-  title: 记录一组有趣的提示词
-  description: 一组用于讨论决策的提示词：先反驳，再支持，最后中立比较关键证据。
 - slug: prompt-engineering
   title: Prompt Engineering：把任务写清楚，把结果验明
   description: 从 Few-shot、思维链与任务分解的经典案例出发，梳理材料组织、结构化输出、结果检查与提示词迭代的方法。
