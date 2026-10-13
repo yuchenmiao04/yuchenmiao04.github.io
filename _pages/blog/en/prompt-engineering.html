@@ -1,0 +1,520 @@
+---
+layout: null
+title: 'Prompt Engineering: Define the Task, Verify the Result'
+permalink: /en/blog/prompt-engineering/
+description: Task requirements, context, few-shot examples, CoT, ReAct, decomposition,
+  structured outputs, and evaluation, explained through classic examples and practical
+  boundaries.
+lang: en
+translation_slug: prompt-engineering
+---
+
+{% raw %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>Prompt Engineering: Define the Task, Verify the Result - Yuchen Miao</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper: #ffffff;
+  --ink: #202027;
+  --muted: #74717d;
+  --line: #e7e3ec;
+  --purple: #69528c;
+  --lavender: #f3eff9;
+  --code: #f7f6f9;
+  --body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --display: "Avenir Next", "Helvetica Neue", var(--body);
+  --mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); -webkit-font-smoothing: antialiased; }
+a { color: var(--purple); text-decoration-thickness: 1px; text-underline-offset: .21em; }
+a:hover { color: #3f285f; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: 2px; }
+.layout { width: min(1180px, calc(100% - 80px)); margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); column-gap: 66px; row-gap: 42px; align-items: start; }
+.intro { grid-column: 1 / -1; min-width: 0; padding: 64px 0 0; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.intro > :not(figure) { max-width: 760px; margin-left: auto; margin-right: auto; }
+.intro .overview-figure { max-width: 1000px; margin: 30px auto 0; }
+.toc-shell { position: sticky; top: 28px; margin: 0 0 32px; max-height: calc(100vh - 56px); max-height: calc(100svh - 56px); overflow-y: auto; scrollbar-width: thin; padding: 0 14px 20px 0; }
+.toc-shell summary { display: none; }
+.toc-label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .08em; margin: 0 0 17px 13px; }
+.toc-list { list-style: none; padding: 0; margin: 0; }
+.toc-list li { margin: 0; }
+.toc-list a { display: block; padding: 7px 11px; border-left: 2px solid transparent; font-size: 13px; line-height: 1.65; color: #6b6773; text-decoration: none; border-radius: 0 5px 5px 0; }
+.toc-list .level-2 > a { font-weight: 600; margin-top: 7px; color: #39353f; }
+.toc-list .level-3 > a { padding-left: 23px; font-size: 12px; }
+.toc-list a:hover { background: #f8f6fb; }
+.toc-list a[aria-current="location"] { border-left-color: var(--purple); background: var(--lavender); color: #4f386f; }
+article { min-width: 0; padding: 0 0 90px; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.article-header { margin: 0 0 34px; }
+h1 { font-family: var(--display); font-size: clamp(34px, 4vw, 46px); line-height: 1.18; letter-spacing: -.035em; font-weight: 650; margin: 0; color: #17151d; }
+.subtitle { font-size: 17px; line-height: 1.7; color: #726a7c; margin: 13px 0 0; letter-spacing: .01em; }
+p { margin: 0 0 19px; }
+h2 { margin: 56px 0 23px; padding-top: 25px; border-top: 1px solid var(--line); font-size: 23px; line-height: 1.55; font-weight: 650; letter-spacing: -.015em; }
+article > h2:first-child { margin-top: 0; }
+h3 { font-size: 18px; line-height: 1.65; font-weight: 650; margin: 32px 0 16px; }
+h2[id], h3[id] { scroll-margin-top: 26px; }
+strong { font-weight: 650; }
+article ul, article ol { padding-left: 1.6em; margin: 0 0 22px; }
+article li { padding-left: .15em; margin-bottom: .45em; }
+code { font-family: var(--mono); font-size: .84em; overflow-wrap: anywhere; background: var(--lavender); color: #55416c; border-radius: 4px; padding: .14em .35em; }
+pre { margin: 23px 0 25px; background: var(--code); border: 1px solid #e9e4ef; border-radius: 9px; padding: 20px 22px; line-height: 1.72; overflow: auto; tab-size: 4; max-width: 100%; }
+pre code { display: block; padding: 0; color: #34303b; border: 0; background: transparent; font-size: 12.5px; overflow-wrap: normal; white-space: pre; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin: 24px 0 28px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.8; }
+th, td { text-align: left; vertical-align: top; padding: 12px 15px; border-bottom: 1px solid var(--line); }
+th { background: #f7f4fb; color: #41374f; font-weight: 600; }
+th:first-child, td:first-child { width: 37%; }
+td code { font-size: .86em; }
+figure { margin: 30px 0 33px; }
+figure img { width: 100%; height: auto; display: block; background: white; }
+figcaption { max-width: 680px; margin: 11px auto 0; color: var(--muted); font-size: 12px; line-height: 1.75; text-align: center; }
+blockquote { margin: 24px 0; border-left: 3px solid #c9bcdd; padding: 3px 0 3px 20px; color: #5d5667; }
+blockquote p:last-child { margin-bottom: 0; }
+@media (max-width: 1040px) {
+  .layout { width: min(960px, calc(100% - 52px)); grid-template-columns: 220px minmax(0, 1fr); column-gap: 36px; }
+  .toc-list a { font-size: 12px; }
+  .toc-list .level-3 > a { font-size: 11.5px; }
+  article, .intro { font-size: 15.5px; }
+}
+@media (max-width: 840px) {
+  html { scroll-padding-top: 20px; }
+  .layout { display: flex; flex-direction: column; gap: 0; width: min(760px, calc(100% - 40px)); }
+  .intro { order: 0; width: 100%; padding: 37px 0 0; font-size: 16px; }
+  .intro .overview-figure { margin-top: 27px; }
+  .toc-shell { position: static; order: 1; top: auto; width: 100%; max-height: none; margin: 28px 0 0; padding: 0; background: #faf9fc; border: 1px solid var(--line); border-radius: 8px; }
+  .toc-shell summary { display: list-item; cursor: pointer; font-size: 14px; font-weight: 600; padding: 12px 17px; color: #50445e; }
+  .toc-content { padding: 0 12px 16px; max-height: 64vh; max-height: 64svh; overflow-y: auto; }
+  .toc-label { display: none; }
+  .toc-list a { font-size: 13px; }
+  .toc-list .level-3 > a { font-size: 12px; }
+  article { order: 2; padding: 34px 0 60px; width: 100%; font-size: 16px; }
+  .article-header { margin-bottom: 29px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 22px; margin-top: 43px; padding-top: 23px; }
+  h3 { font-size: 18px; }
+  .subtitle { font-size: 16px; }
+  pre { padding: 17px 16px; margin-inline: 0; }
+  pre code { font-size: 11.5px; }
+  th, td { padding: 10px 11px; }
+  table { font-size: 13px; }
+}
+@media (max-width: 420px) {
+  .layout { width: calc(100% - 32px); }
+  article, .intro { font-size: 15.5px; line-height: 1.95; }
+  h1 { font-size: 33px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  .layout { display: block; width: 100%; }
+  .toc-shell { display: none; }
+  article, .intro { padding: 0; font-size: 11pt; }
+  .intro { margin-bottom: 28px; }
+  pre { white-space: pre-wrap; overflow: visible; }
+  pre code { white-space: pre-wrap; }
+  figure, pre, tr { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+}
+</style>
+<link href="https://yuchenmiao04.github.io/en/blog/prompt-engineering/" rel="canonical"/><meta content="Task requirements, context, few-shot examples, CoT, ReAct, decomposition, structured outputs, and evaluation, explained through classic examples and practical boundaries." name="description"/><meta content="Prompt Engineering: Define the Task, Verify the Result" property="og:title"/><meta content="Task requirements, context, few-shot examples, CoT, ReAct, decomposition, structured outputs, and evaluation, explained through classic examples and practical boundaries." property="og:description"/><meta content="https://yuchenmiao04.github.io/en/blog/prompt-engineering/" property="og:url"/><meta content="article" property="og:type"/><meta content="https://yuchenmiao04.github.io/images/blog/en/prompt-engineering/00-prompt-overview.png" property="og:image"/><style id="site-navigation-style">
+.article-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 28px; font-size: 13px; line-height: 1.6; }
+.article-nav a { color: var(--muted); text-decoration: none; }
+.article-nav a:hover { color: var(--purple); }
+.article-footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 22px; font-size: 14px; }
+</style><link href="https://yuchenmiao04.github.io/blog/prompt-engineering/" hreflang="zh-CN" rel="alternate"/><link href="https://yuchenmiao04.github.io/en/blog/prompt-engineering/" hreflang="en" rel="alternate"/><link href="https://yuchenmiao04.github.io/blog/prompt-engineering/" hreflang="x-default" rel="alternate"/><link href="/assets/css/blog-language.css" rel="stylesheet"/><script defer="" src="/assets/js/blog-language.js"></script></head>
+<body>
+<div class="layout">
+<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="Article navigation" class="article-nav"><a href="/en/blog/">← Blog</a><nav aria-label="Language" class="blog-language-switch"><a data-blog-language="zh-CN" href="/blog/prompt-engineering/" hreflang="zh-CN" lang="zh-CN">中文</a><a aria-current="page" data-blog-language="en" href="/en/blog/prompt-engineering/" hreflang="en" lang="en">English</a></nav><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Prompt Engineering</h1><p class="subtitle">Define the task clearly. Verify the result.</p></header>
+<p>“Summarize this report” usually produces fluent prose. Yet a manager preparing for a meeting, a colleague taking over a project, and a program ingesting data need different summaries. The manager needs evidence for decisions, the colleague needs background and unresolved issues, and the program needs conventions for fields, types, and missing values. The same material can support different deliverables.</p>
+<p>Prompt engineering addresses these differences: specify what must be done, supply the information needed, demonstrate easily misunderstood decision boundaries, and make the result checkable. A sterner tone, a grander role title, or longer instructions cannot replace that work.</p>
+<p>Early prompting research developed methods such as learning from examples, task decomposition, chain of thought, and repeated sampling. As training methods and interfaces change, the benefits of a particular formulation change too. <a href="https://arxiv.org/html/2406.06608v6">The Prompt Report</a> offers a broad taxonomy. In practice, the more useful questions are what caused the current failure, which change could reduce it, and at what cost.</p>
+<p>A durable prompt should make the relationships between goals, evidence, and acceptance clear. The sections below follow those relationships. Individual techniques can be combined as needed, without packing all of them into the same long template every time.</p>
+<figure class="overview-figure"><img alt="Prompting starts with tasks, materials, and examples, then improves through result checks and specific feedback." decoding="async" fetchpriority="high" height="356" loading="eager" src="/images/blog/en/prompt-engineering/00-prompt-overview.png" width="1078"/><figcaption>Prompting starts with tasks, materials, and examples, then improves through result checks and specific feedback.</figcaption></figure>
+</section>
+<details class="toc-shell" open="">
+<summary>Contents</summary>
+<nav aria-label="Table of contents" class="toc-content">
+<p class="toc-label">Contents</p>
+<ol class="toc-list"><li class="level-2"><a href="#requirements">1. Turn the task into assessable requirements</a></li>
+<li class="level-3"><a href="#deliverable">Explain how the deliverable will be used</a></li>
+<li class="level-3"><a href="#constraints">Replace quality adjectives with actions, boundaries, and priorities</a></li>
+<li class="level-3"><a href="#missing">Decide how to handle missing information and clarification</a></li>
+<li class="level-2"><a href="#context">2. Organize materials and retain their sources and boundaries</a></li>
+<li class="level-3"><a href="#structure">Separate rules, the current request, and the material to process</a></li>
+<li class="level-3"><a href="#longcontext">Give long materials navigation and test positional effects</a></li>
+<li class="level-3"><a href="#selectcontext">Select relevant material and allow the answer to be absent</a></li>
+<li class="level-2"><a href="#examples">3. Few-shot: demonstrate decision boundaries</a></li>
+<li class="level-3"><a href="#shotformats">Zero-shot and few-shot: two inputs for the same task</a></li>
+<li class="level-3"><a href="#selectexamples">Examples should clarify what rules leave ambiguous</a></li>
+<li class="level-3"><a href="#examplebias">Prevent examples from introducing accidental patterns</a></li>
+<li class="level-3"><a href="#fewshotbudget">Start with a zero-shot baseline and add examples for observed errors</a></li>
+<li class="level-2"><a href="#reasoning">4. Choose reasoning and decomposition for the task</a></li>
+<li class="level-3"><a href="#cot">Chain of thought (CoT): demonstrate how to reach an answer</a></li>
+<li class="level-3"><a href="#decompose">Least-to-most: let later steps reuse earlier results</a></li>
+<li class="level-3"><a href="#sampling">Self-consistency: select answers from multiple samples</a></li>
+<li class="level-3"><a href="#react">ReAct: let tool observations determine the next step</a></li>
+<li class="level-2"><a href="#validation">5. Make outputs checkable and reusable</a></li>
+<li class="level-3"><a href="#schema">Structured outputs: define formats and incomplete states</a></li>
+<li class="level-3"><a href="#evidencecheck">Check citation existence and support separately</a></li>
+<li class="level-3"><a href="#repair">Give repairs specific feedback and stopping conditions</a></li>
+<li class="level-2"><a href="#iteration">6. Revise prompts from observed errors</a></li>
+<li class="level-3"><a href="#finalrequest">Debug the actual request, not just the template</a></li>
+<li class="level-3"><a href="#ablation">Give each change a testable hypothesis</a></li>
+<li class="level-3"><a href="#evaluation">Measure correctness, completeness, and justified abstention</a></li>
+<li class="level-3"><a href="#optimization">Automatic optimization needs an objective worth optimizing</a></li>
+<li class="level-2"><a href="#boundaries">7. Know when to stop changing the wording</a></li>
+<li class="level-3"><a href="#tools">Fix the system when knowledge, computation, or access is missing</a></li>
+<li class="level-3"><a href="#migration">Validate prompts together with models and settings</a></li>
+<li class="level-2"><a href="#lookup">Look up a symptom</a></li></ol>
+</nav>
+</details>
+<article aria-label="Prompt Engineering"><h2 id="requirements">1. Turn the task into assessable requirements</h2>
+<h3 id="deliverable">Explain how the deliverable will be used</h3>
+<p>“Clear, professional, and accurate” expresses a wish but removes little ambiguity. Identifying the audience and purpose makes it easier to decide what to retain and what to omit. Ethan Mollick's <a href="https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough">Good enough prompting</a> emphasizes real task context, audience, and iterative feedback. These details often help more directly than elaborate role assignments.</p>
+<p>A project summary might use the following specification:</p>
+<pre><code class="language-text">Using the supplied meeting notes, write a handoff summary for an engineer
+taking over the project.
+Retain agreed decisions, unresolved issues, next actions, and their owners.
+Attach the meeting-note paragraph number to each decision.
+Do not add dates, owners, or commitments absent from the material.
+If an owner is missing, write “unspecified”; do not infer it from the speaker.
+Use four sections. Each item should contain one decision or action.
+</code></pre>
+<p>The consequential details are “taking over the project,” “decisions,” “unresolved issues,” and “what to do when an owner is missing.” Four sections is a presentation requirement that can change with the interface. Keeping these two kinds of requirements separate helps prevent formatting from overriding the task itself.</p>
+<p>Purpose also determines what information matters. A decision brief can highlight impact and alternatives; a handoff must retain unresolved issues; extraction for a program needs stable fields. A single prompt that tries to serve every purpose usually leaves each audience with more filtering to do.</p>
+<h3 id="constraints">Replace quality adjectives with actions, boundaries, and priorities</h3>
+<p>“Concise” can become “retain only information that affects the next decision.” “Omit nothing” can become “cover every question in the input and retain unanswered items.” “Evidence-based” can become “attach a source ID to every factual judgment and label speculation separately.” These requirements can still be violated, but at least a failure can be located.</p>
+<p>Prohibitions work better with an alternative behavior alongside them. “Do not fabricate” does not explain what to deliver when data is missing. “Define an unknown state for fields, for example allowing missing values to be <code>null</code>, and identify which judgment the missing item affects” produces a result that can be processed further. Negative constraints can remain, provided the model is not left to guess how to stop.</p>
+<p>Conflicting constraints also need priorities. “Cite evidence for every conclusion” and “keep the entire answer within 100 characters” may be incompatible. If important information must remain, permit exceeding the suggested length or require an explanation of why the constraints cannot all be met. Otherwise the model may silently drop evidence to satisfy the more visible character limit.</p>
+<p>Anthropic's <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview">prompt engineering overview</a> treats success criteria and testing methods as prerequisites for optimization. A practical starting point is to write what an acceptable result looks like for one or two real inputs, then revise the prompt. When acceptance still means “looks good,” prompts can easily drift toward longer, more professional-sounding prose.</p>
+<h3 id="missing">Decide how to handle missing information and clarification</h3>
+<p>“Ask a follow-up question if information is insufficient” is still too broad. A model may repeatedly interrupt over details that do not affect the result, or make assumptions about critical gaps. Distinguish what must be clarified, what can use a default, and what can remain unknown.</p>
+<pre><code class="language-text">If missing information changes the task scope or main conclusion,
+ask about the critical gap first.
+If only formatting or tone is unspecified, use defaults suitable
+for a technical audience.
+If a fact is absent but the rest of the task can be completed,
+leave that item unknown.
+Briefly identify defaults you use; do not present them as source facts.
+</code></pre>
+<p>Role prompting should also serve a specific purpose. “Review this as a code reviewer, focusing on exception handling and resource cleanup” identifies a focus. “Write for readers who know Python but are new to distributed systems” identifies an audience and helps set the depth of explanation. “You are the world's leading expert” cannot supply missing material or grant tool access. Roles and audiences help select perspective, language, and emphasis; professional judgment still depends on materials and checks.</p>
+<h2 id="context">2. Organize materials and retain their sources and boundaries</h2>
+<h3 id="structure">Separate rules, the current request, and the material to process</h3>
+<p>A long input often mixes application rules, user questions, conversation history, and retrieved results. The model needs to distinguish task-defining instructions from the objects of the task. Clear sections reduce ambiguity and make the final input easier to debug.</p>
+<pre><code class="language-text">Application rules: answer scope, missing-information behavior,
+evidence requirements, and output requirements.
+
+Materials for this request:
+&lt;document id="D1" title="Project meeting notes" version="v3"&gt;
+  &lt;paragraph id="P1"&gt;...&lt;/paragraph&gt;
+  &lt;paragraph id="P2"&gt;...&lt;/paragraph&gt;
+&lt;/document&gt;
+
+Current request: extract agreed decisions and matters still undecided.
+Use references such as D1:P1 to locate evidence.
+</code></pre>
+<p>When an API supports a native message hierarchy, preserve its structure. In OpenAI's interface, for example, application rules and user requests have different priorities; see its <a href="https://developers.openai.com/api/docs/guides/prompt-engineering">prompt engineering guide</a>. Role semantics depend on the provider. One API's conventions cannot simply be imposed on every model template.</p>
+<p>Markdown headings, XML tags, and triple quotes are delimiters that can help readability. There is no evidence that one delimiter is best across every model, language, and task. Choose a format that is easy to inspect, escape, and construct automatically, then validate it on real tasks. Repeatedly rewriting the whole prompt for formatting tricks is rarely useful.</p>
+<h3 id="longcontext">Give long materials navigation and test positional effects</h3>
+<p>A long context window addresses whether information fits, without automatically ensuring it is used well. <a href="https://aclanthology.org/2024.tacl-1.9/">Lost in the Middle</a> found that the position of relevant information affected results in the multi-document question-answering and key-value retrieval settings it tested. This observation suggests what to test; it does not establish an identical positional curve for every newer model.</p>
+<p>Document IDs, titles, versions, and paragraph locations give materials a citable structure. When sources conflict, the model can at least identify which ones disagree. Labels such as “Material A” and “Material B,” without versions, often cannot explain whether apparently contradictory figures belong to different periods.</p>
+<p>For large inputs, the <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#long-context-prompting">Claude long-context guide</a> recommends placing materials first and the specific question at the end. This is compatible with placing stable rules in the application instruction layer: the former arranges the current long input, while the latter defines persistent behavior. It is a starting point that still needs testing against the model and task.</p>
+<p>Keep the correct answer fixed and place its key evidence at the beginning, middle, and end of the materials, then add a few topically similar but irrelevant passages. If the answer changes markedly with position or distractors, improve retrieval, narrow the input, or add an evidence-location step. Enlarging the window alone may not reduce these failures.</p>
+<h3 id="selectcontext">Select relevant material and allow the answer to be absent</h3>
+<p>Sending only the most similar passage can omit exceptions; sending the whole knowledge base can make unrelated provisions compete for attention. Material selection needs to retain the context that supports a judgment, including definitions, scope, exceptions, and version notes.</p>
+<p>Making answers depend on checkable material is commonly called grounding. For evidence-heavy tasks, ask the model to locate relevant passages before forming an answer. The located evidence needs only a document ID, source excerpt, and the claim it supports, rather than lengthy internal reasoning. If no evidence is found, “not covered by the materials” should be an allowed result instead of forcing every question to receive an answer.</p>
+<p>“No support found” and “contradictory evidence exists” also need to remain separate. A document's failure to mention a feature does not establish that the feature is absent. Two documents applying to different versions may not conflict factually. A prompt can distinguish these states; subsequent checks can assess whether the sources support each judgment.</p>
+<p>External material can still contain text that attempts to change the task. Simon Willison's <a href="https://simonwillison.net/2023/May/11/delimiters-wont-save-you/">analysis of delimiters and prompt injection</a> shows why delimiters do not provide security isolation. Labeling text as material helps express intent. Tools, sensitive data, and external actions also require program-enforced permission and data-egress controls.</p>
+<h2 id="examples">3. Few-shot: demonstrate decision boundaries</h2>
+<h3 id="shotformats">Zero-shot and few-shot: two inputs for the same task</h3>
+<p>Zero-shot prompting supplies instructions and the current input without completed task demonstrations. One-shot supplies one demonstration; few-shot supplies a small number before asking the model to handle a new input. The count refers to demonstrations in the input, rather than conversation turns, and does not involve updating model weights during inference.</p>
+<p>A classic GPT-3 example gives definitions of new words and asks the model to use them in sentences. The original starts with a human-written example and retains subsequently generated sentences in context. The following presents two prompts adapted from that <a href="https://arxiv.org/html/2005.14165v4#S3.SS9.SSS5">new-word example</a>, with sentences shortened and modified.</p>
+<p>A zero-shot prompt can say:</p>
+<pre><code class="language-text">Definition: A yalubalu is a vegetable that resembles a large pumpkin.
+Write a natural sentence using yalubalu consistently with its definition.
+</code></pre>
+<p>A few-shot prompt first demonstrates how a definition becomes a sentence:</p>
+<pre><code class="language-text">Definition: A whatpu is a small, furry animal native to Tanzania.
+Sentence: While traveling in Africa, we saw several adorable whatpus.
+
+Definition: To farduddle is to jump up and down quickly.
+Sentence: My younger sister began to farduddle excitedly during a game of tag.
+
+Definition: A yalubalu is a vegetable that resembles a large pumpkin.
+Sentence:
+</code></pre>
+<p>A suitable continuation could be “For dinner, we cut the yalubalu into pieces and roasted it.” The demonstrations show the task form and how the word is used; the answer is not unique. This qualitative case does not prove that adding examples always improves results. A model that already understands the task may need only the first input.</p>
+<p>Example count and example content are separate dimensions. Few-shot examples can show final labels, brief solution steps, or tool-use traces. Few-shot, CoT, and ReAct can therefore be combined; they are not three mutually exclusive prompting modes.</p>
+<h3 id="selectexamples">Examples should clarify what rules leave ambiguous</h3>
+<p>Examples can simultaneously show format, tone, input distribution, and classification boundaries. <a href="https://arxiv.org/abs/2202.12837">Rethinking the Role of Demonstrations</a> analyzes these factors in the classification and multiple-choice settings it studies. Some of its findings about random labels apply to particular models and tasks; they do not mean incorrect examples are harmless.</p>
+<p>Correct examples remain a basic requirement in practice. Selection deserves more effort: an ordinary case shows normal handling, a similar case with a different label shows the distinction, and an incomplete case shows when to stop judging.</p>
+<p>A ticket policy might classify an existing capability that deviates from expectations under clear conditions as <code>bug</code>; a request for a capability not yet provided as <code>feature</code>; and insufficient information to establish either as <code>needs_info</code>. These cases convey more than three obvious defects:</p>
+<pre><code class="language-text">“After exporting CSV, the existing Chinese-language fields are garbled.” =&gt; bug
+“Only CSV export is available; please add Excel export.” =&gt; feature
+“The export is wrong.” =&gt; needs_info
+Clarify: export format, actual result, and expected result.
+</code></pre>
+<p>The value is that “the export is wrong” is not forced into the bug category. If the business process permits classification before clarification, revise both the rule and the examples accordingly. Examples are often easier to imitate than abstract rules. When they conflict, a more emphatic instruction rarely solves the problem reliably.</p>
+<figure><img alt="Example selection should cover ordinary cases, easily confused neighboring categories, and missing-information behavior." decoding="async" height="299" loading="lazy" src="/images/blog/en/prompt-engineering/01-example-boundaries.png" width="1078"/><figcaption>Example selection should cover ordinary cases, easily confused neighboring categories, and missing-information behavior.</figcaption></figure>
+<h3 id="examplebias">Prevent examples from introducing accidental patterns</h3>
+<p>If every bug example mentions “export” and every feature request says “add,” the model may follow vocabulary rather than the business definition. Vary the wording and include similar keywords with different conclusions. Examples should do more than prove the prompt can handle the formulations it has already seen.</p>
+<p><a href="https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/">Lilian Weng's prompting review</a> surveys research on example selection, label distributions, and ordering. For a particular task, hold example content fixed and swap the order, or remove one example and observe which errors change. This makes results easier to interpret than continually adding more examples.</p>
+<p>Also control the relationship between examples and test data. A demonstrated case and its close paraphrases are not independent tests of generalization. Samples from the same template, document, or event should usually be split as a group, rather than changing a few words and placing them on opposite sides of a dataset split.</p>
+<h3 id="fewshotbudget">Start with a zero-shot baseline and add examples for observed errors</h3>
+<p>There is no optimal example count for every task. <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices">Claude's prompting guide</a> offers practical advice on a small, diverse set of examples; <a href="https://developers.openai.com/api/docs/guides/reasoning-best-practices">OpenAI's reasoning-model guide</a> recommends starting zero-shot and adding examples as needed. These recommendations concern different models and settings.</p>
+<p>Begin with clear rules and inspect real errors. If the model already understands the task, examples may only increase input cost. If it repeatedly confuses a boundary, add examples that explain that boundary. Each example should ideally answer one question: which failure returns when it is removed?</p>
+<p>Examples also affect answer length and form. If all examples contain lengthy explanations, output may remain long even when the instructions ask for brevity. Use short examples when short output is needed. Include reasonable unknown states when unknowns must be retained, rather than providing a complete answer to every demonstration.</p>
+<h2 id="reasoning">4. Choose reasoning and decomposition for the task</h2>
+<h3 id="cot">Chain of thought (CoT): demonstrate how to reach an answer</h3>
+<p><a href="https://arxiv.org/abs/2201.11903">Chain-of-Thought Prompting</a> demonstrated benefits from examples containing intermediate solution steps for certain large language models and reasoning tasks. The original method is not equivalent to appending “think step by step” to an arbitrary task, and its benefits are not guaranteed across tasks.</p>
+<p>Figure 1 in the original paper illustrates the distinction with tennis balls and apples. The prompt structure can be condensed as follows:</p>
+<pre><code class="language-text">Completed example
+Q: Roger has 5 tennis balls and buys 2 cans with 3 balls each.
+   How many tennis balls does he have now?
+A: He buys 2 × 3 = 6 balls, for a total of 5 + 6 = 11.
+
+New task
+Q: A cafeteria has 23 apples, uses 20 for lunch, and buys 6 more.
+   How many apples remain?
+A:
+</code></pre>
+<p>The example demonstrates quantities and operations, rather than only the answer <code>11</code>. The new question gives <code>23 − 20 + 6 = 9</code>. The figure shows one example to explain the method, while the main experiments use fuller demonstration sets. One successful case cannot replace an aggregate evaluation.</p>
+<p>Adding “Let's think step by step” without solution demonstrations belongs to another study's <a href="https://arxiv.org/abs/2205.11916">Zero-shot CoT</a>. Its original procedure generates a solution first, then extracts the final answer. Its input structure differs from demonstration-based CoT; the two should not be reduced to the same catchphrase.</p>
+<p>For models trained with internal reasoning capabilities, forcing a long visible reasoning process may not help. OpenAI's reasoning-model <a href="https://developers.openai.com/api/docs/guides/reasoning-best-practices">guide</a> places more emphasis on directly stating goals and constraints. After model changes, repeated checking instructions, mandatory step-by-step output, and lengthy roles in old prompts deserve reassessment.</p>
+<p>Useful explanations can still be requested: key assumptions, formulas, evidence citations, brief decision rationales, or solution steps for a learner. These are deliverables for the reader. A coherent explanation establishes readability; by itself, it proves neither the answer's correctness nor the model's actual internal process.</p>
+<h3 id="decompose">Least-to-most: let later steps reuse earlier results</h3>
+<p>“Analyze, then think, then answer” defines almost none of the intermediate work. More concrete decomposition specifies what each step receives, produces, and passes onward. <a href="https://arxiv.org/abs/2205.10625">Least-to-Most Prompting</a> decomposes a problem into subproblems and solves them sequentially using earlier subanswers. This can inform workflow design, although decomposition quality in open-ended tasks still needs separate assessment.</p>
+<p>The paper's last-letter concatenation task makes the dependency visible. The original demonstration can be condensed as follows:</p>
+<pre><code class="language-text">Task: Take the last letters of think, machine, and learning, in order,
+      and concatenate them.
+Base result: think and machine end in k and e, producing ke.
+Continue: We already have ke; learning ends in g.
+Final result: ke + g = keg.
+</code></pre>
+<p>The later step consumes the earlier result without reprocessing the full list from the beginning. This explains recurrence and dependency. In an application, a program can directly perform last-letter operations; there is no need to call a model merely to use a prompting technique.</p>
+<p>A comparison of two technical proposals can be decomposed into these artifacts:</p>
+<pre><code class="language-text">1. Extract mandatory conditions from the requirements; retain original item IDs.
+2. Extract matching evidence from proposals A and B separately;
+   mark items without evidence as unknown.
+3. Align conditions and evidence; distinguish satisfied, unsatisfied,
+   and undetermined.
+4. Recommend using the user's priorities; list unknowns affecting the advice.
+Check: Every mandatory condition appears in the comparison table.
+</code></pre>
+<p>These steps can happen in one call or several. Linking calls so each consumes the previous result is prompt chaining; <a href="https://www.anthropic.com/engineering/building-effective-agents#workflow-prompt-chaining">Anthropic's workflow guide</a> also emphasizes programmatic checks between calls. Multiple calls have a clear benefit when steps need separate validation, reuse, parallelism, or different tools. Creating a complex plan for an already short task often adds only latency and new failure points.</p>
+<p>Decomposition can also lose information. If the first step omits a requirement, a neat downstream comparison may faithfully preserve the error. Retain original item IDs and check coverage at the end. Wherever a downstream step sees only a summary, consider whether negations, exceptions, and applicability conditions have been lost.</p>
+<h3 id="sampling">Self-consistency: select answers from multiple samples</h3>
+<p><a href="https://arxiv.org/abs/2203.11171">Self-Consistency</a> samples multiple reasoning paths and aggregates their final answers, improving results on the tasks it tested. It relies on comparable final answers; an open-ended report has no natural majority vote.</p>
+<p>For numeric or multiple-choice tasks, normalize answers first: are units consistent, are percentages equivalent to decimals, and should synonymous labels be merged? If samples share a misunderstanding, voting can consistently return the wrong answer. Samples may share systematic bias, so vote counts cannot be directly interpreted as probabilities of correctness.</p>
+<pre><code class="language-text">records = []
+for candidate in sample(task, budget=n):
+    records.append({
+        answer: normalize(candidate.final_answer),
+        checks: check_with_available_rules(candidate)
+    })
+return select_or_report_disagreement(records)
+</code></pre>
+<p>Selection may use verifiable tests, human comparison, or an aggregation rule suited to the task. For testable code, inspect tests first; for numbers that can be checked by exact calculation, recalculate first. Compare methods under similar total budgets, rather than attributing all benefits from extra calls to one phrase in a prompt.</p>
+<h3 id="react">ReAct: let tool observations determine the next step</h3>
+<p>Some questions require finding one fact before deciding what to look up next. <a href="https://arxiv.org/html/2210.03629v3#A3.SS1">ReAct</a> alternates reasoning, actions, and environmental observations. Its HotpotQA prompt includes a classic example: identify the region reached by an orogeny's eastern sector, then find that region's elevation while resolving a name ambiguity. A condensed version of the query trace is:</p>
+<pre><code class="language-text">Question: What is the elevation range of the region reached
+          by the eastern sector of the Colorado orogeny?
+Search Colorado orogeny: The summary omits the eastern extent.
+Look up eastern sector in the article: Find the name High Plains.
+Search High Plains: Receive disambiguation information.
+Search High Plains (United States): Find the elevation range.
+Example answer: 1,800–7,000 feet.
+</code></pre>
+<p>Later queries respond to observations: look inside the article when the summary lacks the fact; add an entity qualifier when a name is ambiguous. Listing every query at the beginning and never reading subsequent feedback can miss these intermediate changes.</p>
+<p>The original ReAct prompt demonstrates a trace of reasoning, actions, and observations. Current interfaces can use native tool calling: the model proposes a function and arguments, and the application executes it and returns the result. The <a href="https://ai.google.dev/gemini-api/docs/function-calling#how-function-calling-works">Gemini function-calling guide</a> describes this division. What matters is continuing decisions from actual results, without requiring current reasoning models to reveal verbatim internal thought.</p>
+<p>Tool observations must come from real execution. Having a model continue with “search results” in a single answer does not grant search capability. Repeated queries, poor retrieval, and misread materials can still fail. The loop therefore needs a call budget, exit behavior when nothing is found, and host-enforced permission and parameter checks.</p>
+<h2 id="validation">5. Make outputs checkable and reusable</h2>
+<h3 id="schema">Structured outputs: define formats and incomplete states</h3>
+<p>Concise headings and tables are usually sufficient for human readers. When downstream programs consume the result, use interface-supported structured outputs rather than relying only on “output JSON and nothing else.” <a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI Structured Outputs</a> and <a href="https://ai.google.dev/gemini-api/docs/structured-output">Gemini Structured Output</a> both distinguish structural constraints from content correctness.</p>
+<p>Output design especially needs room for unknowns. Requiring a normal-looking value in every field can pressure the model to fill gaps when input is incompatible. Required fields can express status, factual fields can be empty, and omissions should have explicit meanings.</p>
+<pre><code class="language-json">{
+  "status": "needs_info",
+  "category": null,
+  "missing_fields": ["expected_result"],
+  "evidence_ids": ["ticket:P2"]
+}
+</code></pre>
+<p>This example says the current classification cannot yet be completed; the specific combination of fields still needs programmatic validation. API refusals, truncated output, and insufficient information are distinct conditions, rather than interchangeable valid JSON objects to process normally.</p>
+<p>A schema checks types, required fields, and enums well. Date ordering, unit conversions, source correspondence, and business state need additional validation. A field named <code>verified</code> with a value of <code>true</code> only means the model generated that value. It cannot replace verification that actually ran.</p>
+<h3 id="evidencecheck">Check citation existence and support separately</h3>
+<p>A citation raises at least three questions: does the excerpt occur in the source, does it support the statement, and does the source apply to the current question? One “has a citation” metric cannot represent all three. Jason Liu's <a href="https://python.useinstructor.com/blog/2023/11/18/validate-citations/">citation-validation article</a> demonstrates source matching and semantic consistency checks. Applications should also examine source versions and scope.</p>
+<p>“This interface is currently available only in the test environment,” for example, does not support “This interface is available to every user.” The quotation may match exactly while the conclusion remains wrong. Scope expansion is another common problem: evidence from one sample group becomes a universal rule, or correlation becomes causation.</p>
+<p>Programs can first check source IDs, versions, and excerpts, then key conclusions can receive semantic verification. Semantic checks should allow “insufficient evidence” and retain parts needing expert judgment. When another model reviews the result, measure its ability to detect real errors rather than treating it as a correct judge by default.</p>
+<p>For dense material, bind each key judgment to its evidence in a record before generating reader-facing prose. Revisions can then locate the sources a conclusion depends on, without filling the final text with lengthy checking procedures.</p>
+<h3 id="repair">Give repairs specific feedback and stopping conditions</h3>
+<p>“Check carefully three more times” does not identify a basis for checking. <a href="https://arxiv.org/abs/2310.01798">Large Language Models Cannot Self-Correct Reasoning Yet</a> found that self-correction without external feedback was unreliable for the models and tasks tested, and could even turn correct answers into wrong ones. This result does not generalize to every new model, nor does it invalidate repairs informed by tests, retrieval, and expert feedback.</p>
+<p>Useful feedback identifies the failed requirement, error location, and known correct information. Examples include “the citation in item 3 does not occur in D2,” “8 items are required, but only 7 were returned,” and “the date precedes the allowed range.” “The quality is not high enough” may merely prompt a change in tone.</p>
+<figure><img alt="Candidate outputs receive rule and semantic checks; failures provide specific feedback for bounded repair, and unresolved cases remain pending." decoding="async" height="299" loading="lazy" src="/images/blog/en/prompt-engineering/02-evidence-repair.png" width="1078"/><figcaption>Candidate outputs receive rule and semantic checks; failures provide specific feedback for bounded repair, and unresolved cases remain pending.</figcaption></figure>
+<pre><code class="language-text">candidate = generate(task, materials, requirements, output_spec)
+for attempt in range(max_repairs + 1):
+    checks = validate(candidate, materials, requirements, output_spec)
+    if checks.accepted:
+        return candidate
+    if attempt == max_repairs or checks.requires_new_information:
+        return needs_review(candidate, checks)
+    candidate = repair(
+        candidate, task, materials,
+        requirements, output_spec, checks.details
+    )
+</code></pre>
+<p>Rerun relevant checks after repairs so fixing one issue does not break another. If sources themselves are missing, obtain material or return a pending-review state. Do not demand rewrites until the model happens to satisfy surface constraints. Stopping conditions determine whether the process polishes “I don't know” into “I appear to know.”</p>
+<h2 id="iteration">6. Revise prompts from observed errors</h2>
+<h3 id="finalrequest">Debug the actual request, not just the template</h3>
+<p>What an application sends to the model may include historical messages, tool definitions, retrieved passages, schemas, and retry feedback absent from the template. Hamel Husain emphasizes this in his <a href="https://hamel.dev/blog/posts/prompt/">article on inspecting actual prompts</a>: examining only a handwritten string makes it easy to debug the wrong object.</p>
+<p>“The model ignored the rule” may mean materials were truncated, old requirements remained in history, a framework inserted conflicting instructions, or interpolation disrupted the document hierarchy. Reconstruct that run's actual request and response before deciding which layer to change. Records containing sensitive material should retain the original data-access controls for storage and display.</p>
+<p>A reproducible record includes at least the prompt-template version, actual input, model version, generation settings, and return status. For multiple calls, retain their sequence and each intermediate artifact. Identical final answers do not imply identical costs or intermediate behavior.</p>
+<h3 id="ablation">Give each change a testable hypothesis</h3>
+<p>Appending “never do this” after each bad answer quickly creates a long prompt with overlapping or conflicting rules. Attribute the error first: an unclear goal, insufficient evidence, biased examples, unstable formatting, reasoning errors, or faulty validation logic.</p>
+<p>Hamel Husain's <a href="https://hamel.dev/blog/posts/field-guide/">error-analysis method</a> emphasizes observing real interactions, grouping failures, and turning them into tests. Simon Willison's <a href="https://simonwillison.net/2023/Feb/21/in-defense-of-prompt-engineering/">discussion of prompt engineering</a> also places communication and experimentation at its center. A change record can put these ideas into practice:</p>
+<pre><code class="language-text">Observation: Tickets with insufficient information are forcibly classified.
+Hypothesis: The rules define bug and feature but no returnable unknown state.
+Change: Add needs_info and one incomplete-input example.
+Observe: Do these misclassifications decrease? Does completion decline
+         for clear tickets?
+Regression: Are previously distinguishable neighboring categories
+            still classified correctly?
+</code></pre>
+<p>Let one experiment answer one question where possible. To establish whether examples help, hold other conditions fixed; to compare order, do not also change the model and label definitions. Complex changes can be compared together, but the conclusion then concerns the whole bundle, rather than one phrase within it.</p>
+<p>Removal is also an important experiment. If deleting an elaborate role, repeated rule, or example does not worsen results, consider simplifying. Retained content should have a clear purpose beyond having once coincided with success.</p>
+<h3 id="evaluation">Measure correctness, completeness, and justified abstention</h3>
+<p>Evaluations should cover common inputs, confusing boundaries, missing information, and conflicting material. Development samples support diagnosis and revision; held-out samples test whether changes transfer. Repeatedly tuning prompts from the same held-out results gradually turns those samples into development data, requiring new independent checks.</p>
+<figure><img alt="Development samples support prompt iteration; after a candidate is frozen, previously unused samples test whether improvements transfer." decoding="async" height="343" loading="lazy" src="/images/blog/en/prompt-engineering/03-prompt-iteration.png" width="1078"/><figcaption>Development samples support prompt iteration; after a candidate is frozen, previously unused samples test whether improvements transfer.</figcaption></figure>
+<p><a href="https://arxiv.org/abs/2311.07911">IFEval</a> distinguishes compliance with individual instructions from compliance with every instruction in a request. Applications need that distinction too: an answer can have the right format and length while omitting a mandatory question. A high average on individual checks does not necessarily make the final deliverable usable.</p>
+<p>Measuring accuracy only among answered questions can also encourage frequent unknown responses. Record which questions were answered, refused, or returned for clarification, and whether those choices were justified. Unnecessary abstention fails a task with sufficient material; forcing an answer fails a task whose critical evidence is missing.</p>
+<p>Start with a few explicit checks and inspect key subgroups separately, without immediately compressing everything into one score. Calibrate semantic graders against expert judgments, especially to see whether they reward longer answers. For stochastic tasks, repeat within a reasonable budget and record completion rate, the total cost of all attempts, and end-to-end latency to an acceptable result, including failed calls and repairs. The <a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evaluation guide</a> offers related practices.</p>
+<h3 id="optimization">Automatic optimization needs an objective worth optimizing</h3>
+<p>Automatic methods can search instructions, select examples, and even optimize multi-step programs. <a href="https://arxiv.org/abs/2310.03714">DSPy</a> combines language-model programs with data and evaluation metrics; its <a href="https://dspy.ai/3.1.0/learn/optimization/optimizers/">optimizer documentation</a> explains how candidate instructions and demonstrations are searched. This reduces manual trial and error, while the task still determines the objective.</p>
+<p>If a metric checks only format, an optimizer may produce consistently formatted but empty answers. Rewarding a value in every field may suppress justified unknowns. Automatic optimization amplifies preferences in the objective, so metrics and failure examples need practical scrutiny first.</p>
+<p>In their <a href="https://hamel.dev/blog/posts/evals-faq/should-i-stop-writing-prompts-manually-in-favor-of-automated-tools.html">discussion of manual prompting and automated tools</a>, Hamel Husain and Shreya Shankar emphasize that working through real cases manually exposes assumptions and helps establish evaluation criteria. Understand the errors first, then use automation to expand the candidate search while continuing to inspect new failures outside the metric's coverage.</p>
+<h2 id="boundaries">7. Know when to stop changing the wording</h2>
+<h3 id="tools">Fix the system when knowledge, computation, or access is missing</h3>
+<p>If a model has no current material, “make sure this is up to date” supplies none. Without calculation tools, “be absolutely precise” creates no exact computation. Without an accessible interface, “verify this online” does not make verification happen. Prompts can specify when to retrieve, calculate, and report gaps; the system must provide those capabilities and retain their actual results.</p>
+<p>Some requirements belong directly in programs. Fixed sorting, exact counting, field deduplication, and explicitly expressible relationship checks usually do not need a model to reinterpret them each time. Letting models generate content and programs enforce deterministic rules reduces the details that accumulate in prompts.</p>
+<p>Treat generated self-assessments carefully too. “95% confidence” is not inherently a calibrated probability, and “checked” is not a tool receipt. Validate how these signals relate to errors using task data, or use checkable sources, test results, and execution traces directly.</p>
+<h3 id="migration">Validate prompts together with models and settings</h3>
+<p>Prompt performance depends on the model. A new version may follow short instructions better or respond differently to old examples and forced reasoning. The <a href="https://arxiv.org/html/2501.12948v1">DeepSeek-R1 technical report</a> discusses differences between zero-shot and few-shot in its settings. This supports rebuilding baselines, rather than concluding that every reasoning model should remove examples.</p>
+<p>Sampling parameters have no universal answer either. Lower temperature changes sampling behavior but does not guarantee factual correctness or perfectly deterministic reproduction. Model-specific recommendations in the <a href="https://ai.google.dev/gemini-api/docs/prompting-strategies">Gemini prompting guide</a> likewise show why old parameter rules may be unsuitable.</p>
+<p>During migration, test both the existing prompt and a minimal baseline, comparing task correctness, boundary behavior, cost, and latency. Record the prompt template, example set, model version, generation settings, and evaluation samples together. A final prompt string alone rarely explains why performance changes later.</p>
+<h2 id="lookup">Look up a symptom</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>What to inspect or adjust first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>You want to distinguish zero-shot, one-shot, and few-shot</td>
+<td><a href="#shotformats">Compare input structures</a>: distinguish the task input from completed demonstrations; see the new-word example</td>
+</tr>
+<tr>
+<td>The answer is fluent but unsuitable for its purpose</td>
+<td><a href="#deliverable">Deliverable and audience</a>: specify who will use it and why, then select the content</td>
+</tr>
+<tr>
+<td>The output follows the format but omits important content</td>
+<td><a href="#constraints">Constraints and priorities</a>, <a href="#evaluation">overall acceptance</a>: check completeness separately from individual rules</td>
+</tr>
+<tr>
+<td>The model reaches a definite conclusion with insufficient information</td>
+<td><a href="#missing">Missing information</a>, <a href="#schema">output states</a>: allow unknowns, clarification, and incomplete results</td>
+</tr>
+<tr>
+<td>Key evidence in long material is overlooked</td>
+<td><a href="#longcontext">Long context</a>: retain locations, move evidence, and test with distractors</td>
+</tr>
+<tr>
+<td>Classification repeatedly confuses neighboring categories</td>
+<td><a href="#selectexamples">Few-shot boundaries</a>: add correct examples with similar inputs and different conclusions</td>
+</tr>
+<tr>
+<td>Changing a few examples or their order changes results markedly</td>
+<td><a href="#examplebias">Example bias</a>: inspect accidental keywords, label distribution, order, and test leakage</td>
+</tr>
+<tr>
+<td>Reasoning grows longer without becoming more correct</td>
+<td><a href="#cot">CoT</a>, <a href="#decompose">least-to-most and call decomposition</a>: retain useful explanations and reduce unjustified mandatory steps</td>
+</tr>
+<tr>
+<td>Several answers agree but share the same mistake</td>
+<td><a href="#sampling">Self-consistency</a>: check shared assumptions and validate with external rules before aggregation</td>
+</tr>
+<tr>
+<td>The next lookup depends on the latest result</td>
+<td><a href="#react">ReAct</a>: execute tools and adapt queries to observations; retain budgets and exits</td>
+</tr>
+<tr>
+<td>Citations are present but do not support the conclusions</td>
+<td><a href="#evidencecheck">Evidence checks</a>: distinguish excerpt existence, semantic support, and scope</td>
+</tr>
+<tr>
+<td>Repeated self-checks produce only different wording</td>
+<td><a href="#repair">Bounded repair</a>: return specific errors and stop rewriting when information is missing</td>
+</tr>
+<tr>
+<td>The template looks right but the application is unstable</td>
+<td><a href="#finalrequest">Actual requests</a>: inspect messages, retrieval, tool definitions, truncation, and retries</td>
+</tr>
+<tr>
+<td>The prompt keeps growing while new problems persist</td>
+<td><a href="#ablation">Change hypotheses</a>, <a href="#tools">responsibility boundaries</a>: run removal experiments and consider changing data or programs</td>
+</tr>
+<tr>
+<td>Old techniques hurt performance after a model change</td>
+<td><a href="#migration">Version validation</a>: compare a minimal baseline with the existing prompt again</td>
+</tr>
+</tbody>
+</table></div>
+<p>Details worth retaining in a prompt should explain which ambiguity they remove, which errors they reduce, and how they can be checked. Rules, examples, and tests accumulated this way remain easier to revise as tasks change and models improve.</p><footer class="article-footer"><a href="/en/blog/">← Back to Blog</a></footer></article>
+</div>
+<script>
+const shell = document.querySelector('.toc-shell');
+const mobile = window.matchMedia('(max-width: 840px)');
+function setMode() { shell.open = !mobile.matches; }
+setMode();
+mobile.addEventListener('change', setMode);
+const links = [...document.querySelectorAll('.toc-list a')];
+links.forEach(link => link.addEventListener('click', () => {
+  if (mobile.matches) shell.open = false;
+}));
+const headings = links.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+function mark(id) {
+  links.forEach(link => {
+    if (decodeURIComponent(link.hash.slice(1)) === id) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+}
+let scheduled = false;
+function updateCurrent() {
+  const threshold = Math.min(window.innerHeight * .25, 160);
+  let current = headings[0];
+  for (const heading of headings) {
+    if (heading.getBoundingClientRect().top <= threshold) current = heading;
+    else break;
+  }
+  if (current) mark(current.id);
+  scheduled = false;
+}
+window.addEventListener('scroll', () => {
+  if (!scheduled) { scheduled = true; requestAnimationFrame(updateCurrent); }
+}, {passive: true});
+updateCurrent();
+</script>
+</body>
+</html>
+{% endraw %}

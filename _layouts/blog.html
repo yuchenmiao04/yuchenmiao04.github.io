@@ -2,13 +2,24 @@
 layout: default
 ---
 
-<div class="blog-article" lang="zh-CN">
+<div class="blog-article" lang="{{ page.lang | default: 'zh-CN' }}">
   <header class="blog-article__header">
-    <a class="blog-article__back" href="{{ '/blog/' | relative_url }}">← Blog</a>
+    <div class="blog-article__nav">
+      {% if page.lang == 'en' %}
+        <a class="blog-article__back" href="{{ '/en/blog/' | relative_url }}">← Blog</a>
+      {% else %}
+        <a class="blog-article__back" href="{{ '/blog/' | relative_url }}">← Blog</a>
+      {% endif %}
+      {% include blog-language-switch.html %}
+    </div>
     <h1>{{ page.title | escape }}</h1>
   </header>
   {{ content }}
   <footer class="blog-article__footer">
-    <a href="{{ '/blog/' | relative_url }}">← 返回 Blog</a>
+    {% if page.lang == 'en' %}
+      <a href="{{ '/en/blog/' | relative_url }}">← Back to Blog</a>
+    {% else %}
+      <a href="{{ '/blog/' | relative_url }}">← 返回 Blog</a>
+    {% endif %}
   </footer>
 </div>

@@ -1,0 +1,502 @@
+---
+layout: null
+title: 'Harness Anything: Designing Agent Systems for Specialized Domains'
+permalink: /en/blog/harness-anything/
+description: Task contracts, domain evidence, and execution boundaries for agent systems
+  that can be checked, recovered, and evaluated.
+lang: en
+translation_slug: harness-anything
+---
+
+{% raw %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>Harness Anything: Designing Agent Systems for Specialized Domains - Yuchen Miao</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper: #ffffff;
+  --ink: #202027;
+  --muted: #74717d;
+  --line: #e7e3ec;
+  --purple: #69528c;
+  --lavender: #f3eff9;
+  --code: #f7f6f9;
+  --body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --display: "Avenir Next", "Helvetica Neue", var(--body);
+  --mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); -webkit-font-smoothing: antialiased; }
+a { color: var(--purple); text-decoration-thickness: 1px; text-underline-offset: .21em; }
+a:hover { color: #3f285f; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: 2px; }
+.layout { width: min(1180px, calc(100% - 80px)); margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); column-gap: 66px; row-gap: 42px; align-items: start; }
+.intro { grid-column: 1 / -1; min-width: 0; padding: 64px 0 0; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.intro > :not(figure) { max-width: 760px; margin-left: auto; margin-right: auto; }
+.intro .overview-figure { max-width: 1000px; margin: 30px auto 0; }
+.toc-shell { position: sticky; top: 28px; margin: 0 0 32px; max-height: calc(100vh - 56px); max-height: calc(100svh - 56px); overflow-y: auto; scrollbar-width: thin; padding: 0 14px 20px 0; }
+.toc-shell summary { display: none; }
+.toc-label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .08em; margin: 0 0 17px 13px; }
+.toc-list { list-style: none; padding: 0; margin: 0; }
+.toc-list li { margin: 0; }
+.toc-list a { display: block; padding: 7px 11px; border-left: 2px solid transparent; font-size: 13px; line-height: 1.65; color: #6b6773; text-decoration: none; border-radius: 0 5px 5px 0; }
+.toc-list .level-2 > a { font-weight: 600; margin-top: 7px; color: #39353f; }
+.toc-list .level-3 > a { padding-left: 23px; font-size: 12px; }
+.toc-list a:hover { background: #f8f6fb; }
+.toc-list a[aria-current="location"] { border-left-color: var(--purple); background: var(--lavender); color: #4f386f; }
+article { min-width: 0; padding: 0 0 90px; font-size: 16px; line-height: 1.95; overflow-wrap: break-word; }
+.article-header { margin: 0 0 34px; }
+h1 { font-family: var(--display); font-size: clamp(34px, 4vw, 46px); line-height: 1.18; letter-spacing: -.035em; font-weight: 650; margin: 0; color: #17151d; }
+.subtitle { font-size: 17px; line-height: 1.7; color: #726a7c; margin: 13px 0 0; letter-spacing: .01em; }
+p { margin: 0 0 19px; }
+h2 { margin: 56px 0 23px; padding-top: 25px; border-top: 1px solid var(--line); font-size: 23px; line-height: 1.55; font-weight: 650; letter-spacing: -.015em; }
+article > h2:first-child { margin-top: 0; }
+h3 { font-size: 18px; line-height: 1.65; font-weight: 650; margin: 32px 0 16px; }
+h2[id], h3[id] { scroll-margin-top: 26px; }
+strong { font-weight: 650; }
+article ul, article ol { padding-left: 1.6em; margin: 0 0 22px; }
+article li { padding-left: .15em; margin-bottom: .45em; }
+code { font-family: var(--mono); font-size: .84em; overflow-wrap: anywhere; background: var(--lavender); color: #55416c; border-radius: 4px; padding: .14em .35em; }
+pre { margin: 23px 0 25px; background: var(--code); border: 1px solid #e9e4ef; border-radius: 9px; padding: 20px 22px; line-height: 1.72; overflow: auto; tab-size: 4; max-width: 100%; }
+pre code { display: block; padding: 0; color: #34303b; border: 0; background: transparent; font-size: 12.5px; overflow-wrap: normal; white-space: pre; }
+.table-scroll { max-width: 100%; overflow-x: auto; margin: 24px 0 28px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.8; }
+th, td { text-align: left; vertical-align: top; padding: 12px 15px; border-bottom: 1px solid var(--line); }
+th { background: #f7f4fb; color: #41374f; font-weight: 600; }
+th:first-child, td:first-child { width: 37%; }
+td code { font-size: .86em; }
+figure { margin: 30px 0 33px; }
+figure img { width: 100%; height: auto; display: block; background: white; }
+figcaption { max-width: 680px; margin: 11px auto 0; color: var(--muted); font-size: 12px; line-height: 1.75; text-align: center; }
+blockquote { margin: 24px 0; border-left: 3px solid #c9bcdd; padding: 3px 0 3px 20px; color: #5d5667; }
+blockquote p:last-child { margin-bottom: 0; }
+.implementation-note { color: #6f6878; font-size: 13px; line-height: 1.9; }
+@media (max-width: 1040px) {
+  .layout { width: min(960px, calc(100% - 52px)); grid-template-columns: 220px minmax(0, 1fr); column-gap: 36px; }
+  .toc-list a { font-size: 12px; }
+  .toc-list .level-3 > a { font-size: 11.5px; }
+  article, .intro { font-size: 15.5px; }
+}
+@media (max-width: 840px) {
+  html { scroll-padding-top: 20px; }
+  .layout { display: flex; flex-direction: column; gap: 0; width: min(760px, calc(100% - 40px)); }
+  .intro { order: 0; width: 100%; padding: 37px 0 0; font-size: 16px; }
+  .intro .overview-figure { margin-top: 27px; }
+  .toc-shell { position: static; order: 1; top: auto; width: 100%; max-height: none; margin: 28px 0 0; padding: 0; background: #faf9fc; border: 1px solid var(--line); border-radius: 8px; }
+  .toc-shell summary { display: list-item; cursor: pointer; font-size: 14px; font-weight: 600; padding: 12px 17px; color: #50445e; }
+  .toc-content { padding: 0 12px 16px; max-height: 64vh; max-height: 64svh; overflow-y: auto; }
+  .toc-label { display: none; }
+  .toc-list a { font-size: 13px; }
+  .toc-list .level-3 > a { font-size: 12px; }
+  article { order: 2; padding: 34px 0 60px; width: 100%; font-size: 16px; }
+  .article-header { margin-bottom: 29px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 22px; margin-top: 43px; padding-top: 23px; }
+  h3 { font-size: 18px; }
+  .subtitle { font-size: 16px; }
+  pre { padding: 17px 16px; margin-inline: 0; }
+  pre code { font-size: 11.5px; }
+  th, td { padding: 10px 11px; }
+  table { font-size: 13px; }
+}
+@media (max-width: 420px) {
+  .layout { width: calc(100% - 32px); }
+  article, .intro { font-size: 15.5px; line-height: 1.95; }
+  h1 { font-size: 33px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  .layout { display: block; width: 100%; }
+  .toc-shell { display: none; }
+  article, .intro { padding: 0; font-size: 11pt; }
+  .intro { margin-bottom: 28px; }
+  pre { white-space: pre-wrap; overflow: visible; }
+  pre code { white-space: pre-wrap; }
+  figure, pre, tr { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+}
+
+.article-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 28px; font-size: 13px; line-height: 1.6; }
+.article-nav a { color: var(--muted); text-decoration: none; }
+.article-nav a:hover { color: var(--purple); }
+.article-footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 22px; font-size: 14px; }
+</style>
+<link href="https://yuchenmiao04.github.io/en/blog/harness-anything/" rel="canonical"/><meta content="Task contracts, domain evidence, and execution boundaries for agent systems that can be checked, recovered, and evaluated." name="description"/><meta content="Harness Anything: Designing Agent Systems for Specialized Domains" property="og:title"/><meta content="Task contracts, domain evidence, and execution boundaries for agent systems that can be checked, recovered, and evaluated." property="og:description"/><meta content="https://yuchenmiao04.github.io/en/blog/harness-anything/" property="og:url"/><meta content="article" property="og:type"/><meta content="https://yuchenmiao04.github.io/images/blog/en/harness-anything/00-harness-overview.png" property="og:image"/><link href="https://yuchenmiao04.github.io/blog/harness-anything/" hreflang="zh-CN" rel="alternate"/><link href="https://yuchenmiao04.github.io/en/blog/harness-anything/" hreflang="en" rel="alternate"/><link href="https://yuchenmiao04.github.io/blog/harness-anything/" hreflang="x-default" rel="alternate"/><link href="/assets/css/blog-language.css" rel="stylesheet"/><script defer="" src="/assets/js/blog-language.js"></script></head>
+<body>
+<div class="layout">
+<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="Article navigation" class="article-nav"><a href="/en/blog/">← Blog</a><nav aria-label="Language" class="blog-language-switch"><a data-blog-language="zh-CN" href="/blog/harness-anything/" hreflang="zh-CN" lang="zh-CN">中文</a><a aria-current="page" data-blog-language="en" href="/en/blog/harness-anything/" hreflang="en" lang="en">English</a></nav><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Harness Anything</h1><p class="subtitle">Designing Agent Systems for Specialized Domains</p></header>
+<p>Connect a model to a financial database and add retrieval, calculation, and reporting tools, and it can already produce a plausible analysis. The difficult questions often arise after the report is written: do two figures use the same consolidation scope? Had a policy taken effect at the analysis date? Was missing data treated as zero? Can the conclusion support the next action?</p>
+<p>In customer support, the same questions appear as refund eligibility, payment recipients, and duplicate submissions. In contract review, they appear as clause applicability, conflicting edits, and document versions. In research workflows, they concern data splits, experimental environments, and reproducibility. A model can understand these requirements, but the system must still determine which must hold, how to check them, and how to proceed when they cannot be checked.</p>
+<p>A domain-specific harness turns these requirements into operational behavior. Here, a harness means the system around the model that manages context, tools, state, execution control, and acceptance checks. It must connect domain knowledge while also taking responsibility for domain work: what makes a judgment valid, what permits an action, and what remains to be handled after a failure.</p>
+<p><strong>“Anything” applies to the design method; each domain still needs its own business contracts.</strong> A generic prompt cannot replace financial measurement conventions. Contract revisions cannot inherit every assumption of code merging. A business system does not acquire transactional guarantees simply because an agent becomes its caller. Task descriptions, evidence records, execution boundaries, and evaluation methods can be reused; their rules, interfaces, and acceptable failure outcomes must be defined by the domain.</p>
+<figure class="overview-figure"><img alt="From general capabilities to domain work: task contracts, domain evidence, execution boundaries, and validation and recovery turn domain requirements into agent behavior." decoding="async" fetchpriority="high" loading="eager" src="/images/blog/en/harness-anything/00-harness-overview.png"/><figcaption>From general capabilities to domain work: task contracts, domain evidence, execution boundaries, and validation and recovery turn domain requirements into agent behavior.</figcaption></figure>
+</section>
+<details class="toc-shell" open="">
+<summary>Contents</summary>
+<nav aria-label="Table of contents" class="toc-content">
+<p class="toc-label">Contents</p>
+<ol class="toc-list"><li class="level-2"><a href="#contract">1. Turn Domain Tasks into Execution Contracts</a></li>
+<li class="level-3"><a href="#deliverable">The Deliverable Determines What the System Must Store</a></li>
+<li class="level-3"><a href="#domainchecks">Separate Professional Requirements into Different Kinds of Checks</a></li>
+<li class="level-2"><a href="#modelrole">2. Decide Which Decisions Belong to the Model</a></li>
+<li class="level-3"><a href="#skeleton">Fix the Business Steps; Allow Local Exploration</a></li>
+<li class="level-3"><a href="#agentboundary">Split Agents along Context, Permission, and Conflict Boundaries</a></li>
+<li class="level-2"><a href="#evidence">3. Turn Domain Knowledge into Checkable Evidence</a></li>
+<li class="level-3"><a href="#retrievalscope">Define the Search Space before Optimizing Recall</a></li>
+<li class="level-3"><a href="#temporality">Distinguish the Period a Fact Describes from When It Became Known</a></li>
+<li class="level-3"><a href="#claimchecks">Check Citation Existence and Claim Support Separately</a></li>
+<li class="level-3"><a href="#withdrawal">Withdraw Invalid Conclusions from Every Consumption Path</a></li>
+<li class="level-2"><a href="#tools">4. Express Business Semantics through Tool Interfaces</a></li>
+<li class="level-3"><a href="#semantictools">Tool Results Should Include the Facts Needed to Continue</a></li>
+<li class="level-3"><a href="#preparecommit">Model Analysis, Proposals, and Submission Separately</a></li>
+<li class="level-2"><a href="#authority">5. Route Authorization, Approval, and Submission through One Control Path</a></li>
+<li class="level-3"><a href="#boundapproval">Bind Approval to a Specific Proposal and Its Expiry</a></li>
+<li class="level-3"><a href="#conditionalcommit">Recheck Real-World Conditions at Execution Time</a></li>
+<li class="level-3"><a href="#databoundary">Data Movement Is Also a Permission Question</a></li>
+<li class="level-2"><a href="#recovery">6. Preserve Both Execution State and Business Outcomes for Long Tasks</a></li>
+<li class="level-3"><a href="#stateplanes">Checkpoints and Operation Records Answer Different Questions</a></li>
+<li class="level-3"><a href="#reentry">Resumption Can Re-enter Code and Invoke Tools Again</a></li>
+<li class="level-3"><a href="#unknown">Reconcile Unknown Outcomes Instead of Relabeling Them as Failures</a></li>
+<li class="level-2"><a href="#evaluation">7. Define Evaluation and Release Policies through Domain Failures</a></li>
+<li class="level-3"><a href="#erroranalysis">Ask Experts to Explain Errors before Choosing Evaluators</a></li>
+<li class="level-3"><a href="#evalboundaries">Evaluate Outcomes, Execution, and Policy Compliance Separately</a></li>
+<li class="level-3"><a href="#coverage">Track Both Automatic Coverage and Errors after Release</a></li>
+<li class="level-2"><a href="#evolution">8. Evolve from a Constrained Workflow</a></li>
+<li class="level-3"><a href="#rollout">Expand Execution Authority According to Action Risk</a></li>
+<li class="level-3"><a href="#operationcost">Calculate the Total Cost per Acceptable Result</a></li>
+<li class="level-3"><a href="#versioning">Release Changes as a Traceable Set of Versions</a></li>
+<li class="level-2"><a href="#checklist">Evidence the Design Should Preserve</a></li></ol>
+</nav>
+</details>
+<article aria-label="Harness Anything"><h2 id="contract">1. Turn Domain Tasks into Execution Contracts</h2>
+<h3 id="deliverable">The Deliverable Determines What the System Must Store</h3>
+<p>“Analyze this company” is difficult to use as an executable product specification. “Produce an operating analysis as of a specified date, covering specified entities, with every key figure traceable to original material” already contains requirements that can be checked.</p>
+<p>A task specification should at least define the deliverable, scope, data date, permitted actions, and completion criteria. If any of these are missing, the agent may supply a plausible interpretation during execution. Standardizing the output format is often easy; standardizing what the format means takes more work.</p>
+<pre><code class="language-text">JobSpec:
+    deliverable: report | proposed_change | committed_operation
+    scope: entities, account_or_document, jurisdiction
+    time: effective_at, knowledge_cutoff
+    constraints: metric_basis, policy_version, allowed_actions
+    acceptance: required_evidence, checks, reviewer
+    limits: cost, elapsed_time, tool_calls
+    escalation: missing_inputs, conflict, uncertain_outcome
+</code></pre>
+<p>The user need not fill in this entire specification at once. The system can obtain some of it from the existing identity, business object, and application configuration, asking the user only about ambiguities that materially affect the conclusion. Whether “revenue” means gross or net requires clarification; an unspecified font size can usually use the product default.</p>
+<p>Required and optional evidence should also be separate. If a key entity cannot be identified, the system cannot proceed with a conclusion that assumes its identity is settled. If supplementary material is missing, it can narrow the deliverable and state what remains uncovered. Degradation should change the task commitment and make that change visible to the user, rather than merely relabeling a failure as ignorable internally.</p>
+<p>The task contract also changes storage design. For a draft intended only for human reading, retaining its text and sources may be sufficient. For a committed business operation, the system must also retain the approved object, operation identifier, remote receipt, and final outcome. A single “complete” field cannot represent these different commitments.</p>
+<h3 id="domainchecks">Separate Professional Requirements into Different Kinds of Checks</h3>
+<p>Domain experts often express a requirement in one sentence: “These two measurement bases must not be mixed.” Implementation requires further questions: which fields represent the basis? What does a missing field mean? Even with matching currencies, must units and reporting periods be checked? Who adjudicates exceptions?</p>
+<p>Requirements that can be computed explicitly should become programmatic checks. A refund must not exceed the refundable balance; calculation inputs must use compatible currencies; contract edits must target the specified document version. Requirements involving semantic judgment can be assessed by a model or expert, such as whether evidence is sufficient for a causal explanation. Both kinds of checks need a state for insufficient information.</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Check Result</th>
+<th>Meaning and Next Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>passed</code></td>
+<td>The prescribed check ran and passed within its stated scope</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>A definite violation was found; block the relevant delivery or action</td>
+</tr>
+<tr>
+<td><code>not_checked</code></td>
+<td>Required data, capability, or execution records are missing; this cannot justify release</td>
+</tr>
+<tr>
+<td><code>needs_review</code></td>
+<td>A conflict, exception, or case outside the scope of automated judgment exists</td>
+</tr>
+</tbody>
+</table></div>
+<p>JSON Schema can guarantee that fields exist and that types and enumerations are valid. It cannot prove that the correct company was selected or that a number has the correct business meaning. A rule engine likewise covers only the rules that have been written. Acceptance records should include the check, input versions, and result, so that “passed the check” can be distinguished from “reported no error.”</p>
+<p>Domain knowledge should also be placed according to its purpose. Stable concepts belong in data types and tool interfaces. Explicitly decidable constraints belong in rules. Frequently updated material that needs interpretation should remain versioned evidence. Mandatory steps belong in control flow. Errors discovered by experts belong in evaluation cases. Putting all of this into one long prompt loses the distinct update, permission, and validation mechanisms each kind of knowledge needs.</p>
+<h2 id="modelrole">2. Decide Which Decisions Belong to the Model</h2>
+<h3 id="skeleton">Fix the Business Steps; Allow Local Exploration</h3>
+<p>Business workflows often include steps that must run every time: verify identity, load current policy, check measurement conventions, and validate before submission. Letting the model decide whether to perform these steps turns a definite business requirement into a probabilistic event.</p>
+<p>A better division of responsibility is for code to guarantee the steps and their order, while the model handles local work that cannot yet be laid out in advance: which material to find, how to explain an anomaly, what to search next, or how to repair a failed draft. Use a fixed workflow when the steps and transition conditions are known. Open an agent loop when the next step depends on information obtained during execution. Greater autonomy also brings additional latency, cost, and error propagation. <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a></p>
+<p>Stripe's Minions place mandatory checks in deterministic nodes and give exploration and repair to agent nodes. Their development environment is isolated and permission-constrained. This execution structure is useful to borrow, while production business writes still need a separate authorization boundary. <a href="https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents-part-2">Stripe Minions: workflow design</a></p>
+<figure><img alt="The domain contract constrains both fixed steps and local exploration. A model's candidate result must still pass an explicit acceptance gate." decoding="async" loading="lazy" src="/images/blog/en/harness-anything/01-domain-contract.png"/><figcaption>The domain contract constrains both fixed steps and local exploration. A model's candidate result must still pass an explicit acceptance gate.</figcaption></figure>
+<pre><code class="language-text">spec = resolve_job_spec(request, trusted_context)
+require(check_scope_and_permission(spec))
+evidence = gather_within_scope(spec)
+candidate = agent.solve(spec, evidence, read_and_prepare_tools)
+checks = validate(candidate, spec, evidence.versions)
+return deliver_or_escalate(candidate, checks)
+</code></pre>
+<p>A fixed skeleton does not mean every task needs the same long pipeline. Low-risk material organization may require only a few checks; external writes can add proposals, approval, and submission. Keep a mechanism when it reduces a real class of failures enough to justify the burden it adds to each task.</p>
+<h3 id="agentboundary">Split Agents along Context, Permission, and Conflict Boundaries</h3>
+<p>Giving separate role prompts the names “analyst,” “researcher,” and “reviewer” may help organize work, but role names do not themselves create independent checking capabilities. Several agents using the same material and the same mistaken measurement basis can unanimously reach the wrong conclusion.</p>
+<p>A split should have a concrete benefit: a subtask needs only a small domain context; an executor should hold restricted permissions; tasks can compute independently; or a local result has clear acceptance criteria. Small, focused agents make context and evaluation easier to control, but there is no fixed step limit suitable for every task. <a href="https://github.com/humanlayer/12-factor-agents/blob/main/content/factor-10-small-focused-agents.md">12-Factor Agents: focused agents</a></p>
+<p>After splitting, merging must be designed too. Harvey's contract review system has workers for different rules produce edits on versioned document branches, labels edits with their rule ownership, and sends conflicts back to a coordination layer. The important design elements are branches, ownership, and a conflict protocol. Multiple workers editing the same text do not naturally produce a correct result. <a href="https://www.harvey.ai/blog/rebuilding-playbook-review-as-a-multi-agent-system">Harvey: rebuilding contract review</a></p>
+<p>A general domain system can have workers return proposed edits, supporting evidence, a base version, and an impact scope. The coordinator first checks whether they overlap, then decides to merge, recompute, or seek human review. Non-overlapping text positions do not guarantee compatible business meaning: one edit might change a definition while another changes an exception. The merged artifact still needs cross-rule consistency checks. Parallelism from multiple agents must be weighed against extra model calls, duplicate retrieval, and coordination cost.</p>
+<h2 id="evidence">3. Turn Domain Knowledge into Checkable Evidence</h2>
+<h3 id="retrievalscope">Define the Search Space before Optimizing Recall</h3>
+<p>Domain knowledge is usually scattered across documents, table schemas, past operations, policies, and people's experience. Chunking everything into a vector database may fail to preserve the relationships that matter: which business line owns a term, whether a table measures orders or fulfillment, or which jurisdiction a rule covers.</p>
+<p>Organizing table schemas and example queries into domain workspaces, followed by intent routing and relevant-table selection, narrows a candidate space whose items may be semantically similar but operationally different. Uber QueryGPT uses this design rather than relying directly on full-database matching across a large number of tables. <a href="https://www.uber.com/gb/en/blog/query-gpt/">Uber: QueryGPT</a></p>
+<p>A domain harness can adopt the same approach: identify the entity, task category, and applicable rules first, then choose the databases, indexes, and tools to query. Routing decisions must also be correctable. If the initial domain is wrong, excellent local retrieval cannot recover material that was excluded from the search space.</p>
+<p>Knowledge organization should preserve domain structure. Clause hierarchies, product-to-fault-code mappings, and financial metric dependencies may be better served by relational queries, directory navigation, or graph structures. Vector retrieval can supplement semantic matching. Whether to add query rewriting, hybrid retrieval, and reranking should depend on task outcomes and latency. <a href="https://martinfowler.com/articles/gen-ai-patterns/">Patterns for building GenAI applications</a></p>
+<p>Permission filtering belongs in the retrieval path, not only in final-answer review. Once material enters model context, it has already been processed. Caches also need tenant, identity, or authorization boundaries; matching question text alone is not sufficient for a shared-cache hit.</p>
+<p>Retrieval results should support the next action: applied filters, sources and versions, truncation markers, and an entry point for fetching full context. When results are numerous, distributions over authorized metadata can help narrow the scope. Metadata that cannot change a subsequent decision may simply burden context. <a href="https://jxnl.co/writing/2025/08/27/facets-context-engineering/">Jason Liu: Beyond Chunks</a></p>
+<h3 id="temporality">Distinguish the Period a Fact Describes from When It Became Known</h3>
+<p>A financial report might describe last year's fourth quarter, be published in February, revised in March, and ingested by the system in April. At least four temporal concepts are involved: the period described, publication time, the revision version, and system recording time. A single <code>timestamp</code> field conflates their meanings.</p>
+<p>Martin Fowler's discussion of bitemporal history distinguishes when a fact is valid from when the system records learning it. This distinction helps with retroactive revisions. Publication time should also be recorded separately: late ingestion does not mean the information was previously unavailable to the outside world. <a href="https://martinfowler.com/articles/bitemporal-history.html">Bitemporal History</a></p>
+<pre><code class="language-text">Fact:
+    entity_id, metric, value, unit, currency, basis
+    period_start, period_end
+    published_at, recorded_at, revision_id
+    source_id, source_version, locator
+</code></pre>
+<p>A task reconstructing a decision at a historical date should use only information available then. A task reconstructing history as currently understood may use later revisions. Both are legitimate, but answer different questions. Mixing these views in evaluation leaks hindsight into historical tasks.</p>
+<p>Not every system needs a full bitemporal database. Fixed input snapshots and preserved decision-time versions may suffice. More complex storage and querying become worthwhile when the system frequently needs to ask “what was known then?” or trace the effects of retroactive revisions.</p>
+<h3 id="claimchecks">Check Citation Existence and Claim Support Separately</h3>
+<p>Attaching a source to a sentence involves at least three questions: does the cited passage actually exist? Does it apply to the current entity, time, and question? Does it support the conclusion? String matching can address the first, but cannot replace the other two.</p>
+<p>This is also where structured extraction is easily overestimated. Extracted fields can fully satisfy a schema while their source describes only a subsidiary. A passage containing “growth” need not support a claim about profit growth. CitationMixin's documentation explicitly distinguishes validation of quoted passages from the accuracy of extracted facts; users must still check the relationship between evidence and claims. <a href="https://python.useinstructor.com/concepts/citation/">Instructor: CitationMixin</a></p>
+<p>An important conclusion should ideally be traceable through its dependencies: source version, normalized facts, calculation, and final claim. Use calculation tools for unit conversions, period aggregation, and formulas. For interpretations, preserve key premises and their supporting material. This makes it possible to find the work that must be redone when a premise changes.</p>
+<figure><img alt="Evidence dependencies extend from sources to artifacts. Upstream version changes require the affected downstream conclusions to be checked again." decoding="async" loading="lazy" src="/images/blog/en/harness-anything/02-evidence-dependencies.png"/><figcaption>Evidence dependencies extend from sources to artifacts. Upstream version changes require the affected downstream conclusions to be checked again.</figcaption></figure>
+<p>Conflicting evidence should also be an explicit result. When two sources give different figures, first check the entity, period, currency, statistical scope, and revision version. If the difference remains unexplained, retain the conflict and state its impact. Asking the model to choose the more plausible number discards information that should enter human judgment.</p>
+<h3 id="withdrawal">Withdraw Invalid Conclusions from Every Consumption Path</h3>
+<p>Financial auditing can treat currency, period, and source as parts of a numerical claim, then check the business basis of its calculation inputs. FinRobot stores these details in numerical claims and checks for mixed currencies in valuation-related audits. Acceptance can then go beyond numerical ranges to examine what the inputs mean. <a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/models/numeric_claim.py#L70-L87">Numerical claim structure</a>, <a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/compute/operators/audit/currency_caliber.py#L81-L110">currency-basis checks</a></p>
+<p>The same implementation shows the boundary of check coverage. Its period audit returns empty findings when dates are missing, and the status aggregator classifies empty findings as a pass. An absence of recorded problems therefore does not establish that period completeness was verified. A stricter delivery contract should separately record which checks actually ran. <a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/compute/operators/audit/ttm_period.py#L58-L73">Empty-input path in period auditing</a>, <a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/engine/models/numeric_claim.py#L56-L67">status aggregation</a></p>
+<p>Withdrawal propagation is even easier to overlook. If a conclusion has entered summaries, charts, caches, and later reports, marking the original field invalid is insufficient. FinRobot scans alternative display slots for a withdrawn target price so that another read path cannot show the old value again. Withdrawal must cover derived results and consumption paths. <a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/artifact/contract.py#L425-L459">Alternative-field checks</a>, <a href="https://github.com/AI4Finance-Foundation/FinRobot/blob/2717499b8e30f242640af08c4ad9afd1113c2d45/finrobot_desktop/finrobot/artifact/contract.py#L495-L519">clearing display fields together</a></p>
+<pre><code class="language-text">on_input_revision_changed(input_id, new_version):
+    affected = dependency_index.descendants(input_id)
+    mark(affected, status=NEEDS_REVALIDATION)
+    prevent_new_delivery(affected)
+    invalidate_dependent_caches(affected)
+    enqueue_required_checks(affected, new_version)
+</code></pre>
+<p>Dependency indexes and invalidation notifications locate affected work and trigger recomputation. The delivery boundary must also check whether the versions referenced by an artifact still satisfy the task contract. Otherwise, a concurrent task may publish an old conclusion before an asynchronous notification arrives. If delivery is based on a frozen historical snapshot, check against that snapshot. If it promises currently valid information, check current dependencies at a controlled publication boundary.</p>
+<p>This is a suggested approach to dependency management, not a requirement to turn the entire knowledge base into a complex graph database. An early system can store dependency IDs and versions with its artifacts and invalidate them by task batch. Finer indexes become worthwhile only when recomputation costs and shared dependencies grow enough. Reports already delivered also need correction records; deleting a current page does not erase a past delivery.</p>
+<p>Acceptance should run once more on the final assembled artifact. The body, summary, tables, and template can each be correct in isolation yet combine conclusions from different versions. Before delivery, check that key values and states agree and prevent unreviewed dependencies from entering new artifacts. Checking only one generation step misses later assembly and fallback paths.</p>
+<h2 id="tools">4. Express Business Semantics through Tool Interfaces</h2>
+<h3 id="semantictools">Tool Results Should Include the Facts Needed to Continue</h3>
+<p>General SQL, shell, and HTTP tools are expressive, but also leave table relationships, valid parameter combinations, and business prerequisites to the model. Domain tools can narrow these choices: “retrieve this entity's revenue series on a specified basis,” for example, instead of making the model reconstruct a data provider's raw response every time.</p>
+<p>An interface should return both the result and its boundaries: canonical entity ID, data version, units, covered periods, missing data, and usable source locations. Errors should also enable a next action, distinguishing <code>MISSING_PERIOD</code>, <code>CURRENCY_MISMATCH</code>, and temporary unavailability. A generic “tool failed” cannot tell the system whether to retry, obtain more material, or change its approach.</p>
+<p>Research tools have the same requirements. An experimental result should at least be associated with its data split, code and configuration versions, environment, and run identifier. If the conclusion depends on randomized trials, preserve the corresponding randomness settings and statistical method as well. Returning a performance number alone leaves later analysis unable to determine whether it is comparable with a baseline.</p>
+<p>Narrower domain tools are not always better. Defining a separate function for every possible query causes interface proliferation and frequent code changes as the business evolves. Stable interfaces can cover frequent operations, complex measurement conventions, and high-impact actions, while open exploration remains in a restricted, read-only query environment. Tool design should fix error-prone semantics without eliminating every model choice.</p>
+<h3 id="preparecommit">Model Analysis, Proposals, and Submission Separately</h3>
+<p>“A refund is recommended” and “a refund has occurred” need different objects. The model can generate candidates; the business service checks eligibility, freezes a proposal, and submits it once execution conditions hold. If preparation locks inventory, reserves capacity, or sends a notification, those effects must be recorded explicitly. A function named <code>prepare</code> cannot be assumed to have no side effects.</p>
+<pre><code class="language-text">proposal = prepare_refund(
+    order_id=canonical_order_id,
+    amount=Money(value, currency),
+    reason=allowed_reason,
+    expected_order_version=observed_version
+)
+# In this example, prepare only reads, validates, and saves a proposal
+decision = obtain_required_approval(proposal)
+receipt = commit_refund(proposal.id, decision.id)
+</code></pre>
+<p>Preparation checks can catch obvious errors early and show reviewers the specific object and its impact. Submission checks must run again against the current state. The two checks serve different purposes: the former reduces invalid proposals, while the latter handles changes between proposal and execution.</p>
+<p>Tool adapters should also declare a failure contract: whether an operation can be retried, how to query its result, how to identify the same business intent, whether partial completion is possible, and who reconciles the outcome. For a legacy write interface that supports neither result queries nor reliable deduplication, limiting the agent to drafts or human submission may be more effective than adding model self-checks.</p>
+<h2 id="authority">5. Route Authorization, Approval, and Submission through One Control Path</h2>
+<h3 id="boundapproval">Bind Approval to a Specific Proposal and Its Expiry</h3>
+<p>“Allow the refund tool” does not specify the order, amount, recipient, or duration of permission. Approval should target an immutable proposal bound, at minimum, to the tenant, initiating identity, target object, normalized parameters, business version, rule version, and expiry. A material parameter change requires a new proposal.</p>
+<p>Tool approval in the OpenAI Agents SDK uses a specific call identity and checks the pending run state. Its server-side example keeps the full RunState on the server, sending the client only display details and an opaque decision ID. Call matching answers “which call does this decision belong to?” User authentication and business permissions remain the application's responsibility. <a href="https://github.com/openai/openai-agents-python/blob/125efa029b4bfd84238bd2c4fd69c3406f802663/src/agents/run_state.py#L1130-L1204">Approval matching</a>, <a href="https://github.com/openai/openai-agents-python/blob/125efa029b4bfd84238bd2c4fd69c3406f802663/examples/agent_patterns/human_in_the_loop_server.py#L58-L103">server-side approval example</a></p>
+<p>A proposal hash can help detect content changes, but cannot establish who approved it. Approval records must come from an authenticated, authorized server-side control path. Production systems also need to consume pending decisions atomically, preventing two requests from approving and dispatching the same work concurrently.</p>
+<pre><code class="language-text">with local_db.transaction():
+    pending = lock_pending_decision(decision_id)
+    proposal = load_frozen_proposal(pending.proposal_id)
+    require(can_review(authenticated_user, pending))
+    require(pending.is_pending and not pending.expired)
+    require(pending.proposal_hash == proposal.hash)
+    pending.status = APPROVED
+    record_approval(pending, authenticated_user)
+    outbox.insert_unique(pending.operation_id, proposal)
+</code></pre>
+<p>This local transaction guarantees only that the approval record and the pending delivery are persisted together. The remote business API is outside the transaction, and the outbox consumer may deliver repeatedly. The subsequent business submission still needs its own idempotency and concurrency control.</p>
+<h3 id="conditionalcommit">Recheck Real-World Conditions at Execution Time</h3>
+<p>While approval is pending, an order may be canceled, another operation may consume the balance, or the initiator's permissions may be revoked. Restoring the same run state does not restore the business world as it was.</p>
+<p>Before execution, recheck current identity permissions, approval validity, and applicable rules. For objects subject to concurrent modification, the business service must also check <code>expected_version</code> or an equivalent condition at the commit boundary. Reading a version in the application and then issuing an ordinary write still leaves a race between the two requests.</p>
+<figure><img alt="Frozen proposals, approval, and submission each have distinct checks. Final business conditions must hold at the actual commit boundary." decoding="async" loading="lazy" src="/images/blog/en/harness-anything/03-approval-commit.png"/><figcaption>Frozen proposals, approval, and submission each have distinct checks. Final business conditions must hold at the actual commit boundary.</figcaption></figure>
+<p><strong>Approval determines whether execution is permitted; idempotency handles duplicate arrivals; conditional submission determines whether execution is still valid now.</strong> These solve different problems. The same approval may cover a retry of an unfinished operation, but cannot conceal changed parameters. The same idempotency key cannot prevent the first request from executing against stale business state.</p>
+<p>Normal execution, resumption after human approval, subagent delegation, and automatic retries should all pass through the same submission adapter. Otherwise, even complete checks on the main path can be bypassed by a recovery path. If the downstream service lacks the required conditional-write support, the system must state its weaker guarantee and choose an effective constraint, such as serialization, an additional business lock, or human submission.</p>
+<h3 id="databoundary">Data Movement Is Also a Permission Question</h3>
+<p>External documents, webpages, emails, and retrieved passages may contain instructions directed at the agent. They can serve as analytical material. Entering context does not grant them permission to change system rules, invoke sensitive tools, or send data outside the system.</p>
+<p>Simon Willison describes a specific risk combination: a system that can read private data, encounter untrusted content, and communicate externally may be induced by injected content to exfiltrate data. Constraining combinations of data, capabilities, and destinations creates a more checkable boundary than merely asking the model to “ignore malicious instructions.” <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">Prompt injection and tool combinations</a></p>
+<p>Labeling tools “read” or “write” is insufficient. External search is usually a read operation, yet the query may carry internal information. Harvey's MCP policy engine addresses this directly by checking each invocation, verifying approved tool metadata, and considering the historical trace. Its fine-grained mutation capabilities that remain under development should not be treated as complete existing guarantees. <a href="https://www.harvey.ai/blog/building-harveys-mcp-policy-engine">Harvey: MCP policy engine</a></p>
+<p>At the application layer, calls can be restricted by target system, data sensitivity, allowed fields, and outbound channel. Execution credentials stay in the adapter rather than being assembled by the model. Model-based detectors can supplement anomaly detection, but executable policies should still govern whether a class of data may leave the system. Tighter permissions, egress controls, and isolation also incur maintenance costs and must cover every actual tool path.</p>
+<p>The timing of output review matters too. The Agents SDK runs a function tool's output guardrail after the real call. Blocking returned text cannot undo a remote operation that has already happened. Checks that serve as action prerequisites must precede the effect. <a href="https://github.com/openai/openai-agents-python/blob/125efa029b4bfd84238bd2c4fd69c3406f802663/src/agents/run_internal/tool_execution.py#L2083-L2142">Tool execution and post-call checks</a></p>
+<h2 id="recovery">6. Preserve Both Execution State and Business Outcomes for Long Tasks</h2>
+<h3 id="stateplanes">Checkpoints and Operation Records Answer Different Questions</h3>
+<p>An execution checkpoint answers “where did execution stop, and what does the next step need?” A business operation record answers “what intent was sent to which system, and did it actually take effect?” They can live in the same database, but both meanings must be retained.</p>
+<p>A long approval wait need not occupy an HTTP request or an in-memory coroutine. Persisting the proposal, decision, and wake-up condition lets the task lifecycle survive process restarts. Temporal's durable execution separates control flow from the process lifecycle; effects in external systems still depend on each Activity interface's own contract. <a href="https://temporal.io/blog/what-is-durable-execution">Durable Execution</a>, <a href="https://temporal.io/blog/idempotency-and-durable-execution">Idempotency and durable execution</a></p>
+<pre><code class="language-text">WorkflowState: job_spec, step, artifact_refs, pending_decision
+Operation: operation_id, proposal_id, target, frozen_args
+           expected_version, provider_key, outcome, receipt
+Evidence: source_versions, derived_artifacts, validation_records
+</code></pre>
+<p>The same <code>operation_id</code> should span approval, delivery, remote deduplication, and reconciliation. Record framework attempts separately from business intent: two attempts may belong to one refund, while two refunds with identical amounts may represent different business operations. Deduplicating solely by a parameter hash can suppress legitimate repeated business.</p>
+<figure><img alt="Checkpoints enable continued execution; business operation records establish effects. UNKNOWN outcomes require reconciliation under the same operation identifier." decoding="async" loading="lazy" src="/images/blog/en/harness-anything/04-workflow-effects.png"/><figcaption>Checkpoints enable continued execution; business operation records establish effects. UNKNOWN outcomes require reconciliation under the same operation identifier.</figcaption></figure>
+<h3 id="reentry">Resumption Can Re-enter Code and Invoke Tools Again</h3>
+<p>When LangGraph resumes an <code>interrupt</code>, it reruns the node from its beginning and retrieves the resume value at the corresponding interruption point. Python code before approval may therefore execute again. If that code performs an external write, adding a checkpointer does not automatically make it run once. <a href="https://github.com/langchain-ai/langgraph/blob/b4991f1ba36a2449ab59c38ab71828ee865bff84/libs/langgraph/langgraph/types.py#L912-L925">interrupt resumption semantics</a></p>
+<p>Separate proposal generation, approval, and submission, so that the approval node repeatedly reads the same frozen proposal and all submissions use the business adapter. This narrows the scope of re-entry, but a failure can still occur after a tool succeeds and before its result is persisted. Receiver-side deduplication and result queries remain necessary.</p>
+<p>Distinguish three kinds of “replay”: reading an existing conversation and its results, calling the model again to generate an answer, and re-executing external operations. The first restores a view, the second introduces new candidate results, and the third creates real effects. A debugging interface's “rerun” should select its scope explicitly rather than defaulting to repeating every business action in the trace.</p>
+<p>Context compaction should likewise retain source locations and versions, unresolved conflicts, approved objects, and operation states. Compressing “proposal P17 approved; remote outcome not yet confirmed” into “refund completed” directly breaks recovery semantics. Keep important fields in structured state; use summaries for reading and retrieval.</p>
+<h3 id="unknown">Reconcile Unknown Outcomes Instead of Relabeling Them as Failures</h3>
+<p>A network timeout only establishes that the client did not receive a definite result. The remote service may not have executed, may have succeeded, or may still be executing. Classifying all of these as <code>FAILED</code> makes it easy for the agent to try again with different parameters or a new operation identifier.</p>
+<p>Stripe's error documentation explicitly treats some server errors as indeterminate outcomes. Under its API v1 contract, the same key can also keep returning a cached error. “Make another request” and “establish the business outcome” are therefore different tasks. <a href="https://docs.stripe.com/error-low-level">Stripe: Advanced error handling</a></p>
+<pre><code class="language-text">if operation.outcome == UNKNOWN:
+    result = reconcile(operation, provider_contract)
+    if result.proves_success:
+        record(SUCCEEDED, result.receipt)
+    elif result.proves_no_effect_and_no_attempt_in_flight:
+        continue_under_same_operation_contract()
+    else:
+        suspend_further_submission()
+        escalate_with_operation_record()
+</code></pre>
+<p>A single query returning no object does not always prove that no effect occurred: read lag, permission differences, or an earlier request still in flight may explain it. Every write tool must define what evidence confirms the outcome, how long to wait, and who continues reconciliation. If those capabilities are missing, narrow the scope of automatic execution accordingly.</p>
+<p>Cross-system workflows may also complete only partially. Compensation should follow business rules and retain its own state and failure handling. For steps supporting conditional compensation, register the responsibility before the forward call so that an effect followed by a timeout does not leave compensation unrecorded. The compensation must still handle the case where the original effect never occurred. <a href="https://temporal.io/blog/compensating-actions-part-of-a-complete-breakfast-with-sagas">Temporal: designing compensating actions</a></p>
+<p>Compensation does not restore a database snapshot. Sent notifications, resources already used by others, and completed trades may not return to a state in which they “never happened.” Task acceptance must specify permitted intermediate states, acceptable remediation outcomes, and takeover responsibility.</p>
+<h2 id="evaluation">7. Define Evaluation and Release Policies through Domain Failures</h2>
+<h3 id="erroranalysis">Ask Experts to Explain Errors before Choosing Evaluators</h3>
+<p>“Answer quality is poor” does not guide a fix. The system needs to know whether it selected the wrong entity, cited evidence that did not support the claim, omitted an exception, mixed calculation bases, or executed an otherwise correct action without permission. These failures occur at different points and require different checks and repairs.</p>
+<p>Domain experts should review complete task traces and deliverables and record why a result is unusable. Open-ended analysis of real errors, followed by a stable failure taxonomy and rubric, localizes problems more effectively than beginning with many abstract dimensions. Mark the first departure from requirements as well, avoiding repeated counts of downstream consequences from one upstream error. <a href="https://hamel.dev/blog/posts/evals-faq/why-is-error-analysis-so-important-in-llm-evals-and-how-is-it-performed.html">Hamel Husain and Shreya Shankar: error analysis</a></p>
+<p>If experts must repeatedly read long free-form text from scratch, the product can improve the deliverable: show differences from a known template, separate facts, inferences, and unresolved items, and provide checkable fields and sources. Hamel Husain connects difficulty of evaluation with product design. The observation also applies to domain systems: a clear review path directly affects how much work is actually saved. <a href="https://hamel.dev/blog/posts/eval-smell/">“It's Hard to Eval” Is a Product Smell</a></p>
+<pre><code class="language-text">for trace in representative_traces:
+    review = domain_expert.review(trace, trace.delivered_artifact)
+    record(review.verdict, review.reason, review.evidence)
+    if review.failure is None: continue
+    if review.failure.can_be_checked_reliably:
+        add_versioned_check_and_regression_case(review.failure)
+    else:
+        define_review_or_escalation_rule(review.failure)
+</code></pre>
+<p>A regression set prevents known failures from returning. Independent, stable held-out sets and continually sampled new tasks are also needed. Repeatedly adjusting prompts against the same small group of examples gradually separates regression performance from real-world performance.</p>
+<p>Model judges should also be validated on an uncontaminated, expert-labeled set, measuring false acceptance and false rejection separately. When most examples pass, an overall agreement rate can conceal missed rare but serious failures. Changes to the model, domain rules, or rubric require recalibration; scores under different standards are not directly comparable. <a href="https://hamel.dev/blog/posts/llm-judge/index.html">Using LLM-as-a-Judge For Evaluation</a></p>
+<h3 id="evalboundaries">Evaluate Outcomes, Execution, and Policy Compliance Separately</h3>
+<p>A refund task can leave an order in the correct final state while bypassing confirmation. An identical final database does not prove policy-compliant execution. The presence of a correct action in a trace does not prove that no impermissible action preceded it.</p>
+<p>Retail policies in the τ-bench series require confirmation before database updates, yet the cancellation tool itself takes no confirmation credential. This gap tests whether an agent follows policy; it should not be copied directly as a production tool boundary. <a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/data/tau2/domains/retail/policy.md#L10-L24">Retail policy</a>, <a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/domains/retail/tools.py#L158-L205">order cancellation tool</a></p>
+<p>In the same pinned implementation, environment scoring compares final database states through replay. Action scoring looks for expected calls; it does not prove strict ordering or the absence of extra actions. The final reward combines only the components specified by the task, so score reports must retain the scope of the checks. <a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/evaluator/evaluator_env.py#L85-L129">Environment scoring</a>, <a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/evaluator/evaluator_action.py#L16-L59">action scoring</a>, <a href="https://github.com/sierra-research/tau2-bench/blob/4ce7c0397c1eb65c9bbe59aeacfe1ca44a1cd699/src/tau2/evaluator/evaluator.py#L222-L256">reward composition</a></p>
+<p>Production acceptance can separate artifact correctness, operation prerequisites, permitted action order, data leakage, and final business-state consistency. Enforce violations before execution wherever possible. Offline scoring finds omissions but cannot repair effects that have already occurred.</p>
+<p>Component evaluation helps localize errors. QueryGPT tests intent, table selection, and SQL separately, supplying correct upstream inputs to downstream components. This identifies where a failure originates. Full end-to-end tasks must remain, however, to reveal problems that appear when components connect. <a href="https://www.uber.com/gb/en/blog/query-gpt/">QueryGPT: evaluation design</a></p>
+<p>Passing components do not imply a passing user task. A correctly retrieved clause can still be misinterpreted, and executable SQL need not use the correct business basis. Evaluation reports should preserve check scope rather than promote a local proxy metric into a complete business conclusion.</p>
+<h3 id="coverage">Track Both Automatic Coverage and Errors after Release</h3>
+<p>A system can lower errors in automatic outputs by sending many tasks to humans, or raise automatic completion by relaxing checks. Reporting only one metric makes progress difficult to assess.</p>
+<p>The risk–coverage perspective from selective prediction can help organize these operational metrics. This is an evaluation approach; it does not directly confer statistical guarantees on an agent. <a href="https://proceedings.mlr.press/v97/geifman19a.html">SelectiveNet</a></p>
+<pre><code class="language-text">automatic_coverage = automatically_released / eligible_tasks
+released_error_rate = incorrect_releases / automatically_released
+cost_per_accepted_task = total_operating_cost / accepted_tasks
+</code></pre>
+<p>For example, of 1,000 tasks within a predefined scope, suppose 600 are released automatically and review finds 30 errors among them. Coverage is 60%, and the error rate after release is 5%. These numbers only illustrate the calculation. If production review samples only some tasks, report the sampling method, estimation uncertainty, and task distribution. Model-reported confidence is not the actual error rate.</p>
+<p>Errors also differ in consequence. Omitting a background citation and submitting the wrong amount to a business system should not simply count as two equivalent “failed tasks.” Track task categories and impacts separately, apply stricter release conditions to high-impact actions, and record human handoff volume, queueing time, and review quality.</p>
+<p>Define the eligible-task denominator before evaluation. Removing difficult tasks after failures does not establish an improved success rate. Scope can change, but report scope changes separately from changes in system capability.</p>
+<h2 id="evolution">8. Evolve from a Constrained Workflow</h2>
+<h3 id="rollout">Expand Execution Authority According to Action Risk</h3>
+<p>Start with a frequent task whose inputs have clear boundaries and whose results can be checked. Reproduce real examples offline, then run in shadow mode, then provide human-reviewable drafts or proposals. Only when evidence supports it should qualifying actions be submitted automatically.</p>
+<p>Shadow runs can measure retrieval, analysis, and proposal quality, but cannot adequately validate concurrency, timeouts, and partial completion in real submissions. The submission path also needs controlled-environment validation and a limited rollout. Read-only modes still require permission, privacy, and cost constraints.</p>
+<p>Configure autonomy per action. The same system can collect material and calculate automatically, ask a human to approve changes, and let a business service perform submission. A single global switch need not decide whether the entire agent is “automatic” or “manual.”</p>
+<p>Human takeover also needs a handoff format: the current task, completed work, evidence and conflicts, frozen proposals, actions known to have occurred, actions still uncertain, and recommended next steps. A popup saying only “human help required” transfers the full cost of reconstructing context to the operator.</p>
+<p>A handoff must also establish who has authority to continue acting. Once a human starts handling the same object, the agent should stop the corresponding automatic actions. Returning control to automation requires updated permissions and business versions. Handoff transfers control as well as information; otherwise, the human and agent may both write from the same stale state.</p>
+<h3 id="operationcost">Calculate the Total Cost per Acceptable Result</h3>
+<p>Model-call charges are only one part of operating cost. Repeated retrieval, ineffective repairs, tool latency, human review, and remediation all affect whether a task is worth automating. Additional checks may reduce incidents while slowing every task. Additional agents may shorten a local step while increasing coordination overhead.</p>
+<p>Stripe Minions run faster checks after local edits, followed by more expensive full validation, and limit repair rounds. This suggests an ordering principle: begin with cheap, decisive checks that prevent further wasted work, then perform semantic review or full validation. <a href="https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents-part-2">Stripe Minions: validation and repair</a></p>
+<p>Execution budgets should also distinguish progress from repeated attempts. Repeatedly finding the same missing data or measurement conflict is not necessarily helped by more search rounds. The system can track new evidence, resolved issues, and remaining blockers to trigger a clarification, a different tool, or takeover. Stopping conditions should amount to more than a very large maximum step count.</p>
+<h3 id="versioning">Release Changes as a Traceable Set of Versions</h3>
+<p>A domain system's behavior depends jointly on the model, prompts, tool schemas, retrieval indexes, data snapshots, and business rules. Evaluation rubrics and judges also need versions. Recording only the model version cannot explain why a task was allowed today but rejected yesterday.</p>
+<p>Store a version manifest for each run and connect releases to evaluation results. Pending proposals also need a compatibility policy: can old execution code still resume? Have tool parameters changed meaning? Is an approval under the old rules still usable? Check code compatibility and business validity separately. Being able to deserialize old state does not mean an old action should still be submitted.</p>
+<p>Log retention should support reproduction and diagnosis while respecting data scope, redaction, and retention periods. For sensitive tasks, controlled source references, versions, and necessary evidence may be more appropriate than endlessly copying complete material. Observability itself needs permission design.</p>
+<p>After adding a mechanism, keep checking whether it reduces the intended errors. If a complex planner does not raise the proportion of acceptable tasks, or another reviewer agent merely repeats existing checks, consider simplifying. Engineering experience includes recognizing which mechanisms no longer justify their maintenance.</p>
+<h2 id="checklist">Evidence the Design Should Preserve</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Question to Answer</th>
+<th>Corresponding System Object or Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What does this task promise to deliver?</td>
+<td>Task specification, scope, completion criteria</td>
+</tr>
+<tr>
+<td>Which measurement basis and date support the conclusion?</td>
+<td>Structured facts, data versions, source locations</td>
+</tr>
+<tr>
+<td>What is affected when a premise becomes invalid?</td>
+<td>Dependency records, invalidation states, cache and correction paths</td>
+</tr>
+<tr>
+<td>Which steps must run every time?</td>
+<td>Deterministic control flow, preconditions, acceptance gates</td>
+</tr>
+<tr>
+<td>What may the model read and propose?</td>
+<td>Retrieval scope, tool capabilities, context permissions</td>
+</tr>
+<tr>
+<td>Who approved which specific action?</td>
+<td>Frozen proposal, trusted approval record, expiry</td>
+</tr>
+<tr>
+<td>Is execution still valid now?</td>
+<td>Current permissions, business rules, conditional submission</td>
+</tr>
+<tr>
+<td>How is the actual outcome established after a timeout?</td>
+<td>Stable operation identifiers, result queries, reconciliation responsibility</td>
+</tr>
+<tr>
+<td>What repeats on resumption?</td>
+<td>Durable boundaries, re-entry semantics, deduplication contracts</td>
+</tr>
+<tr>
+<td>Is automation ready to expand?</td>
+<td>Domain error sets, release metrics, human cost, release evidence</td>
+</tr>
+</tbody>
+</table></div>
+<p>These objects need not all begin as independent services. A constrained workflow, one database, and clear business adapters can often support a first version. Add mechanisms in response to actual failures as task scope expands. The system can grow more complex over time; the meaning of a task, the object of approval, and the state of an outcome should be explicit from the beginning.</p><footer class="article-footer"><a href="/en/blog/">← Back to Blog</a></footer></article>
+</div>
+<script>
+const shell = document.querySelector('.toc-shell');
+const mobile = window.matchMedia('(max-width: 840px)');
+function setMode() { shell.open = !mobile.matches; }
+setMode();
+mobile.addEventListener('change', setMode);
+const links = [...document.querySelectorAll('.toc-list a')];
+links.forEach(link => link.addEventListener('click', () => {
+  if (mobile.matches) shell.open = false;
+}));
+const headings = links.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+function mark(id) {
+  links.forEach(link => {
+    if (decodeURIComponent(link.hash.slice(1)) === id) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+}
+let scheduled = false;
+function updateCurrent() {
+  const threshold = Math.min(window.innerHeight * .25, 160);
+  let current = headings[0];
+  for (const heading of headings) {
+    if (heading.getBoundingClientRect().top <= threshold) current = heading;
+    else break;
+  }
+  if (current) mark(current.id);
+  scheduled = false;
+}
+window.addEventListener('scroll', () => {
+  if (!scheduled) { scheduled = true; requestAnimationFrame(updateCurrent); }
+}, {passive: true});
+updateCurrent();
+</script>
+</body>
+</html>
+{% endraw %}

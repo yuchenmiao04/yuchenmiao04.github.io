@@ -1,8 +1,10 @@
 ---
 layout: blog
-title: "Skill 渐进式披露：Pi 与 DeepSeek Harness 如何按需加载"
+title: Skill 渐进式披露：Pi 与 DeepSeek Harness 如何按需加载
 permalink: /blog/skill-progressive-disclosure/
-description: "通过 Pi 与 DeepSeek Harness 的实现，说明技能目录、正文与引用资料如何分层进入模型上下文。"
+description: 通过 Pi 与 DeepSeek Harness 的实现，说明技能目录、正文与引用资料如何分层进入模型上下文。
+lang: zh-CN
+translation_slug: skill-progressive-disclosure
 ---
 
 {% raw %}

@@ -1,8 +1,10 @@
 ---
 layout: blog
-title: "Long-Horizon Agents：如何持续推进，直到任务真正完成"
+title: Long-Horizon Agents：如何持续推进，直到任务真正完成
 permalink: /blog/long-horizon-agents/
-description: "从长程能力评测出发，梳理行动反馈、会话交接、目标控制、经验记忆与技能积累的机制。"
+description: 从长程能力评测出发，梳理行动反馈、会话交接、目标控制、经验记忆与技能积累的机制。
+lang: zh-CN
+translation_slug: long-horizon-agents
 ---
 
 {% raw %}

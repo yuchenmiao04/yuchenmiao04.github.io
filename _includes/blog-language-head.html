@@ -1,0 +1,14 @@
+{% if page.blog_index or page.translation_slug %}
+  {% if page.blog_index %}
+    {% assign blog_zh_url = '/blog/' %}
+    {% assign blog_en_url = '/en/blog/' %}
+  {% else %}
+    {% assign blog_zh_url = '/blog/' | append: page.translation_slug | append: '/' %}
+    {% assign blog_en_url = '/en/blog/' | append: page.translation_slug | append: '/' %}
+  {% endif %}
+  <link rel="alternate" hreflang="zh-CN" href="{{ blog_zh_url | absolute_url }}">
+  <link rel="alternate" hreflang="en" href="{{ blog_en_url | absolute_url }}">
+  <link rel="alternate" hreflang="x-default" href="{{ blog_zh_url | absolute_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/blog-language.css' | relative_url }}">
+  <script src="{{ '/assets/js/blog-language.js' | relative_url }}" defer></script>
+{% endif %}

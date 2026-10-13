@@ -3,6 +3,8 @@ layout: null
 title: Prompt Engineering：把任务写清楚，把结果验明
 permalink: /blog/prompt-engineering/
 description: 从任务要求、上下文与 Few-shot 示例出发，讨论 CoT、ReAct、任务分解、结构化输出和评测，结合经典案例说明提示词技巧的用途与边界。
+lang: zh-CN
+translation_slug: prompt-engineering
 ---
 
 {% raw %}
@@ -126,10 +128,10 @@ blockquote p:last-child { margin-bottom: 0; }
 .article-nav a { color: var(--muted); text-decoration: none; }
 .article-nav a:hover { color: var(--purple); }
 .article-footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 22px; font-size: 14px; }
-</style></head>
+</style><link href="https://yuchenmiao04.github.io/blog/prompt-engineering/" hreflang="zh-CN" rel="alternate"/><link href="https://yuchenmiao04.github.io/en/blog/prompt-engineering/" hreflang="en" rel="alternate"/><link href="https://yuchenmiao04.github.io/blog/prompt-engineering/" hreflang="x-default" rel="alternate"/><link href="/assets/css/blog-language.css" rel="stylesheet"/><script defer="" src="/assets/js/blog-language.js"></script></head>
 <body>
 <div class="layout">
-<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="文章导航" class="article-nav"><a href="/blog/">← Blog</a><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Prompt Engineering</h1><p class="subtitle">把任务写清楚，把结果验明</p></header>
+<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="文章导航" class="article-nav"><a href="/blog/">← Blog</a><nav aria-label="Language" class="blog-language-switch"><a aria-current="page" data-blog-language="zh-CN" href="/blog/prompt-engineering/" hreflang="zh-CN" lang="zh-CN">中文</a><a data-blog-language="en" href="/en/blog/prompt-engineering/" hreflang="en" lang="en">English</a></nav><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Prompt Engineering</h1><p class="subtitle">把任务写清楚，把结果验明</p></header>
 <p>“帮我总结这份报告”通常能得到一段流畅的文字。准备开会的负责人、刚接手项目的同事和需要录入数据的程序，对这份总结的要求并不一样。负责人需要决策依据，同事需要背景与未决事项，程序需要字段、类型和缺失值的约定。同一份材料可以对应不同的交付物。</p>
 <p>提示词工程处理的正是这些差异：明确要完成什么，提供完成任务所需的信息，展示容易误解的判断边界，并让结果能够被检查。语气更强硬、角色头衔更显赫、指令更长，都不能代替这些工作。</p>
 <p>早期提示词研究已经积累了示例学习、任务分解、思维链和多次采样等方法。随着模型的训练方式和接口变化，同一种写法的收益也会变化。<a href="https://arxiv.org/html/2406.06608v6">The Prompt Report</a> 提供了较完整的方法分类；实际使用时，更有价值的问题是：当前失败由什么造成，哪项修改能够减少它，需要付出多少成本。</p>
@@ -500,5 +502,4 @@ updateCurrent();
 </script>
 </body>
 </html>
-
 {% endraw %}

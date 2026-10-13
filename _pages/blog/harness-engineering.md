@@ -1,8 +1,10 @@
 ---
 layout: blog
-title: "Harness Engineering：让 Agent 的执行形成闭环"
+title: Harness Engineering：让 Agent 的执行形成闭环
 permalink: /blog/harness-engineering/
-description: "解释 Harness 如何组织上下文、工具、状态、验收与恢复，让多步任务依据实际结果持续推进。"
+description: 解释 Harness 如何组织上下文、工具、状态、验收与恢复，让多步任务依据实际结果持续推进。
+lang: zh-CN
+translation_slug: harness-engineering
 ---
 
 {% raw %}

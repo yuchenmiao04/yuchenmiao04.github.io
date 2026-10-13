@@ -1,8 +1,10 @@
 ---
 layout: blog
-title: "Agent Engineering：重试、状态与执行控制"
+title: Agent Engineering：重试、状态与执行控制
 permalink: /blog/agent-engineering/
-description: "从 Codex、OpenCode、Pi 与 Claude 的公开实现出发，梳理重试、工具执行、会话状态、上下文管理与任务验收中的工程细节。"
+description: 从 Codex、OpenCode、Pi 与 Claude 的公开实现出发，梳理重试、工具执行、会话状态、上下文管理与任务验收中的工程细节。
+lang: zh-CN
+translation_slug: agent-engineering
 ---
 
 {% raw %}

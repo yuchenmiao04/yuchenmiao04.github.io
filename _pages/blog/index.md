@@ -3,9 +3,14 @@ layout: default
 permalink: /blog/
 title: "Blog"
 author_profile: true
+lang: zh-CN
+blog_index: true
 ---
 
-# Blog
+<div class="blog-index-header">
+  <h1>Blog</h1>
+  {% include blog-language-switch.html %}
+</div>
 
 <div class="blog-list" lang="zh-CN">
 {% for entry in site.data.blog %}

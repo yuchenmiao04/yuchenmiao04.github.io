@@ -1,0 +1,11 @@
+{% if page.blog_index %}
+  {% assign blog_zh_url = '/blog/' %}
+  {% assign blog_en_url = '/en/blog/' %}
+{% else %}
+  {% assign blog_zh_url = '/blog/' | append: page.translation_slug | append: '/' %}
+  {% assign blog_en_url = '/en/blog/' | append: page.translation_slug | append: '/' %}
+{% endif %}
+<nav class="blog-language-switch" aria-label="Language">
+  <a href="{{ blog_zh_url | relative_url }}" lang="zh-CN" hreflang="zh-CN" data-blog-language="zh-CN"{% unless page.lang == 'en' %} aria-current="page"{% endunless %}>中文</a>
+  <a href="{{ blog_en_url | relative_url }}" lang="en" hreflang="en" data-blog-language="en"{% if page.lang == 'en' %} aria-current="page"{% endif %}>English</a>
+</nav>

@@ -3,6 +3,8 @@ layout: null
 title: Harness Anything：面向垂直领域的 Agent 系统设计
 permalink: /blog/harness-anything/
 description: 从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。
+lang: zh-CN
+translation_slug: harness-anything
 ---
 
 {% raw %}
@@ -127,10 +129,10 @@ blockquote p:last-child { margin-bottom: 0; }
 .article-nav a:hover { color: var(--purple); }
 .article-footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 22px; font-size: 14px; }
 </style>
-<link href="https://yuchenmiao04.github.io/blog/harness-anything/" rel="canonical"/><meta content="从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。" name="description"/><meta content="Harness Anything：面向垂直领域的 Agent 系统设计" property="og:title"/><meta content="从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。" property="og:description"/><meta content="https://yuchenmiao04.github.io/blog/harness-anything/" property="og:url"/><meta content="article" property="og:type"/><meta content="https://yuchenmiao04.github.io/images/blog/harness-anything/00-harness-overview.png" property="og:image"/></head>
+<link href="https://yuchenmiao04.github.io/blog/harness-anything/" rel="canonical"/><meta content="从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。" name="description"/><meta content="Harness Anything：面向垂直领域的 Agent 系统设计" property="og:title"/><meta content="从任务契约、领域证据和执行边界出发，讨论如何设计可核对、可恢复、可评测的垂直领域 Agent 系统。" property="og:description"/><meta content="https://yuchenmiao04.github.io/blog/harness-anything/" property="og:url"/><meta content="article" property="og:type"/><meta content="https://yuchenmiao04.github.io/images/blog/harness-anything/00-harness-overview.png" property="og:image"/><link href="https://yuchenmiao04.github.io/blog/harness-anything/" hreflang="zh-CN" rel="alternate"/><link href="https://yuchenmiao04.github.io/en/blog/harness-anything/" hreflang="en" rel="alternate"/><link href="https://yuchenmiao04.github.io/blog/harness-anything/" hreflang="x-default" rel="alternate"/><link href="/assets/css/blog-language.css" rel="stylesheet"/><script defer="" src="/assets/js/blog-language.js"></script></head>
 <body>
 <div class="layout">
-<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="文章导航" class="article-nav"><a href="/blog/">← Blog</a><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Harness Anything</h1><p class="subtitle">面向垂直领域的 Agent 系统设计</p></header>
+<section aria-labelledby="article-title" class="intro"><header class="article-header"><nav aria-label="文章导航" class="article-nav"><a href="/blog/">← Blog</a><nav aria-label="Language" class="blog-language-switch"><a aria-current="page" data-blog-language="zh-CN" href="/blog/harness-anything/" hreflang="zh-CN" lang="zh-CN">中文</a><a data-blog-language="en" href="/en/blog/harness-anything/" hreflang="en" lang="en">English</a></nav><a href="/">Yuchen Miao</a></nav><h1 id="article-title">Harness Anything</h1><p class="subtitle">面向垂直领域的 Agent 系统设计</p></header>
 <p>把模型接入财务数据库，再补上检索、计算和报告工具，已经可以得到一份像样的分析。困难通常出现在报告写完之后：其中两个数字是否属于同一合并口径，某条政策在分析时点是否已经生效，缺失的数据是否被当成了零，以及这份结论能否用于下一步操作。</p>
 <p>在客服系统里，同样的问题表现为退款资格、收款对象和重复提交；在合同审查里，表现为条款适用范围、修改冲突和文档版本；在科研流程里，表现为数据划分、实验环境和结果能否复现。模型可以理解这些要求，但系统还需要确定：哪些要求必须成立，怎样检查，检查不出来时怎样继续。</p>
 <p>垂直领域 Harness 的工作，是把这些要求落实到运行过程。这里的 Harness 指模型周围负责上下文、工具、状态、执行控制和验收的系统。它需要连接领域知识，也需要承接领域工作的责任：一个判断凭什么成立，一个动作凭什么被允许，一次失败之后还有什么必须处理。</p>
@@ -496,5 +498,4 @@ updateCurrent();
 </script>
 </body>
 </html>
-
 {% endraw %}
