@@ -1,0 +1,124 @@
+---
+layout: null
+title: Multi-Agent Debate：协议、更新语义与评测
+permalink: /blog/agent-debate/
+description: 面向研究者与开发者的 Multi-Agent Debate 技术说明：状态与消息接口、同步与异步更新、错误相关性、逐主张验证、有界执行循环及配对评测。
+lang: zh-CN
+translation_slug: agent-debate
+---
+
+{% raw %}
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<title>Multi-Agent Debate：协议、更新语义与评测 - Yuchen Miao</title><meta name="description" content="面向研究者与开发者的 Multi-Agent Debate 技术说明：状态与消息接口、同步与异步更新、错误相关性、逐主张验证、有界执行循环及配对评测。">
+<link rel="canonical" href="https://yuchenmiao04.github.io/blog/agent-debate/">
+<link rel="alternate" hreflang="zh-CN" href="https://yuchenmiao04.github.io/blog/agent-debate/"><link rel="alternate" hreflang="en" href="https://yuchenmiao04.github.io/en/blog/agent-debate/"><link rel="alternate" hreflang="x-default" href="https://yuchenmiao04.github.io/blog/agent-debate/">
+<meta property="og:type" content="article"><meta property="og:title" content="Multi-Agent Debate：协议、更新语义与评测"><meta property="og:description" content="面向研究者与开发者的 Multi-Agent Debate 技术说明：状态与消息接口、同步与异步更新、错误相关性、逐主张验证、有界执行循环及配对评测。"><meta property="og:url" content="https://yuchenmiao04.github.io/blog/agent-debate/">
+<link rel="stylesheet" href="/assets/css/agent-articles.css"><link rel="stylesheet" href="/assets/css/blog-language.css"><link rel="stylesheet" href="/assets/css/agent-viz.css">
+<script defer src="/assets/js/blog-language.js"></script><script defer src="/assets/js/agent-reading.js"></script><script defer src="/assets/js/agent-articles.js"></script>
+</head><body><a class="skip-link" href="#main-article">跳到正文</a><div class="reading-progress" aria-hidden="true"></div>
+<div class="layout">
+<section class="intro" aria-labelledby="article-title">
+<header class="article-header"><nav class="article-nav" aria-label="文章导航"><a href="/blog/">← Blog</a><nav class="blog-language-switch" aria-label="语言"><a data-blog-language="zh-CN" href="/blog/agent-debate/" hreflang="zh-CN" lang="zh-CN" aria-current="page">中文</a><a data-blog-language="en" href="/en/blog/agent-debate/" hreflang="en" lang="en">English</a></nav><a href="/">Yuchen Miao</a></nav>
+<p class="series-context">Agent 系统 · 协作与验证</p><h1 id="article-title">Multi-Agent Debate：协议、更新语义与评测</h1><p class="subtitle">把候选采样、交互修订和最终聚合拆开，构建可实现、可比较的推断过程。</p></header>
+<p>一次 Debate 运行可以有多个模型、几十条消息和看似充分的交锋，却仍然难以回答：哪个候选获得了新信息，哪个正确答案被带偏，最后的改进来自讨论还是更多计算。实现协议时，需要把这些变化落实到状态与可测量的操作。</p><p>本文从可复现的推断过程展开，先定义候选和可见信息，再确定更新顺序、验证与聚合，最后给出有界执行骨架和比较方法。文中的公式与伪代码用于说明协议及其假设，不是新方法的性能报告。</p></section>
+<details class="toc-shell" open><summary>目录</summary><nav class="toc-content" aria-label="目录"><p class="toc-label">目录</p><ol class="toc-list"><li class="level-2"><a href="#three-computations">先分开采样、交互与聚合</a></li><li class="level-2"><a href="#initialization-and-state">初始化与消息必须能重建</a></li><li class="level-2"><a href="#update-schedules">同步、顺序与真正异步是不同更新算子</a></li><li class="level-2"><a href="#topology-and-context">拓扑同时改变信息与成本</a></li><li class="level-2"><a href="#correlated-errors">相关错误怎样削弱增加候选的收益</a></li><li class="level-2"><a href="#claim-level-verification">让 challenge 指向 verifier 能检查的对象</a></li><li class="level-2"><a href="#aggregation">聚合要定义答案空间与平票策略</a></li><li class="level-2"><a href="#stopping">停止条件描述进展，不证明真值</a></li><li class="level-2"><a href="#minimal-runner">一个有界的同步执行骨架</a></li><li class="level-2"><a href="#comparison-design">机制消融与等预算比较回答不同问题</a></li><li class="level-2"><a href="#revision-metrics">给修订指标写清分母</a></li><li class="level-2"><a href="#implementation-record">把协议作为可复现实验对象</a></li></ol></nav></details>
+<article id="main-article" aria-label="Multi-Agent Debate：协议、更新语义与评测" tabindex="-1"><section aria-labelledby="three-computations"><h2 id="three-computations">先分开采样、交互与聚合</h2><p>给定问题 q，运行 N 次模型得到候选，再选择一个答案，已经构成集成推断。Debate 增加的操作是让候选读取彼此的信息并修订。初始化产生哪些候选、交互怎样改变候选、聚合如何选择结果，是三个可以分别替换和测量的计算阶段。增加 Agent 的总体收益，不能直接归给交流。</p><div class="math-block" role="math" tabindex="0">x<sub>i</sub><sup>0</sup> ∼ Init<sub>θᵢ</sub>(q, E<sub>i</sub><sup>0</sup>)<br/>x<sub>i</sub><sup>t</sup> = F<sub>θᵢ</sub>(q, x<sub>i</sub><sup>t−1</sup>, M<sub>i</sub><sup>t</sup>, E<sub>i</sub><sup>t</sup>)<br/>ŷ = A(q, {x<sub>i</sub><sup>T</sup>}<sub>i=1…N</sub>, checks)</div><p>x 是可传递的候选状态，包含答案、原子主张、证据引用与未决项；M 是本次更新实际可见的消息，E 是外部材料或工具结果。F 包含提示、模型、采样参数与上下文构造，通常是随机映射。公式描述一次接纳的更新；调用失败或结果不符合协议时，运行器保留上一个有效状态，另记失败尝试。</p><p>将协议记成配置 Π，比只给它一个“多 Agent 辩论”的名称更有用。配置至少包括初始化、消息选择、更新顺序、拓扑、验证器、聚合与停止策略。模型相同而 Π 不同，可以运行出不同的算法；角色名称不同，也可能仍然在重复相同计算。</p></section><section aria-labelledby="initialization-and-state"><h2 id="initialization-and-state">初始化与消息必须能重建</h2><p>先冻结问题、输入材料和模型配置。初答阶段屏蔽其他候选、票数与评审意见，并保存每次调用的输入摘要、模型版本和采样设置。这里的“独立”表示没有读取同伴消息；同模型或同材料仍可能产生相关错误。若各 Agent 有不同检索结果，应保存各自材料，不能把信息差异解释成推理差异。</p><p>候选状态与调用记录分开存。state_version 由宿主分配，接纳新状态时递增；超时和重试只增加 attempt 记录。run_id 与 question_hash 标识任务，protocol_hash 固定提示与调度规则，evidence_snapshot 绑定材料版本。只保存一份不断覆盖的回答，无法判断一条质疑针对的是旧错误还是已修订的主张。</p><pre tabindex="0"><code>State:
+  run_id, question_hash, protocol_hash, evidence_snapshot
+  agent_id, state_version, parent_version, round_id
+  answer, claims[], evidence_refs[], unresolved[]
+  checks[]
+Message:
+  message_id, kind: PROPOSAL | CHALLENGE | CHECK | REVISION
+  sender, recipients, source_state_version
+  target: {agent_id, state_version, claim_id, claim_hash}
+  read_set: [{agent_id, state_version, content_hash}]
+  payload, evidence_refs[], check_refs[]</code></pre><p>read_set 由运行器依据实际提供的输入生成，模型可以返回解释，但不能自行声明读过哪个版本。claim_id 标识同一主张，claim_hash 区分其内容修订。接收质疑时先核对目标版本；旧质疑可以保留在历史中，只有目标主张仍相容时才应用到当前候选。</p><p>“有效状态”在这里仅表示结构可解析、来源版本可定位、检查记录符合接口。它不等于答案正确。消息体也不必是完整推理全文，简短的断言、可检查依据与修改理由通常更容易控制长度。序列化次序、裁剪方式和摘要提示都属于协议，需要留版本。</p></section><section aria-labelledby="update-schedules"><h2 id="update-schedules">同步、顺序与真正异步是不同更新算子</h2><p>Jacobi 式同步更新先冻结整个上一轮状态 S<sup>t−1</sup>。所有 Agent 读取这个快照，在另一块缓冲区写候选，完成后统一提交。调用可以并发、先后结束，但较早返回的结果不进入本轮其他调用的上下文。双缓冲控制的是读取语义，不只是线程数量。</p><div class="math-block" role="math" tabindex="0">Jacobi: M<sub>i</sub><sup>t</sup> = H<sub>i</sub>({x<sub>j</sub><sup>t−1</sup> : j ∈ N<sub>i</sub>})<br/>Gauss-Seidel: M<sub>i</sub><sup>t</sup> = H<sub>i</sub>({x<sub>j</sub><sup>t</sup> : j ∈ N<sub>i</sub> 且已更新} ∪ {x<sub>j</sub><sup>t−1</sup> : j ∈ N<sub>i</sub> 且未更新})</div><p>Gauss-Seidel 式顺序更新按预定排列执行。后发者读取本轮已经提交的邻居结果，其余仍读上一轮。排列因此是算法参数。比较顺序协议时应交换或随机化排列并记录种子，否则某个模型的优势可能只是总能看到更多更新。这里借用数值迭代的名称描述读取方式，不引入相同的收敛性质。</p><p>真正的事件驱动异步没有全局轮次屏障。Agent i 收到消息后，可以基于不同邻居的不同版本继续更新。必须记录每次调用读到的版本向量、消息去重规则和陈旧度限制；同一 Agent 的旧调用若晚于新状态返回，也不能直接覆盖新状态。运行器应在原子提交时比较 parent_version（CAS）；前提不符就拒绝，或重新基于新状态计算。此时每个 Agent 有自己的版本计数，不能把它们当作统一轮次。</p><div data-viz="schedule"></div><p>图固定三个 Agent：同步与顺序各显示两轮，异步显示六次本地更新事件，没有全局的“两轮”。它示意可见版本，不表示实测速度或正确率。一些实现把并发计算称为异步，但仍只读取上一轮快照；这在逻辑上属于同步更新。需要区分执行器怎样并行与算法怎样读取状态。异步调度还会让速度较快的模型更频繁地影响其他候选，比较时应报告各 Agent 的实际更新次数。</p></section><section aria-labelledby="topology-and-context"><h2 id="topology-and-context">拓扑同时改变信息与成本</h2><p>用有向边 j → i 表示 i 能读取 j，邻居集合 N<sub>i</sub> 决定可见候选。H<sub>i</sub> 进一步决定传全文、主张、证据还是摘要，以及它们的排序与长度。全连接、环、星形和定向挑战，改变的不只是消息数量，也改变某个错误或有效反例能传播到哪里。</p><p>若每条候选的交换长度限定为 L，只传当前快照，R 轮全连接通信的同伴输入量约为 O(RN²L)；固定入度 d 时约为 O(RNdL)。这些量不含问题、私有历史、输出和验证成本。若每轮累积全部历史，长度还会随轮数增长，不能继续套用固定 L 的估计。</p><p>稀疏连接可以减少重复输入，也可能切断唯一正确候选的传播路径。一个中心摘要会压缩材料，但会引入额外模型调用和摘要遗漏。动态路由还需要把“选谁交流”的成本与选择偏差计入。实现时记录每条被选择、裁剪和丢弃的消息，才能解释拓扑变化究竟减少了什么。</p><p>跨拓扑对照应固定首答并尽量控制单条消息格式。否则，环形图若同时使用更短摘要，得到的差异会混合连接和压缩两项改动。对消息顺序的扰动也应单独测量，因为相同邻居集合不等于相同模型输入。</p></section><section aria-labelledby="correlated-errors"><h2 id="correlated-errors">相关错误怎样削弱增加候选的收益</h2><p>分别调用模型并不能保证错误独立。共享训练、检索材料、提示与常见推理捷径，都可能使多个候选在相同题上失败；交互又可能把原先不同的候选推向同一错误。答案不同也不代表错误不相关，几个不同的错误答案仍可能同时出现在难题上。</p><p>可以用一个简化模型说明方差尺度。令 X<sub>i</sub> 为错误指示变量，取值为 0 或 1。在明确的任务与运行采样分布下，假设所有 Agent 的错误边际均为 p，0 &lt; p &lt; 1，所有不同 Agent 对的相关系数都为 ρ。图展示 0 ≤ ρ ≤ 0.9，公式可以分析 0 ≤ ρ ≤ 1。</p><div class="math-block" role="math" tabindex="0">X̄ = (1/N) ∑<sub>i=1…N</sub> X<sub>i</sub><br/>Var(X̄) = p(1−p)/N · [1 + (N−1)ρ]<br/>N<sub>eff</sub> = N / [1 + (N−1)ρ]</div><p>公式来自展开均值的协方差：N 项边际方差，加上 N(N−1) 项成对协方差。N<sub>eff</sub> 只是将这个方差写成独立均值形式时的等效数量。ρ 为 0 时得到 N；ρ 为 1 时得到 1。增加候选仍可能有其他作用，这个量只描述错误均值的方差。</p><div data-viz="correlation"></div><p>这不是投票正确率公式，也不是 LLM 实测。相同的 p 与两两相关不能一般地确定多数错误的尾概率；多分类众数还取决于错误答案如何分布。实际候选的边际准确率常不相等，应直接查看错误向量与协方差，而不是强行拟合一个 ρ。</p><p>估计时保留题目级配对结果，并检查难度分层。把容易题与困难题混在一起，本身就会产生共同失败，相关性不能直接解释为通信造成的影响。同源材料去重可以整理输入，却没有检验这些统计条件。是否增加了有用的互补信息，仍需要带参考结果的对照。</p></section><section aria-labelledby="claim-level-verification"><h2 id="claim-level-verification">让 challenge 指向 verifier 能检查的对象</h2><p>有效质疑需要一个目标，而不是一段“请重新思考”。将答案拆成主张后，挑战者可以指出缺失前提、给出反例、标记与材料的冲突，或附上失败测试。接收者返回保留、修订或撤回哪条主张，并说明依据。主张内容改变后，旧检查结果不能自动继承。</p><pre tabindex="0"><code>Challenge:
+  target: {state_version, claim_id, claim_hash}
+  type: missing_premise | contradiction | counterexample | test_failure
+  evidence_refs, proposed_check, expected_observation
+CheckRequest:
+  target_claim_hash, artifact_hash, evidence_snapshot
+  verifier_id, verifier_version, test_spec, resource_cap
+CheckResult:
+  status: PASS | FAIL | UNKNOWN
+  scope, observed, evidence_refs, verifier_version, input_hash</code></pre><p>例如，对一个边界条件判断提出质疑，可以返回最小输入、预期性质和实际结果。运行器在隔离环境中重放检查，核对输入与产物哈希，再把结果交给修订者。挑战者提供的测试也需要审查是否检验了约定性质，防止通过改变问题来制造失败。</p><p>PASS 必须带检查范围。一个单元测试通过，只说明该输入与断言通过；引用匹配只确认片段存在；形式证明的结论依赖公理与规格。开放式主张的证据支持关系可能需要模型或人工审查，其误判率也要测量。UNKNOWN 用于超时、缺失输入或检查本身不能决定的情况，不能当成 PASS。</p><p>运行器可以先做便宜的格式、版本与可执行性检查，再花预算运行工具或语义验证器。验证结果作为带版本的外部反馈进入下一次 F，不能靠模型自己输出“已验证”升级为检查记录。若一次修订改掉了被检验的程序或前提，就应失效对应检查，而不是保留一个笼统的 verified 标记。</p></section><section aria-labelledby="aggregation"><h2 id="aggregation">聚合要定义答案空间与平票策略</h2><p>对可归一化的离散答案，先定义映射 g，再计票。数字格式、单位、选项别名与拒答怎样处理，都应固定。选择最高频答案是 plurality；只有某候选超过有效票的一半，才获得 strict majority。多分类最高频不一定过半，平票也需要预定处理，不能临时选最先返回的候选。</p><div class="math-block" role="math" tabindex="0">â = argmax<sub>a</sub> ∑<sub>i=1…N</sub> 𝟙[g(x<sub>i</sub>) = a]</div><p>开放答案可以对预先定义的原子主张投票，或用 judge 进行点式、成对评审。直接对整篇自由文本取众数没有稳定语义。若 g 由另一个模型实现，归并本身就是一个有成本、有误差的组件，需要抽查。按主张聚合后还要检查组合是否一致，分别获票最多的主张未必能组成可满足的整体。</p><p>Judge 可以读取候选与带范围的检查结果，输出选择、条件性综合或弃权。它也会受答案顺序、篇幅与身份影响。评估时固定量规，隐藏不必要身份，扰动顺序，并用独立参考或人工标注检验；换更强裁判的收益应与改变讨论协议分开。</p><p>按 confidence 加权需要另一层验证。自报置信度和生成概率都不自动等于正确概率。应在与部署分布相符、未用于调参的样本上检查校准，例如 Brier score 与可靠性曲线，并记录校准器版本。即使边际概率校准良好，共享错误仍会让简单加权重复计算同一信号。没有足够校准数据时，可以保留未加权计票与弃权作为对照。</p><p>校准还需要明确事件与参考。若目标是答案正确，标签应来自答案检查；偏好评分的校准不能直接当作事实正确率。对预测概率 r<sub>k</sub> 与二元正确标签 y<sub>k</sub>，Brier score 为平均的 (r<sub>k</sub>−y<sub>k</sub>)²。应同时查看不同概率区间的样本量与错误，避免一个总体分数遮住高置信错误。校准数据与测试任务应分开，模型或任务分布变化后再检查。</p></section><section aria-labelledby="stopping"><h2 id="stopping">停止条件描述进展，不证明真值</h2><p>固定轮数容易实现，也便于做消融。自适应停止则需要明确观察量：规范化答案是否改变、未决挑战是否减少、验证结果是否新增，以及下一次更新是否仍有足够预算。这些量应由状态差异计算，不只依赖一位模型说“已经讨论充分”。</p><p>在固定输入与确定性更新下，不动点 S* 满足 G(S*) = S*，只说明更新算子不再改变它；错误答案同样可能是不动点。随机生成中，连续几轮答案相同甚至不构成严格的不动点。记录稳定状态可以帮助控制计算，却不能替代外部检验。</p><p>停止应返回原因：达到轮数、预算不足、deadline、候选稳定、关键检查通过，或仍有无法解决的挑战。只有检查范围覆盖了任务要求时，才能把检查通过提升为相应范围内的完成。其余情况可以交付候选与未决项。最终聚合本身也要留预算和时间，不能等辩论耗尽资源后再假定裁判会免费出结果。</p><p>已保存状态绑定材料快照。若允许检索新证据，E 的变化可能重新打开已关闭的挑战，应记录新的证据版本并重新检查依赖。下面的最小循环先固定 E，将验证反馈保存在状态中，以免同时实现动态检索与调度而难以判断错误来自哪里。</p></section><section aria-labelledby="minimal-runner"><h2 id="minimal-runner">一个有界的同步执行骨架</h2><p>下面采用 Jacobi 更新，t = 0 为盲态初始化，其后最多运行 R 次修订。propose_and_verify 在同一额度内完成生成与检查，返回候选及检查记录；admit 检查结构、epoch、read_set、目标版本和记录来源。它接纳的是协议状态，不替代正确性判断。eligible_candidates 排除具有决定性失败的答案，并为证据不足者保留条件性或未决输出。</p><pre tabindex="0"><code>def debate(q, E, agents, protocol, ledger, deadline):
+    # Reserve final aggregation AND its output checks before sampling.
+    final_ticket = ledger.reserve_final(protocol.final_cost_cap)
+    if final_ticket is None:
+        return unresolved("insufficient_final_budget")
+    work_deadline = deadline - protocol.final_time_cap
+    last_valid = {i: None for i in agents}  # keep all configured IDs
+    active = list(agents)
+    history = []
+    stop_reason = "round_limit"
+
+    for t in range(protocol.max_revision_rounds + 1):
+        if now() &gt;= work_deadline:
+            stop_reason = "work_deadline"
+            break
+        snapshot = freeze(last_valid)       # immutable read buffer
+        epoch = open_epoch(t, snapshot.hash, E.hash)
+        next_state = dict(snapshot.states)  # separate write buffer
+        jobs, admitted_agents = [], set()
+        round_deadline = min(work_deadline, now()+protocol.round_timeout)
+
+        for i in active:
+            if now() &gt;= round_deadline:
+                break
+            messages = [] if t == 0 else select_messages(
+                i, snapshot, protocol.graph, protocol.message_cap)
+            inputs = make_inputs(q, E, snapshot[i], messages)
+            cap = bound_proposal_and_verification_cost(inputs, protocol)
+            ticket = ledger.try_reserve_atomic(cap, round_deadline)
+            if ticket is None:
+                record_skip(i, epoch, "worker_budget")
+                continue
+            jobs.append(submit_propose_and_verify(
+                i, inputs, epoch, ticket,
+                timeout=min(protocol.call_timeout, round_deadline-now())))
+
+        for event in collect_until(jobs, round_deadline):
+            ledger.settle_or_hold(event)    # charge known use; hold unknown use
+            record_attempt(event, epoch)
+            if event.status != SUCCEEDED or event.result is None:
+                continue
+            result = event.result
+            if admit(result, epoch, snapshot, E):
+                next_state[event.agent] = host_versioned(result, snapshot)
+                admitted_agents.add(event.agent)
+
+        close_epoch(epoch)                 # late results cannot alter this round
+        cancel_unfinished(jobs)             # cancellation does not imply no bill
+        ledger.keep_unsettled_reservations(jobs)
+        last_valid = commit(next_state)
+        history.append(record_last_valid(t, last_valid, admitted_agents))
+        if t == 0:
+            active = [i for i in agents if last_valid[i] is not None]
+        if not active:
+            stop_reason = "no_admitted_initial_states"
+            break
+        if not jobs:
+            stop_reason = "no_jobs_dispatched"
+            break
+        if t &gt; 0 and not admitted_agents:
+            stop_reason = "no_admitted_updates"
+            break
+        if t &gt; 0 and len(admitted_agents) == len(active):
+            reason = stop_by_state_diff(history, protocol)
+            if reason is not None:
+                stop_reason = reason
+                break
+
+    history.append(record_stop(stop_reason))
+    candidates = eligible_candidates(last_valid, protocol)
+    final = aggregate_and_check(
+        q, candidates, history, final_ticket, deadline)
+    if final.admitted:
+        return final.with_trace(history, ledger)
+    return local_unresolved_fallback(last_valid, history, ledger)</code></pre><p>三个执行细节影响这个循环的含义。第一，预算预留必须原子化，否则多个并发调用可能同时花掉同一余额。调用上限应覆盖输入、最大输出和验证；所有自动重试也从额度扣除。第二，过了本轮 deadline 的结果只能进入尝试日志，不能改变已关闭快照。第三，结构无效或失败的返回不覆盖 last_valid，因此失败不会被误写成新的有效答案。</p><p>取消请求未必立即停止供应商计费，未知消耗的额度应暂时保留。代码中的预算边界依赖保守估计与供应商能够执行的调用上限；若接口不提供完整上限，就不能宣称实际费用存在严格保证。最终调用也有超时，失败后使用本地未决输出，不再临时追加模型调用。</p><p>这里的函数是接口契约，不是某个框架可直接运行的 API。真正实现时还需补上提供者适配器、schema 校验与持久化；协议测试应包括乱序返回、重复消息、候选解析失败和预算不足。它们检验执行语义，而不是为答案正确率制造一个替代指标。</p><p>初始化后冻结 active 集合：没有接纳盲态初答的 Agent 本次退出修订，原始 ID 与失败仍保留在日志和计分分母。只有实际接纳更新后才检查稳定；本骨架要求全部 active Agent 在该轮提交有效更新，且不在只有初始化记录时触发稳定停止。整轮没有有效更新时单列失败原因。</p><p>事件使用 SUCCEEDED、FAILED、CANCELLED、TIMEOUT 等类型；只有成功且携带 result 才进入 admit。生成、验证和聚合适配器须将预期超时与供应商错误转换为结构化结果，聚合失败返回 admitted=False，使本地退路可达。后台回执接收器仍记录晚到调用并结算费用，但没有修改已关闭状态的权限。</p></section><section aria-labelledby="comparison-design"><h2 id="comparison-design">机制消融与等预算比较回答不同问题</h2><p>机制消融先保存同一批首答，再分支运行：直接聚合；各自修订；读取其他候选后修订；交换定向挑战并验证。固定模型、初始证据、聚合器与评分规则，比较同一批候选怎样被改变。直接投票没有后续调用，因此同首答不意味着同资源。它适合定位新增计算的作用，而非单独宣称效率优势。</p><p>对包含新材料的方案，加一条“共享证据但不对话”的路径：将相同证据包交给各 Agent 独自修订；讨论分支也读取这份包，再开放同伴反馈。若只有讨论分支能够拿到新证据，就无法分清收益来自检索覆盖还是交互。聚合器更换、验证器增加和消息压缩都应各自消融。</p><p>端到端比较另给各方案相同预算上限，允许它们自由选择初答数量、修订轮数和检查频率。基线应包括单 Agent、预算内追加采样的 plurality，以及独立自我修订。此时不强制所有方案保留相同 N，因为生成更多候选与通信本身就在竞争资源。报告实际消耗与质量曲线，剩余预算不需要空耗。</p><p>成本同时包括输入输出、缓存计价、路由、摘要、验证、答案归并、裁判和重试。再报告墙钟时间与并发限制，避免把速度提升误记成计算减少。不同模型单价或本地算力不同，等 token 与等费用是不同实验条件。</p><p>使用验证集选择拓扑、提示与停止规则，再在留出任务上比较。任务按题配对，多次运行保存种子与失败状态。若只将高分歧题送入 Debate，应同时报告路由后的条件表现和完整工作流结果，保留所有超时、无效格式与未决输出的分母。</p></section><section aria-labelledby="revision-metrics"><h2 id="revision-metrics">给修订指标写清分母</h2><p>令 c<sub>di</sub><sup>t</sup> = C(q<sub>d</sub>, x<sub>di</sub><sup>t</sup>) ∈ {0,1}，表示题 d 的 Agent i 在时点 t 是否正确。C 使用独立参考、测试或事先定义的标注规则。以下指标以初答状态为条件，统计单位是题与 Agent 的配对；零分母记为未定义，不填成 0。</p><div class="math-block" role="math" tabindex="0">Repair<sub>T</sub> = ∑<sub>d,i</sub> 𝟙[c<sub>di</sub><sup>0</sup>=0 ∧ c<sub>di</sub><sup>T</sup>=1] / ∑<sub>d,i</sub> 𝟙[c<sub>di</sub><sup>0</sup>=0]<br/>Damage<sub>T</sub> = ∑<sub>d,i</sub> 𝟙[c<sub>di</sub><sup>0</sup>=1 ∧ c<sub>di</sub><sup>T</sup>=0] / ∑<sub>d,i</sub> 𝟙[c<sub>di</sub><sup>0</sup>=1]</div><p>若研究单轮转移，把上式的 0 改为 t−1，并按轮报告，不与初答到最终的指标混用。本文计分约定将无可评分输出记为 0，另列 INVALID、TIMEOUT 等状态；修订超时但保留旧状态时，按被保留的候选评分。实际修订覆盖率与失败数同时报告，不只统计成功修订。若另报有效初答子集，需列出该子集规模。</p><p>题目级结果另算。令 z<sub>d</sub><sup>t</sup> 表示聚合输出是否正确，则准确率变化为平均的 z<sub>d</sub><sup>T</sup>−z<sub>d</sub><sup>0</sup>。Agent 的修复率提高，不保证聚合准确率提高：聚合器可能丢掉正确候选，或把互不相容的主张拼在一起。</p><p>还可报告两类题目级条件指标：初答全部错误的题中，最终聚合答对的比例；初答存在正确少数意见的题中，该正确结果最终丢失的比例。对后者先定义“少数”，例如正确者数量 k 满足 1 ≤ k &lt; N/2。它们的分母都是符合条件的题数，而不是 Agent 数，也不是全部测试题。</p><p>给出每题配对差异和不确定性。估计区间时以题目为簇，不能把同题多个 Agent 当成独立样本扩充样本量。开放任务中的模型评分、人工判断与客观检查应分开呈现；同时报告弃权覆盖率和已回答结果的错误率，防止少回答掩盖失败。</p><p>若 N 随题目或协议变化，按 Agent 汇总的修订率会给候选更多的题目更大权重。应同时按题汇总，说明采用宏平均还是按候选计数；最终工作流准确率仍以题目为单位。</p></section><section aria-labelledby="implementation-record"><h2 id="implementation-record">把协议作为可复现实验对象</h2><p>一次运行至少保存 Π、模型与提示哈希、材料快照、首答、每次 read_set、接纳与拒绝的更新、检查产物、聚合输入、停止原因和资源账本。这样才能重放消息选择，区分模型提出了什么与运行器实际提交了什么。重放日志与重新调用模型是两种操作，后者会引入新的随机结果。</p><p>实现顺序可以从盲态采样与 plurality 开始，加上同步双缓冲更新，再加入逐主张挑战和有限验证器。每加一个组件，先检查执行语义，再与已有路径配对比较。只有确认错误发生在消息时序或上下文暴露时，才有依据继续增加异步调度或复杂路由。</p><p>最终报告应能回答一个具体问题：在给定模型、任务与预算下，哪一类交换让哪些初答被修复，又让哪些正确答案丢失。这个粒度既能支持保留一个协议，也能支持把它简化。对话轮数、共识和图结构本身都不能代替这份证据。</p></section>
+<nav class="article-series-nav" aria-label="相关文章"><a href="/blog/agent-collaboration/"><small>继续阅读</small>多 Agent 协作的计算结构：Pipeline、Orchestrator 与 Debate</a><a href="/blog/harness-engineering/"><small>相关阅读</small>Harness Engineering</a></nav>
+<footer class="article-footer"><a href="/blog/">← 返回 Blog</a><a href="#article-title">回到顶部 ↑</a></footer></article>
+</div></body></html>
+{% endraw %}

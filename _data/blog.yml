@@ -1,3 +1,15 @@
+- slug: agent-collaboration
+  title: 多 Agent 协作的计算结构：Pipeline、Orchestrator 与 Debate
+  description: 用计算图分析多 Agent 的静态依赖、动态任务生成、版本提交、关键路径与通信输入量，说明 Pipeline、Orchestrator 和 Debate 怎样组合，以及如何比较它们的实际收益。
+  title_en: 'The computational structure of multi-agent systems: pipelines, orchestrators, and debate'
+  description_en: An execution-graph analysis of static dependencies, dynamic task generation, versioned commits, critical
+    paths, and communication inputs, showing how pipelines, orchestrators, and debate combine and how to evaluate their value.
+- slug: agent-debate
+  title: Multi-Agent Debate：协议、更新语义与评测
+  description: 面向研究者与开发者的 Multi-Agent Debate 技术说明：状态与消息接口、同步与异步更新、错误相关性、逐主张验证、有界执行循环及配对评测。
+  title_en: 'Multi-agent debate: protocols, update semantics, and evaluation'
+  description_en: A technical guide to multi-agent debate covering state and message interfaces, synchronous and asynchronous
+    updates, correlated errors, claim-level verification, bounded execution, and paired evaluation.
 - slug: interesting-prompts
   title: 记录一组有趣的提示词
   description: 一组用于讨论决策的提示词：先反驳，再支持，最后中立比较关键证据。
