@@ -10,7 +10,7 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-I am an undergraduate student in Communication Engineering at **Northeastern University**. My research interests include **agent harnesses**, **RSI**, and **real-world AI applications**. I am currently seeking **PhD opportunities for Fall 2027**.
+I am an undergraduate student in Communication Engineering at **Northeastern University**. My research interests include **agent harnesses**, **RSI**, and **real-world AI applications**.
 
 # 🔥 News
 
