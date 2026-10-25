@@ -1,3 +1,9 @@
+- slug: evidence-reliability
+  title: 答案正确之后：如何评估 Agent 的证据可靠性？
+  description: 答案已经正确，证据仍可能不足。从这个条件风险出发，讨论证据评价、未解决项和有限预算下的人工抽审，并给出加权与模型辅助估计的具体设定。
+  title_en: 'After the right answer: evaluating the reliability of agent evidence'
+  description_en: Correct agent answers can still lack sufficient evidence. A definition of that conditional risk, with unresolved
+    cases, human audit budgets, and weighted and model-assisted estimators.
 - slug: agent-collaboration
   title: 多 Agent 协作的计算结构：Pipeline、Orchestrator 与 Debate
   description: 用计算图分析多 Agent 的静态依赖、动态任务生成、版本提交、关键路径与通信输入量，说明 Pipeline、Orchestrator 和 Debate 怎样组合，以及如何比较它们的实际收益。
