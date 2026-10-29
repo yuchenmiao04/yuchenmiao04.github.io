@@ -12,9 +12,12 @@ redirect_from:
 
 I am an undergraduate student in Communication Engineering at **Northeastern University**. My research interests include **agent harnesses**, **RSI**, and **real-world AI applications**.
 
+<span class='anchor' id='news'></span>
+
 # 🔥 News
 
-- *2026.08*: &nbsp;🎉🎉 Our paper on open-set standpoint screening was accepted by the [EMNLP 2026 Main Conference](https://2026.emnlp.org/).
+- *2026.10*: &nbsp;🚀 **MMFact** has been released. Full evaluation results are coming soon. [arXiv](https://arxiv.org/abs/2610.34162)
+- *2026.08*: &nbsp;🎉🎉 Our [paper on open-set standpoint screening](https://aclanthology.org/2026.emnlp-main.547/) was accepted by the [EMNLP 2026 Main Conference](https://2026.emnlp.org/).
 - *2026.08*: &nbsp;🎉🎉 Three papers on uncertainty-aware recommendation, multimodal fake-news detection, and cold-start recommendation were accepted by [WISE 2026](https://conferences.sigappfr.org/wise2026/).
 - *2026.05*: &nbsp;🏆 Received the **Finalist Award (Top 1%)** in the [COMAP Mathematical Contest in Modeling](https://www.comap.org/contests/mcm-icm).
 - *2026.05*: &nbsp;🎉🎉 *R3-REC* appeared at [ICASSP 2026](https://2026.ieeeicassp.org/) in Barcelona.
@@ -32,7 +35,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 **Yuchen Miao**, Zijun Wang, Chang Han, Yurui Shi, Mingtai Zhang, and Siyang Xu
 
-[PDF](/files/emnlp-10th-juror.pdf) · [Poster](/files/emnlp-10th-juror-poster.pdf) · [Video](https://www.bilibili.com/video/BV1QHHC6YEsH/) · [Conference](https://2026.emnlp.org/)
+[Paper](https://aclanthology.org/2026.emnlp-main.547/) · [Poster](/files/emnlp-10th-juror-poster.pdf) · [Video](https://www.bilibili.com/video/BV1QHHC6YEsH/) · [Conference](https://2026.emnlp.org/)
 </div>
 </div>
 
@@ -86,6 +89,12 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 - **Universal Refinement without Interaction: Order-Optimal 1-Bit Mean Estimation.** **Yuchen Miao.** 2026. [arXiv](https://arxiv.org/abs/2607.24358)
 - **Sharp Root Anti-Concentration via Projective Incidence and Ordered Root Laws.** Zijun Wang, **Yuchen Miao**, Yifan Hu, and Huanmin Liu. 2026. [arXiv](https://arxiv.org/abs/2608.01670)
+
+<span class='anchor' id='code'></span>
+
+# 🛠 Code
+
+- **[MMFact](https://github.com/yuchenmiao04/MMFact)** — A unified toolbox for MultiModal misinformation detection.
 
 <span class='anchor' id='experience'></span>
 

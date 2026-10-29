@@ -9,6 +9,9 @@ main:
   - title: "Publications"
     url: "/#publications"
 
+  - title: "Code"
+    url: "/#code"
+
   - title: "Blog"
     url: "/blog/"
 
@@ -22,4 +25,4 @@ main:
     url: "/#awards"
 
   - title: "CV"
-    url: "/files/CV.pdf?v=acb35619"
+    url: "/files/CV.pdf?v=c96be493"
