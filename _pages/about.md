@@ -16,6 +16,7 @@ I am an undergraduate student in Communication Engineering at **Northeastern Uni
 
 # 🔥 News
 
+- *2026.10*: &nbsp;🎉🎉 *MARS-Gov* appeared at [EMNLP 2026](https://2026.emnlp.org/) in Budapest.
 - *2026.10*: &nbsp;🚀 **MMFact** has been released. Full evaluation results are coming soon. [arXiv](https://arxiv.org/abs/2610.34162)
 - *2026.08*: &nbsp;🎉🎉 Our [paper on open-set standpoint screening](https://aclanthology.org/2026.emnlp-main.547/) was accepted by the [EMNLP 2026 Main Conference](https://2026.emnlp.org/).
 - *2026.08*: &nbsp;🎉🎉 Three papers on uncertainty-aware recommendation, multimodal fake-news detection, and cold-start recommendation were accepted by [WISE 2026](https://conferences.sigappfr.org/wise2026/).
