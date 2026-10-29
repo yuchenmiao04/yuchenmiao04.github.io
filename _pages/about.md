@@ -94,7 +94,7 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 # 🛠 Code
 
-- **[MMFact](https://github.com/yuchenmiao04/MMFact)** — A unified toolbox for MultiModal misinformation detection.
+- **[MMFact](https://github.com/yuchenmiao04/MMFact)** — A unified toolbox for multimodal misinformation detection with implementations of **47 detection methods and baselines**. It provides shared datasets and reusable preprocessing resources for Weibo-17, Weibo-21, and GossipCop, alongside configurable training and evaluation pipelines with validation-based model selection and multi-seed reporting.
 
 <span class='anchor' id='experience'></span>
 
