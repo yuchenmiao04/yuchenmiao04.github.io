@@ -88,13 +88,27 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 ## Preprints
 
+- **MMFact: Simplifying Multimodal Misinformation Detection with Shared Resources and Tools.** **Yuchen Miao**<sup>†</sup>, Zijun Wang<sup>†</sup>, Mingtai Zhang, Xiaoyi Chen, Sihan Deng, and Xianglin Ding. 2026. († equal contribution.) [arXiv](https://arxiv.org/abs/2610.34162) · [Toolbox](#mmfact)
 - **Universal Refinement without Interaction: Order-Optimal 1-Bit Mean Estimation.** **Yuchen Miao.** 2026. [arXiv](https://arxiv.org/abs/2607.24358)
 
 <span class='anchor' id='code'></span>
 
-# 🛠 Code
+# 🛠 Open Source
 
-- **[MMFact](https://github.com/yuchenmiao04/MMFact)** — A unified toolbox for multimodal misinformation detection with implementations of **47 detection methods and baselines**. It provides shared datasets and reusable preprocessing resources for Weibo-17, Weibo-21, and GossipCop, alongside configurable training and evaluation pipelines with validation-based model selection and multi-seed reporting.
+<section class="open-source-project" id="mmfact" aria-labelledby="mmfact-title">
+  <div class="open-source-project__header">
+    <h2 id="mmfact-title"><a href="https://github.com/yuchenmiao04/MMFact"><img src="{{ '/images/projects/mmfact.png' | relative_url }}" alt="MMFact" width="2172" height="724" loading="lazy"></a></h2>
+    <p class="open-source-project__meta">Project Lead</p>
+  </div>
+  <p class="open-source-project__subtitle">A unified toolbox for multimodal misinformation detection</p>
+  <p>MMFact brings together <strong>47 detector implementations and baselines</strong> for Weibo-17, Weibo-21, and GossipCop, with configurable training and evaluation.</p>
+  <p>Compatible methods can reuse prepared features, OCR, image descriptions, and external evidence, reducing repeated preprocessing. Shared pipelines support validation-based model selection and multi-seed reporting for more consistent comparisons.</p>
+  <p class="open-source-project__links">
+    <a href="https://github.com/yuchenmiao04/MMFact"><i class="fab fa-github" aria-hidden="true"></i> Code &amp; documentation</a>
+    <a href="https://huggingface.co/datasets/MMFact/MMFact">Datasets &amp; materials</a>
+    <a href="https://arxiv.org/abs/2610.34162">Paper (arXiv)</a>
+  </p>
+</section>
 
 <span class='anchor' id='experience'></span>
 
@@ -129,4 +143,4 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 ---
 
-Last updated: October 2026.
+Last updated: November 2026.

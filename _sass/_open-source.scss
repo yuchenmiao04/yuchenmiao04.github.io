@@ -1,0 +1,59 @@
+/* Project identity and resource links share the homepage's academic typography. */
+.page__content .open-source-project {
+  margin: 1.4em 0 2em;
+  scroll-margin-top: 4.5rem;
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .3em 1.5em;
+    margin-bottom: .6em;
+  }
+
+  h2 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    line-height: 1;
+  }
+
+  h2 a {
+    display: inline-block;
+  }
+
+  h2 img {
+    display: block;
+    width: 210px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  &__meta {
+    margin: 0;
+    color: #666;
+    font-size: .85em;
+  }
+
+  &__subtitle {
+    margin: 0 0 .8em;
+    font-weight: 600;
+  }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4em 1.25em;
+    margin-bottom: 0;
+    font-size: .9em;
+
+    a {
+      padding: .2em 0;
+    }
+  }
+
+  a:focus-visible {
+    outline: 2px solid $link-color;
+    outline-offset: 4px;
+  }
+}
