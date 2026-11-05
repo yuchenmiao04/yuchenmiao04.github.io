@@ -24,5 +24,8 @@ main:
   - title: "Awards"
     url: "/#awards"
 
+  - title: "Funding"
+    url: "/#funding"
+
   - title: "CV"
     url: "/files/CV.pdf?v=c96be493"

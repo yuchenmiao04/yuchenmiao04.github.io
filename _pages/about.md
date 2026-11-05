@@ -116,7 +116,6 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 # 💻 Research & Experience
 
 - *2025–Present*, **Hebei Key Laboratory of Marine Perception Network and Data Processing**. Research on explainable multimodal recommendation and fake-content detection using LLM reasoning, retrieval augmentation, graph learning, flow matching, and mixture-of-experts models.
-- *2025–Present*, **National College Students’ Innovation and Entrepreneurship Training Program**, Project No. 202619145026. Research on explainable recommendation and fake-content detection for new-media security.
 - *2025.06–2025.08*, **Information Technology Intern**, China Development Bank, Shanxi Branch.
 - *2024.07–2024.09*, **Big Data Center Intern**, Huajin Coking Coal Co., Ltd.
 - *2024.07–2024.10*, **Embedded Systems Development Intern**, Beijing Kedinoyi Technology Co., Ltd. (Outstanding Intern)
@@ -141,6 +140,12 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 - *2023–2026*, **University Third-Class Scholarship**, awarded five times.
 - *2025*, **Provincial Second Prize**, [National College Students Market Research and Analysis Competition](https://www.china-cssc.org/show-289-1700-1.html). [Certificate](/files/certificates/market-research-2025-hebei-second-prize.pdf)
 - *2025*, **Provincial Second Prize**, [Hebei Provincial College Students “Research Hebei” Social Survey Program](https://tuanwei.hbu.cn/contents/541/11879.html).
+
+<span class='anchor' id='funding'></span>
+
+# 💰 Funding
+
+- *2025–Present*, **National College Students’ Innovation and Entrepreneurship Training Program**, Project No. 202619145026. Research on explainable recommendation and fake-content detection for new-media security.
 
 ---
 
