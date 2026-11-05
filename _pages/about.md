@@ -145,7 +145,7 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 # 💰 Funding
 
-- *2025–Present*, **National College Students’ Innovation and Entrepreneurship Training Program**, Project No. 202619145026. Research on explainable recommendation and fake-content detection for new-media security.
+- *2025–2026*, **National College Students’ Innovation and Entrepreneurship Training Program**, Project No. 202619145026. Research on explainable recommendation and fake-content detection for new-media security.
 
 ---
 
