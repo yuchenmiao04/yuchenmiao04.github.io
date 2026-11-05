@@ -97,7 +97,7 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 
 <section class="open-source-project" id="mmfact" aria-labelledby="mmfact-title">
   <div class="open-source-project__header">
-    <h2 id="mmfact-title"><a href="https://github.com/yuchenmiao04/MMFact"><img src="{{ '/images/projects/mmfact.png' | relative_url }}" alt="MMFact" width="2172" height="724" loading="lazy"></a></h2>
+    <h2 id="mmfact-title"><a href="https://github.com/yuchenmiao04/MMFact"><img src="{{ '/images/projects/mmfact.png' | relative_url }}" alt="MMFact" width="210" height="70" style="width:210px;max-width:100%;height:auto" loading="lazy"></a></h2>
     <p class="open-source-project__meta">Project Leader</p>
   </div>
   <p class="open-source-project__subtitle">A unified toolbox for multimodal misinformation detection</p>
