@@ -98,7 +98,7 @@ Yurui Shi$^\dagger$, **Yuchen Miao$^\dagger$**, Ximing Hu, Zijun Wang, and Chang
 <section class="open-source-project" id="mmfact" aria-labelledby="mmfact-title">
   <div class="open-source-project__header">
     <h2 id="mmfact-title"><a href="https://github.com/yuchenmiao04/MMFact"><img src="{{ '/images/projects/mmfact.png' | relative_url }}" alt="MMFact" width="2172" height="724" loading="lazy"></a></h2>
-    <p class="open-source-project__meta">Project Lead</p>
+    <p class="open-source-project__meta">Project Leader</p>
   </div>
   <p class="open-source-project__subtitle">A unified toolbox for multimodal misinformation detection</p>
   <p>MMFact brings together <strong>47 detector implementations and baselines</strong> for Weibo-17, Weibo-21, and GossipCop, with configurable training and evaluation.</p>
